@@ -1,0 +1,71 @@
+<section id="projects" class="bg-gray-50 py-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-16 text-center">
+      <h2
+        class="font-display mb-4 text-3xl font-bold text-[#111827] md:text-4xl"
+      >
+        Projects
+      </h2>
+      <div class="bg-[#0D9488]l mx-auto mb-8 h-1 w-20"></div>
+      <p class="mx-auto max-w-3xl text-gray-600">
+        Here are some of the projects I've worked on. Each project reflects my
+        skills and experience in different technologies.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div
+        *ngFor="let project of projects; let index = index"
+        class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
+      >
+        <div
+          [ngClass]="project.image"
+          class="flex h-56 items-center justify-center"
+        >
+          <span class="text-lg font-medium text-gray-600"
+            >Project Screenshot</span
+          >
+        </div>
+        <div class="p-6">
+          <h3 class="mb-2 text-xl font-bold text-[#111827]">
+            {{ project.title }}
+          </h3>
+          <p class="mb-4 text-gray-600">{{ project.description }}</p>
+          <div class="mb-6 flex flex-wrap gap-2">
+            <p-chip *ngFor="let tag of project.tags" label="{{ tag }}"></p-chip>
+          </div>
+          <div class="flex gap-4">
+            <a
+              [href]="project.githubLink"
+              class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#111827]"
+            >
+              <lucide-icon
+                [img]="Github"
+                class="hover:text-[#111827]"
+              ></lucide-icon>
+              <span>Code</span>
+            </a>
+            <a
+              [href]="project.liveLink"
+              class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#0D9488]"
+            >
+              <lucide-icon
+                [img]="ExternalLink"
+                class="hover:text-[#0D9488]"
+              ></lucide-icon>
+              <span>Live Demo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="mt-16 text-center">
+      <button
+        class="bg-portfolio-blue hover:bg-portfolio-teal px-8 py-6 text-white"
+      >
+        See More Projects
+      </button>
+    </div> -->
+  </div>
+</section>

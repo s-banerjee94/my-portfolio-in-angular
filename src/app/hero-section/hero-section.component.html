@@ -1,0 +1,87 @@
+<section id="home" class="relative overflow-hidden pt-20 pb-20 md:pt-32">
+  <div
+    class="absolute inset-0 -z-10 bg-gradient-to-b from-white to-blue-50"
+  ></div>
+
+  <div
+    class="absolute top-20 right-0 -z-10 h-72 w-72 rounded-full bg-[#0D9488]/5 blur-3xl"
+  ></div>
+  <div
+    class="bg-portfolio-blue/5 absolute bottom-10 left-0 -z-10 h-96 w-96 rounded-full blur-3xl"
+  ></div>
+
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+      <div class="animate-fade-in order-2 lg:order-1">
+        <p class="animate-slide-in mb-4 font-medium text-[#0D9488]">
+          Hello, I'm
+        </p>
+        <h1
+          class="font-display animate-slide-in mb-4 text-4xl font-bold text-[#111827] md:text-5xl lg:text-6xl"
+        >
+          Sandeepan
+        </h1>
+        <h2
+          class="animate-slide-in mb-6 text-xl font-medium text-gray-700 md:text-2xl"
+        >
+          Full Stack Developer & Designer
+        </h2>
+        <p class="animate-slide-in mb-8 max-w-lg text-gray-600">
+          I build exceptional digital experiences that are fast, accessible,
+          visually appealing, and responsive. Let's create something amazing
+          together.
+        </p>
+        <div class="flex flex-col gap-4 sm:flex-row">
+          <p-button [outlined]="false" [raised]="true" severity="info">
+            <span>See my work</span>
+            <lucide-icon [img]="ArrowRight"></lucide-icon>
+          </p-button>
+          <p-button [outlined]="true" [raised]="true">
+            <span>Contact me</span>
+          </p-button>
+        </div>
+
+        <div class="animate-slide-in mt-8 flex items-center gap-4">
+          <a href="#" class="text-gray-600 transition-colors hover:text-black">
+            <lucide-icon [img]="Github"></lucide-icon>
+          </a>
+          <a
+            href="#"
+            class="text-gray-600 transition-colors hover:text-blue-600"
+          >
+            <lucide-icon [img]="Linkedin"></lucide-icon>
+          </a>
+          <a
+            href="#"
+            class="text-gray-600 transition-colors hover:text-red-600"
+          >
+            <lucide-icon [img]="Mail"></lucide-icon>
+          </a>
+        </div>
+      </div>
+
+      <div class="animate-fade-in order-1 lg:order-2">
+        <div class="relative">
+          <div
+            class="from-portfolio-blue to-portfolio-teal mx-auto h-72 w-72 overflow-hidden rounded-full border-8 border-white bg-gradient-to-r shadow-xl md:h-96 md:w-96"
+          >
+            <div
+              class="flex h-full w-full items-center justify-center bg-gray-300 text-white"
+            >
+              <img
+                src="https://connectwithsandeepan.in/assets/sandeepan-about.jpg"
+                alt="Your Photo"
+                class="object-cover"
+              />
+            </div>
+          </div>
+          <div
+            class="absolute -bottom-6 left-1/2 -translate-x-1/2 transform rounded-full bg-white px-6 py-3 shadow-lg"
+          >
+            <span class="font-semibold text-[#0D9488]">Available for hire</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

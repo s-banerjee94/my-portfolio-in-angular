@@ -16,6 +16,7 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: Aura,
       },
+      ripple: true,
     }),
   ],
 };
