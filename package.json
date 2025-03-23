@@ -19,6 +19,7 @@
     "@angular/router": "^19.2.0",
     "@primeng/themes": "^19.0.10",
     "@tailwindcss/postcss": "^4.0.14",
+    "firebase": "^11.5.0",
     "lucide-angular": "^0.483.0",
     "postcss": "^8.5.3",
     "primeng": "^19.0.10",
