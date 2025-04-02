@@ -1,0 +1,45 @@
+<p-card header="Edit Hero Section">
+  <p-floatlabel variant="on" class="mb-3">
+    <input
+      pInputText
+      id="name_label"
+      [(ngModel)]="heroName"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="name_label">Name</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-3">
+    <input
+      pInputText
+      id="professional_title_label"
+      [(ngModel)]="professionalTitle"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="professional_title_label">Professional Title</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-2">
+    <textarea
+      pTextarea
+      id="description_label"
+      [(ngModel)]="description"
+      rows="5"
+      cols="30"
+      [autoResize]="true"
+      fluid="true"
+    ></textarea>
+    <label for="description_label">Description</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-2">
+    <input
+      pInputText
+      id="status_badge_label"
+      [(ngModel)]="statusBadge"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="status_badge_label">Status Badge</label>
+  </p-floatlabel>
+  <p-button label="Submit" (click)="saveHeroDetails()" />
+</p-card>

@@ -1,0 +1,24 @@
+<p-card header="Edit Project Section">
+  <p-splitter [panelSizes]="[25, 75]" styleClass="mb-8">
+    <ng-template #panel>
+      <div>
+        <p-listbox
+          [(ngModel)]="selectedCity"
+          [options]="cities"
+          optionLabel="name"
+          [checkmark]="false"
+          [highlightOnSelect]="true"
+          class="w-full"
+        />
+        <ng-template let-city #item>
+          <div class="flex items-center justify-between gap-2">
+            <div>{{ city.code }} af</div>
+          </div>
+        </ng-template>
+      </div>
+    </ng-template>
+    <ng-template #panel>
+      <div class="">Panel 2</div>
+    </ng-template>
+  </p-splitter>
+</p-card>
