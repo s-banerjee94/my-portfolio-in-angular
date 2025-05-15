@@ -1,61 +1,55 @@
-<footer className="bg-gray-900 text-white py-12">
-  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+<footer class="bg-gray-900 py-12 text-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
       <div>
-        <h3 className="text-xl font-bold mb-4 font-display">
-          connect<span className="text-portfolio-amber">with</span>sandeepan
+        <h3 class="font-display mb-4 text-xl font-bold">
+          connect<span class="text-portfolio-amber">with</span>sandeepan
         </h3>
-        <p className="text-gray-400 mb-4">
+        <p class="mb-4 text-gray-400">
           Building digital products, brands, and experiences that people love.
         </p>
-        <!-- <div className="flex space-x-4">
-              {['github', 'linkedin', 'twitter', 'instagram'].map((platform) => (
-                <a 
-                  key={platform}
-                  href="#" 
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <span className="capitalize">{platform}</span>
-                </a>
-              ))}
-            </div> -->
+        <div class="flex space-x-4">
+          @for (item of socials; track item.label) {
+            <a
+              [href]="item.url"
+              target="_blank"
+              class="text-gray-400 transition-colors hover:text-white"
+            >
+              <span class="capitalize">{{ item.label }}</span>
+            </a>
+          }
+        </div>
       </div>
 
       <div>
-        <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-        <!-- <ul className="space-y-2">
-              {['Home', 'About', 'Skills', 'Projects', 'Contact'].map((link) => (
-                <li key={link}>
-                  <a 
-                    href={`#${link.toLowerCase()}`} 
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul> -->
+        <h3 class="mb-4 text-lg font-bold">Quick Links</h3>
+        <ul class="space-y-2">
+          <li *ngFor="let link of items">
+            <a
+              [routerLink]="link.routerLink"
+              [fragment]="link.fragment"
+              class="text-gray-400 transition-colors hover:text-white"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        </ul>
       </div>
 
       <div>
-        <h3 className="text-lg font-bold mb-4">Contact</h3>
-        <p className="text-gray-400 mb-2">contactsandeepan&#64;gmail.com</p>
+        <h3 class="mb-4 text-lg font-bold">Contact</h3>
+        <p class="mb-2 text-gray-400">contactsandeepan&#64;gmail.com</p>
+        <p class="mb-2 text-gray-400">+91 8436381443</p>
+        <p class="text-gray-400">Kolkata, India</p>
       </div>
     </div>
 
     <div
-      className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center"
+      class="flex flex-col items-center justify-between border-t border-gray-800 pt-8 md:flex-row"
     >
-      <p className="text-gray-400">
-        © {{ 2025 }} Sandeepan. All rights reserved.
+      <p class="text-gray-400">
+        © {{ currentYear }} Sandeepan. All rights reserved.
       </p>
-      <button
-        onClick="{scrollToTop}"
-        className="mt-4 md:mt-0 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-colors"
-        aria-label="Scroll to top"
-      >
-        <!-- <ArrowUp className="h-5 w-5" /> -->
-      </button>
     </div>
   </div>
 </footer>

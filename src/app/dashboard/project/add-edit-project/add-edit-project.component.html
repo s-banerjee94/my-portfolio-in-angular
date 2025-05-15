@@ -1,0 +1,116 @@
+<h1 class="my-2 text-2xl">{{ mode }}</h1>
+@if (mode === "") {
+  <div class="flex h-full items-center justify-center text-gray-500">
+    <div class="text-center">
+      <p>Select a project to edit or</p>
+      <Button variant="link" class="text-blue-500 hover:text-blue-700">
+        create a new one
+      </Button>
+    </div>
+  </div>
+} @else {
+  <p-floatlabel variant="on" class="mb-2">
+    <input
+      pInputText
+      id="project_title_label"
+      [(ngModel)]="projectTitle"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="project_title_label">Project Title</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="">
+    <textarea
+      pTextarea
+      id="description_label"
+      [(ngModel)]="description"
+      rows="5"
+      cols="30"
+      [autoResize]="true"
+      fluid="true"
+      class="h-20"
+    ></textarea>
+    <label for="description_label">Description</label>
+  </p-floatlabel>
+  <div class="flex flex-col gap-x-2 md:flex-row">
+    <div class="flex w-full flex-col md:w-1/2 md:py-2">
+      <p-inputgroup>
+        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="gitHub_url_label"
+            [(ngModel)]="gitHubUrl"
+            autocomplete="off"
+            fluid="true"
+          />
+          <label for="gitHub_url_label">GitHub Profile URL</label>
+        </p-floatlabel>
+      </p-inputgroup>
+    </div>
+    <div class="flex w-full flex-col md:w-1/2 md:py-2">
+      <p-inputgroup>
+        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="live_demo_url_label"
+            [(ngModel)]="liveDemoUrl"
+            autocomplete="off"
+            fluid="true"
+          />
+          <label for="live_demo_url_label">Live Demo Link</label>
+        </p-floatlabel>
+      </p-inputgroup>
+    </div>
+  </div>
+  <p-card header="Technologies / Tags">
+    @for (tech of techs; track tech) {
+      <p-chip
+        [label]="tech"
+        [removable]="true"
+        (onRemove)="removeTech(tech)"
+        styleClass
+      />
+    }
+    <p-floatlabel variant="on" class="my-3 flex-1/3">
+      <input
+        pInputText
+        id="add_tech_label"
+        [(ngModel)]="enteredTech"
+        (keydown.enter)="addTech()"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="add_tech_label">Add Technologies</label>
+    </p-floatlabel>
+  </p-card>
+  @if (!projectImgUrl && projectImgUrl === "") {
+    <input
+      type="file"
+      id="file_upload_label"
+      (change)="onFileSelected($event)"
+      fluid="true"
+    />
+    <label for="file_upload_label">Upload File</label><br />
+  } @else {
+    <img
+      [src]="projectImgUrl"
+      alt="Project Image"
+      style="width: 100px; height: 100px; margin-bottom: 10px"
+    /><br />
+    <p-button label="Remove Image" (click)="removeImage()"></p-button>
+  }
+  @if (mode === "Add Project") {
+    <p-button label="Submit" fluid="true" (click)="saveProjectDetails()" />
+  } @else {
+    <p-button label="Update" fluid="true" (click)="updateProjectDetails()" />
+  }
+}
+
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'1000ms'"
+  [hideTransitionOptions]="'1000ms'"
+  [showTransformOptions]="'translateX(100%)'"
+/>

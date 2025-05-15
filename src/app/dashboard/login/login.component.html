@@ -1,0 +1,44 @@
+<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+  <p-card>
+    <ng-template #header>
+      <h1 class="mx-4 pt-2 text-2xl font-bold">Login</h1>
+    </ng-template>
+    <ng-template #title>
+      <p class="text-base font-normal">
+        Enter your credentials to access the edit page
+      </p>
+    </ng-template>
+    <div class="space-y-2">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="email"
+          [(ngModel)]="email"
+          autocomplete="off"
+          fluid="true"
+          email="true"
+        />
+        <label for="email">Email</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-password
+          [(ngModel)]="password"
+          inputId="password"
+          fluid="true"
+          feedback="false"
+        />
+        <label for="password">Password</label>
+      </p-floatlabel>
+    </div>
+    <ng-template #footer>
+      <div class="mt-1 flex gap-4">
+        <p-button
+          label="Login"
+          class="w-full"
+          styleClass="w-full"
+          (onClick)="login()"
+        />
+      </div>
+    </ng-template>
+  </p-card>
+</div>

@@ -1,77 +1,82 @@
 <p-card header="Edit About Section">
-  <form #form="ngForm" (ngSubmit)="saveAboutDetails(form)">
-    <p-editor [(ngModel)]="text" name="text" [style]="{ height: '320px' }">
-      <ng-template #header>
-        <span class="ql-formats">
-          <button type="button" class="ql-bold" aria-label="Bold"></button>
-          <button type="button" class="ql-italic" aria-label="Italic"></button>
-          <button
-            type="button"
-            class="ql-underline"
-            aria-label="Underline"
-          ></button>
-          <button type="button" class="ql-color" aria-label="color"></button>
-        </span>
-      </ng-template>
-    </p-editor>
+  <p-editor [(ngModel)]="textAbout" name="text" [style]="{ height: '320px' }">
+    <ng-template #header>
+      <span class="ql-formats">
+        <button type="button" class="ql-bold" aria-label="Bold"></button>
+        <button type="button" class="ql-italic" aria-label="Italic"></button>
+        <button
+          type="button"
+          class="ql-underline"
+          aria-label="Underline"
+        ></button>
+        <button type="button" class="ql-color" aria-label="color"></button>
+      </span>
+    </ng-template>
+  </p-editor>
 
-    <div class="my-4 flex flex-col gap-x-1 md:flex-row">
-      <p-floatlabel variant="on" class="mb-3 flex-1/3">
-        <input
-          pInputText
-          id="experience_label"
-          name="experience"
-          [(ngModel)]="experience"
-          autocomplete="off"
-          fluid="true"
-        />
-        <label for="experience_label">Experience</label>
-      </p-floatlabel>
-      <p-floatlabel variant="on" class="mb-3 flex-1/3">
-        <input
-          pInputText
-          id="education_label"
-          name="education"
-          [(ngModel)]="education"
-          autocomplete="off"
-          fluid="true"
-        />
-        <label for="education_label">Education</label>
-      </p-floatlabel>
-      <p-floatlabel variant="on" class="mb-3 flex-1/3">
-        <input
-          pInputText
-          id="certification_label"
-          name="certification"
-          [(ngModel)]="certification"
-          autocomplete="off"
-          fluid="true"
-        />
-        <label for="certification_label">Certification</label>
-      </p-floatlabel>
-    </div>
-    <p-card header="Skills">
-      @for (skill of skills; track skill) {
-        <p-chip
-          [label]="skill"
-          [removable]="true"
-          (onRemove)="removeSkill(skill)"
-          styleClass
-        />
-      }
-      <p-floatlabel variant="on" class="my-3 flex-1/3">
-        <input
-          pInputText
-          id="add_skills_label"
-          name="enteredSkill"
-          [(ngModel)]="enteredSkill"
-          (keydown.enter)="addSkill()"
-          autocomplete="off"
-          fluid="true"
-        />
-        <label for="add_skills_label">Add Skills</label>
-      </p-floatlabel>
-    </p-card>
-    <p-button label="Submit" type="submit" />
-  </form>
+  <div class="my-4 flex flex-col gap-x-1 md:flex-row">
+    <p-floatlabel variant="on" class="mb-3 flex-1/3">
+      <input
+        pInputText
+        id="experience_label"
+        name="experience"
+        [(ngModel)]="experience"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="experience_label">Experience</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on" class="mb-3 flex-1/3">
+      <input
+        pInputText
+        id="education_label"
+        name="education"
+        [(ngModel)]="education"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="education_label">Education</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on" class="mb-3 flex-1/3">
+      <input
+        pInputText
+        id="certification_label"
+        name="certification"
+        [(ngModel)]="certification"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="certification_label">Certification</label>
+    </p-floatlabel>
+  </div>
+  <p-card header="Skills">
+    @for (skill of skills; track skill) {
+      <p-chip
+        [label]="skill"
+        [removable]="true"
+        (onRemove)="removeSkill(skill)"
+        styleClass
+      />
+    }
+    <p-floatlabel variant="on" class="my-3 flex-1/3">
+      <input
+        pInputText
+        id="add_skills_label"
+        name="enteredSkill"
+        [(ngModel)]="enteredSkill"
+        (keydown.enter)="addSkill()"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="add_skills_label">Add Skills</label>
+    </p-floatlabel>
+  </p-card>
+  <p-button label="Submit" (click)="saveAboutDetails()" />
 </p-card>
+
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'1000ms'"
+  [hideTransitionOptions]="'1000ms'"
+  [showTransformOptions]="'translateX(100%)'"
+/>

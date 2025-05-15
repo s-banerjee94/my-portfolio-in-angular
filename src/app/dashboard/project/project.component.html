@@ -1,24 +1,54 @@
-<p-card header="Edit Project Section">
-  <p-splitter [panelSizes]="[25, 75]" styleClass="mb-8">
+<p-card>
+  <ng-template #header>
+    <div class="mx-2 flex items-center justify-between p-2">
+      <h4 class="text-2xl font-semibold">Add or Edit Prjects</h4>
+      <p-button
+        (onClick)="addProject()"
+        label="+ Add Project"
+        severity="success"
+        [outlined]="true"
+      ></p-button>
+    </div>
+  </ng-template>
+
+  <p-splitter [panelSizes]="[30, 70]" styleClass="mb-8 bg-black-500">
     <ng-template #panel>
-      <div>
-        <p-listbox
-          [(ngModel)]="selectedCity"
-          [options]="cities"
-          optionLabel="name"
-          [checkmark]="false"
-          [highlightOnSelect]="true"
-          class="w-full"
-        />
-        <ng-template let-city #item>
-          <div class="flex items-center justify-between gap-2">
-            <div>{{ city.code }} af</div>
-          </div>
-        </ng-template>
+      <div class="w-full p-4">
+        <h4 class="mb-3 font-semibold">Project List</h4>
+
+        <div *ngFor="let project of projects" class="mb-2">
+          <p-card
+            styleClass="cursor-pointer p-0"
+            (click)="selectProject(project)"
+          >
+            <ng-template pTemplate="content">
+              <div class="flex items-center justify-between">
+                <span>{{ project.title }}</span>
+
+                <p-button
+                  severity="danger"
+                  [outlined]="true"
+                  (onClick)="deleteProject(project, $event)"
+                >
+                  <lucide-angular [img]="Trash2"></lucide-angular>
+                </p-button>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
       </div>
     </ng-template>
     <ng-template #panel>
-      <div class="">Panel 2</div>
+      <div class="m-1 flex w-full flex-col justify-center p-10">
+        <app-add-edit-project> </app-add-edit-project>
+      </div>
     </ng-template>
   </p-splitter>
 </p-card>
+
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'1000ms'"
+  [hideTransitionOptions]="'1000ms'"
+  [showTransformOptions]="'translateX(100%)'"
+/>

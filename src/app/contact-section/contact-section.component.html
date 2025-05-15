@@ -15,22 +15,34 @@
     </div>
 
     <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
-      <div class="bg-portfolio-blue/5 rounded-xl p-8">
-        <h3 class="text-portfolio-dark mb-8 text-2xl font-bold">
+      <div class="rounded-xl bg-[#1E40AF]/5 p-8">
+        <h3 class="mb-8 text-2xl font-bold text-[#111827]">
           Contact Information
         </h3>
 
         <div class="space-y-6">
           <div class="flex items-start">
-            <div class="bg-portfolio-teal/10 mr-4 rounded-full p-3">
+            <div class="mr-4 rounded-full bg-[#1E40AF]/10 p-3">
+              <lucide-icon
+                [img]="Phone"
+                class="h-6 w-6 text-[#1E40AF]"
+              ></lucide-icon>
+            </div>
+            <div>
+              <h4 class="text-portfolio-dark text-lg font-semibold">Phone</h4>
+              <p class="text-gray-600">{{ contactInfo.phone }}</p>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div class="mr-4 rounded-full bg-[#0D9488]/10 p-3">
               <lucide-icon
                 [img]="Mail"
-                class="h-6 w-6 hover:text-[#0D9488]"
+                class="h-6 w-6 text-[#0D9488]"
               ></lucide-icon>
             </div>
             <div>
               <h4 class="text-portfolio-dark text-lg font-semibold">Email</h4>
-              <p class="text-gray-600">contactsandeepan&#64;gmail.com</p>
+              <p class="text-gray-600">{{ contactInfo.email }}</p>
             </div>
           </div>
         </div>
@@ -39,17 +51,32 @@
           <h4 class="text-portfolio-dark mb-4 text-lg font-semibold">
             Follow Me
           </h4>
-          <!-- <div class="flex space-x-4">
-                {['github', 'linkedin', 'twitter', 'instagram'].map((platform) => (
-                  <a 
-                    key={platform}
-                    href="#" 
-                    class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <span class="text-portfolio-blue capitalize"></span>
-                  </a>
-                ))}
-              </div> -->
+          <div class="flex space-x-4">
+            <a
+              [href]="contactInfo.linkedin"
+              target="_blank"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
+              >L</a
+            >
+            <a
+              [href]="contactInfo.github"
+              target="_blank"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
+              >G</a
+            >
+            <!-- <a
+              [href]="contactInfo.instagram"
+              target="_blank"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
+              >I</a
+            >
+            <a
+              [href]="contactInfo.facebook"
+              target="_blank"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
+              >F</a
+            > -->
+          </div>
         </div>
       </div>
 
@@ -57,7 +84,122 @@
         <h3 class="text-portfolio-dark mb-8 text-2xl font-bold">
           Send Me a Message
         </h3>
+        <form
+          (ngSubmit)="onSubmit(contactForm)"
+          #contactForm="ngForm"
+          class="space-y-6"
+        >
+          <div>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                name="your_name"
+                id="your_name"
+                [(ngModel)]="yourName"
+                autocomplete="off"
+                fluid="true"
+                required="true"
+                minlength="3"
+                maxlength="50"
+                #nameInput="ngModel"
+              />
+              <label for="your_name">Your Name</label>
+            </p-floatlabel>
+            @if (nameInput.invalid && nameInput.dirty && nameInput.touched) {
+              <p-message severity="error" variant="simple" size="small"
+                >Enter a valid name</p-message
+              >
+            }
+          </div>
+          <div>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                name="your_email"
+                id="your_email"
+                [(ngModel)]="yourEmail"
+                autocomplete="off"
+                fluid="true"
+                email="true"
+                required="true"
+                #emailInput="ngModel"
+              />
+              <label for="your_email">Your Email</label>
+            </p-floatlabel>
+            @if (emailInput.invalid && emailInput.dirty && emailInput.touched) {
+              <p-message severity="error" variant="simple" size="small"
+                >Enter a valid Email</p-message
+              >
+            }
+          </div>
+          <div>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                name="your_subject"
+                id="your_subject"
+                [(ngModel)]="subject"
+                autocomplete="off"
+                fluid="true"
+                required="true"
+                minlength="10"
+                maxlength="200"
+                #subjectInput="ngModel"
+              />
+              <label for="your_subject">Subject</label>
+            </p-floatlabel>
+            @if (
+              subjectInput.invalid && subjectInput.dirty && subjectInput.touched
+            ) {
+              <p-message severity="error" variant="simple" size="small"
+                >Subject is required</p-message
+              >
+            }
+          </div>
+          <div>
+            <p-floatlabel variant="on">
+              <textarea
+                pTextarea
+                name="your_message"
+                id="your_message"
+                [(ngModel)]="message"
+                [autoResize]="true"
+                rows="5"
+                cols="30"
+                style="resize: none"
+                class="h-full"
+                fluid="true"
+                required="true"
+                minlength="20"
+                maxlength="500"
+                #messageInput="ngModel"
+              ></textarea>
+              <label for="your_message">Message</label>
+            </p-floatlabel>
+            @if (
+              messageInput.invalid && messageInput.dirty && messageInput.touched
+            ) {
+              <p-message severity="error" variant="simple" size="small"
+                >Message is required</p-message
+              >
+            }
+          </div>
+
+          <p-button
+            type="submit"
+            label="Submit"
+            fluid="true"
+            styleClass="!bg-[#0D9488] !hover:bg-[#1E40AF]"
+            [disabled]="!contactForm.valid"
+          />
+        </form>
       </div>
     </div>
   </div>
+  <p-toast
+    [showTransformOptions]="'translateY(100%)'"
+    [showTransitionOptions]="'1000ms'"
+    [hideTransitionOptions]="'1000ms'"
+    [showTransformOptions]="'translateX(100%)'"
+  />
 </section>

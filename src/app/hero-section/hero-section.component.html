@@ -19,40 +19,52 @@
         <h1
           class="font-display animate-slide-in mb-4 text-4xl font-bold text-[#111827] md:text-5xl lg:text-6xl"
         >
-          Sandeepan
+          {{ heroData!.name }}
         </h1>
         <h2
           class="animate-slide-in mb-6 text-xl font-medium text-gray-700 md:text-2xl"
         >
-          Full Stack Developer & Designer
+          {{ heroData!.professionalTitle }}
         </h2>
         <p class="animate-slide-in mb-8 max-w-lg text-gray-600">
-          I build exceptional digital experiences that are fast, accessible,
-          visually appealing, and responsive. Let's create something amazing
-          together.
+          {{ heroData!.description }}
         </p>
         <div class="flex flex-col gap-4 sm:flex-row">
-          <p-button [outlined]="false" [raised]="true" severity="info">
+          <p-button
+            [outlined]="false"
+            [raised]="true"
+            severity="info"
+            (onClick)="navigateToProjects()"
+          >
             <span>See my work</span>
             <lucide-icon [img]="ArrowRight"></lucide-icon>
           </p-button>
-          <p-button [outlined]="true" [raised]="true">
+          <p-button
+            [outlined]="true"
+            [raised]="true"
+            (onClick)="navigateToContact()"
+          >
             <span>Contact me</span>
           </p-button>
         </div>
 
         <div class="animate-slide-in mt-8 flex items-center gap-4">
-          <a href="#" class="text-gray-600 transition-colors hover:text-black">
+          <a
+            [href]="heroData.githubUrl"
+            target="_blank"
+            class="text-gray-600 transition-colors hover:text-black"
+          >
             <lucide-icon [img]="Github"></lucide-icon>
           </a>
           <a
-            href="#"
+            [href]="heroData.linkedInUrl"
+            target="_blank"
             class="text-gray-600 transition-colors hover:text-blue-600"
           >
             <lucide-icon [img]="Linkedin"></lucide-icon>
           </a>
           <a
-            href="#"
+            [href]="'mailto:' + heroData.email"
             class="text-gray-600 transition-colors hover:text-red-600"
           >
             <lucide-icon [img]="Mail"></lucide-icon>
@@ -69,8 +81,8 @@
               class="flex h-full w-full items-center justify-center bg-gray-300 text-white"
             >
               <img
-                src="https://connectwithsandeepan.in/assets/sandeepan-about.jpg"
-                alt="Your Photo"
+                [src]="heroData!.heroImgUrl"
+                alt="Hero Image"
                 class="object-cover"
               />
             </div>
@@ -78,7 +90,9 @@
           <div
             class="absolute -bottom-6 left-1/2 -translate-x-1/2 transform rounded-full bg-white px-6 py-3 shadow-lg"
           >
-            <span class="font-semibold text-[#0D9488]">Available for hire</span>
+            <span class="font-semibold text-[#0D9488]">
+              {{ heroData!.statusBadge }}
+            </span>
           </div>
         </div>
       </div>

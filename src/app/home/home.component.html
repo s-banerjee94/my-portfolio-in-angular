@@ -1,6 +1,13 @@
-<app-header></app-header>
-<app-hero-section></app-hero-section>
-<app-about-section></app-about-section>
-<app-project-section></app-project-section>
-<app-contact-section></app-contact-section>
+<section id="home">
+  <app-header></app-header>
+  <app-hero-section></app-hero-section>
+</section>
+<section id="about"><app-about-section></app-about-section></section>
+<section id="projects"><app-project-section></app-project-section></section>
+<section id="contact"><app-contact-section></app-contact-section></section>
 <app-footer></app-footer>
+<p-scrolltop
+  target="window"
+  [threshold]="100"
+  [buttonProps]="{ severity: 'contrast', raised: true, rounded: true }"
+/>

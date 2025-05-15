@@ -1,0 +1,160 @@
+<app-header></app-header>
+<div class="hidden md:block">
+  <p-table [value]="messages">
+    <ng-template #header>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Subject</th>
+        <th>Message</th>
+        <th>Time</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-messages>
+      <tr>
+        <td>{{ messages.name }}</td>
+        <td>
+          <a
+            [href]="'mailto:' + messages.email"
+            class="text-blue-600 hover:underline"
+          >
+            {{ messages.email }}
+          </a>
+        </td>
+        <td>{{ messages.subject }}</td>
+        <td>{{ messages.message }}</td>
+        <td>{{ messages.timestamp | date: "dd/MM/yyyy HH:mm" }}</td>
+        <td class="space-x-2">
+          @if (!messages.read) {
+            <p-button
+              [outlined]="true"
+              [rounded]="true"
+              severity="info"
+              (onClick)="read(messages)"
+            >
+              <lucide-icon [img]="Check" class="h-5 w-5"></lucide-icon>
+            </p-button>
+          } @else {
+            <p-button
+              [outlined]="true"
+              [rounded]="true"
+              severity="danger"
+              (onClick)="read(messages)"
+            >
+              <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
+            </p-button>
+          }
+          <p-button
+            [outlined]="true"
+            [rounded]="true"
+            severity="danger"
+            (onClick)="delete(messages)"
+          >
+            <lucide-angular [img]="Trash2" class="h-5 w-5"></lucide-angular>
+          </p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div class="block md:hidden">
+  <div class="flex flex-col gap-4 p-4">
+    @for (msg of messages; track $index) {
+      <p-card>
+        <ng-template #header>
+          <h2 class="mt-2 ml-4 text-3xl">{{ msg.name }}</h2>
+        </ng-template>
+        <ng-template #title>{{ msg.subject }}</ng-template>
+        <ng-template #subtitle
+          ><a
+            [href]="'mailto:' + msg.email"
+            class="text-blue-600 hover:underline"
+          >
+            {{ msg.email }}
+          </a></ng-template
+        >
+        <p>{{ msg.message }}</p>
+        <ng-template #footer>
+          <div class="flex justify-between">
+            <p-button
+              [outlined]="true"
+              [rounded]="true"
+              severity="danger"
+              (onClick)="delete(msg)"
+            >
+              <lucide-angular [img]="Trash2" class="h-5 w-5"></lucide-angular>
+            </p-button>
+            @if (!msg.read) {
+              <p-button
+                [outlined]="true"
+                [rounded]="true"
+                severity="info"
+                (onClick)="read(msg)"
+              >
+                <lucide-icon [img]="Check" class="h-5 w-5"></lucide-icon>
+              </p-button>
+            } @else {
+              <p-button
+                [outlined]="true"
+                [rounded]="true"
+                severity="danger"
+                (onClick)="read(msg)"
+              >
+                <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
+              </p-button>
+            }
+          </div>
+        </ng-template>
+      </p-card>
+    }
+  </div>
+
+  <!-- <div class="flex flex-col gap-4">
+    <div
+      *ngFor="let msg of messages"
+      class="rounded-lg border bg-white p-4 shadow-md"
+    >
+      <p><strong>Name:</strong> {{ msg.name }}</p>
+      <p>
+        <strong>Email:</strong>
+        <a [href]="'mailto:' + msg.email" class="text-blue-600 hover:underline">
+          {{ msg.email }}
+        </a>
+      </p>
+      <p><strong>Subject:</strong> {{ msg.subject }}</p>
+      <p><strong>Message:</strong> {{ msg.message }}</p>
+      <p>
+        <strong>Time:</strong> {{ msg.timestamp | date: "dd/MM/yyyy HH:mm" }}
+      </p>
+      <div class="mt-2">
+        <p-button
+          *ngIf="!msg.read"
+          [outlined]="true"
+          [rounded]="true"
+          severity="info"
+          (onClick)="read(msg)"
+        >
+          <lucide-icon [img]="Check" class="h-5 w-5"></lucide-icon>
+        </p-button>
+        <p-button
+          *ngIf="msg.read"
+          [outlined]="true"
+          [rounded]="true"
+          severity="danger"
+          (onClick)="read(msg)"
+        >
+          <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
+        </p-button>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'1000ms'"
+  [hideTransitionOptions]="'1000ms'"
+  [showTransformOptions]="'translateX(100%)'"
+/>

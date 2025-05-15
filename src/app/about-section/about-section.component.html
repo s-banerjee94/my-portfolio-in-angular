@@ -16,30 +16,10 @@
     <div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
       <div>
         <h3 class="mb-6 text-2xl font-bold text-[#111827]">Get to know me!</h3>
-        <div class="space-y-4 text-gray-600">
-          <p>
-            I'm a
-            <span class="font-medium text-[#1E40AF]">Full Stack Developer</span>
-            with a passion for building beautiful, functional, and user-centered
-            digital experiences.
-          </p>
-          <p>
-            With 2+ years of experience in web development, I am proficient in
-            creating responsive web applications from concept to deployment. I
-            enjoy solving complex problems and learning new skills.
-          </p>
-          <p>
-            When I'm not coding, you can find me exploring nature trails,
-            reading tech blogs, or experimenting with new recipes in the
-            kitchen. I believe in continuous learning and staying updated with
-            the latest technology trends.
-          </p>
-          <p>
-            I'm open to job opportunities where I can contribute, learn, and
-            grow. If you have a good opportunity that matches my skills and
-            experience, don't hesitate to contact me.
-          </p>
-        </div>
+        <div
+          [innerHTML]="aboutData?.text"
+          class="space-y-4 text-gray-600"
+        ></div>
 
         <div class="mt-12 space-y-6">
           <div class="flex items-start">
@@ -48,7 +28,7 @@
             </div>
             <div>
               <h4 class="text-lg font-semibold text-[#111827]">Experience</h4>
-              <p class="text-gray-600">2+ years of professional experience</p>
+              <p class="text-gray-600">{{ aboutData?.experience }}</p>
             </div>
           </div>
 
@@ -58,7 +38,7 @@
             </div>
             <div>
               <h4 class="text-lg font-semibold text-[#111827]">Education</h4>
-              <p class="text-gray-600">B.Tech in Computer Science</p>
+              <p class="text-gray-600">{{ aboutData?.education }}</p>
             </div>
           </div>
         </div>
@@ -67,7 +47,7 @@
       <div>
         <h3 class="mb-6 text-2xl font-bold text-[#111827]">My Skills</h3>
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          @for (skill of skills; track $index) {
+          @for (skill of aboutData?.skills; track $index) {
             <div
               class="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-center transition-shadow hover:shadow-md"
             >

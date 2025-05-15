@@ -1,0 +1,100 @@
+<p-card header="Edit Hero Section">
+  <p-floatlabel variant="on" class="mb-3">
+    <input
+      pInputText
+      id="name"
+      [(ngModel)]="hero.name"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="name ">Name</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-3">
+    <input
+      pInputText
+      id="professional_title"
+      [(ngModel)]="hero.professionalTitle"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="professional_title">Professional Title</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-3">
+    <textarea
+      pTextarea
+      id="description"
+      [(ngModel)]="hero.description"
+      rows="5"
+      cols="30"
+      [autoResize]="true"
+      fluid="true"
+    ></textarea>
+    <label for="description">Description</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-3">
+    <input
+      pInputText
+      id="status_badge"
+      [(ngModel)]="hero.statusBadge"
+      autocomplete="off"
+      fluid="true"
+    />
+    <label for="status_badge ">Status Badge</label>
+  </p-floatlabel>
+  <div class="mb-3 flex w-full justify-between space-x-2">
+    <p-floatlabel variant="on" class="w-full">
+      <input
+        pInputText
+        id="githubUrl"
+        [(ngModel)]="hero.githubUrl"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="githubUrl">GitHub URL</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on" class="w-full">
+      <input
+        pInputText
+        id="linkedInUrl"
+        [(ngModel)]="hero.linkedInUrl"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="linkedInUrl">LinkedIn URL</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on" class="w-full">
+      <input
+        pInputText
+        id="email"
+        [(ngModel)]="hero.email"
+        autocomplete="off"
+        fluid="true"
+      />
+      <label for="email">Email</label>
+    </p-floatlabel>
+  </div>
+  @if (!hero.heroImgUrl && hero.heroImgUrl === "") {
+    <input
+      type="file"
+      id="file_upload"
+      (change)="onFileSelected($event)"
+      fluid="true"
+    />
+    <label for="file_upload">Upload File</label><br />
+  } @else {
+    <img
+      [src]="hero.heroImgUrl"
+      alt="Hero Image"
+      style="width: 100px; height: 100px; margin-bottom: 10px"
+    /><br />
+    <p-button label="Remove Image" (click)="removeImage()"></p-button>
+  }
+  <br />
+  <p-button label="Submit" (click)="saveHeroDetails()" />
+</p-card>
+
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'1000ms'"
+  [hideTransitionOptions]="'1000ms'"
+/>

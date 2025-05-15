@@ -19,12 +19,14 @@
         class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
       >
         <div
-          [ngClass]="project.image"
+          [ngClass]="'bg-gray-200'"
           class="flex h-56 items-center justify-center"
         >
-          <span class="text-lg font-medium text-gray-600"
-            >Project Screenshot</span
-          >
+          <img
+            [src]="project.projectImgUrl"
+            alt="{{ project.title }} screenshot"
+            class="h-full w-full object-cover"
+          />
         </div>
         <div class="p-6">
           <h3 class="mb-2 text-xl font-bold text-[#111827]">
@@ -32,11 +34,14 @@
           </h3>
           <p class="mb-4 text-gray-600">{{ project.description }}</p>
           <div class="mb-6 flex flex-wrap gap-2">
-            <p-chip *ngFor="let tag of project.tags" label="{{ tag }}"></p-chip>
+            <p-chip
+              *ngFor="let tech of project.technologies"
+              label="{{ tech }}"
+            ></p-chip>
           </div>
           <div class="flex gap-4">
             <a
-              [href]="project.githubLink"
+              [href]="project.gitHubUrl"
               class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#111827]"
             >
               <lucide-icon
@@ -45,16 +50,20 @@
               ></lucide-icon>
               <span>Code</span>
             </a>
-            <a
-              [href]="project.liveLink"
-              class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#0D9488]"
-            >
-              <lucide-icon
-                [img]="ExternalLink"
-                class="hover:text-[#0D9488]"
-              ></lucide-icon>
-              <span>Live Demo</span>
-            </a>
+            @if (project.liveDemoUrl) {
+              <a
+                [href]="project.liveDemoUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#0D9488]"
+              >
+                <lucide-icon
+                  [img]="ExternalLink"
+                  class="hover:text-[#0D9488]"
+                ></lucide-icon>
+                <span>Live Demo</span>
+              </a>
+            }
           </div>
         </div>
       </div>
