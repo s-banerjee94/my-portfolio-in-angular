@@ -1,66 +1,162 @@
-<app-header></app-header>
-<div class="hidden md:block">
-  <p-table [value]="messages">
+<div class="m-2 hidden md:block">
+  <p-card>
     <ng-template #header>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Subject</th>
-        <th>Message</th>
-        <th>Time</th>
-        <th>Actions</th>
-      </tr>
+      <h2 class="mt-2 ml-4 text-3xl">All Messages</h2>
+      <p class="mt-2 ml-4 text-base font-light text-gray-500">
+        Manage and respond to contact form submissions
+      </p>
     </ng-template>
-    <ng-template #body let-messages>
-      <tr>
-        <td>{{ messages.name }}</td>
-        <td>
-          <a
-            [href]="'mailto:' + messages.email"
-            class="text-blue-600 hover:underline"
-          >
-            {{ messages.email }}
-          </a>
-        </td>
-        <td>{{ messages.subject }}</td>
-        <td>{{ messages.message }}</td>
-        <td>{{ messages.timestamp | date: "dd/MM/yyyy HH:mm" }}</td>
-        <td class="space-x-2">
-          @if (!messages.read) {
-            <p-button
-              [outlined]="true"
-              [rounded]="true"
-              severity="info"
-              (onClick)="read(messages)"
-            >
-              <lucide-icon [img]="Check" class="h-5 w-5"></lucide-icon>
-            </p-button>
-          } @else {
-            <p-button
-              [outlined]="true"
-              [rounded]="true"
-              severity="danger"
-              (onClick)="read(messages)"
-            >
-              <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
-            </p-button>
-          }
-          <p-button
-            [outlined]="true"
-            [rounded]="true"
-            severity="danger"
-            (onClick)="delete(messages)"
-          >
-            <lucide-angular [img]="Trash2" class="h-5 w-5"></lucide-angular>
-          </p-button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+    <div class="flex justify-between">
+      <p-inputgroup styleClass="!w-sm">
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Search"></lucide-icon>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="search_messages"
+            type="text"
+            autocomplete="off"
+          />
+          <label for="search_messages">Search Messages</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      <div class="flex justify-between space-x-1">
+        <p-button
+          type="button"
+          icon="pi pi-filter"
+          [label]="selectedFilter ? selectedFilter.name : 'All'"
+          (onClick)="toggle($event)"
+          variant="outlined"
+          severity="success"
+        />
+        <p-popover #filterPopover>
+          <div class="flex flex-col gap-4">
+            <div>
+              <ul class="m-0 flex list-none flex-col p-0">
+                <li
+                  *ngFor="let filter of filters"
+                  class="hover:bg-emphasis rounded-border flex cursor-pointer items-center gap-2 px-2 py-3"
+                  (click)="selectFilter(filter)"
+                >
+                  <div>
+                    <span class="font-medium">{{ filter.name }}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </p-popover>
+      </div>
+    </div>
+
+    @if (messages.length === 0) {
+      <div class="flex flex-col items-center justify-center gap-4 p-4">
+        <lucide-icon
+          [img]="Inbox"
+          class="h-20 w-20 text-gray-400"
+        ></lucide-icon>
+        <h2 class="text-xl font-semibold text-gray-700">No Messages Found</h2>
+        <p class="text-gray-500">
+          It seems you don't have any messages yet. Check back later!
+        </p>
+      </div>
+    } @else {
+      <p-table [value]="messages">
+        <ng-template #header>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Time</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-messages>
+          <tr>
+            <td>{{ messages.name }}</td>
+            <td>
+              <a
+                [href]="'mailto:' + messages.email"
+                class="text-blue-600 hover:underline"
+              >
+                {{ messages.email }}
+              </a>
+            </td>
+            <td>{{ messages.subject }}</td>
+            <td>{{ messages.message }}</td>
+            <td>{{ messages.timestamp | date: "dd/MM/yyyy HH:mm" }}</td>
+            <td class="space-x-2">
+              @if (!messages.read) {
+                <p-button
+                  [outlined]="true"
+                  [rounded]="true"
+                  severity="info"
+                  (onClick)="read(messages)"
+                  icon="pi pi-check"
+                >
+                </p-button>
+              } @else {
+                <p-button
+                  [outlined]="true"
+                  [rounded]="true"
+                  severity="danger"
+                  (onClick)="read(messages)"
+                  icon="pi pi-times"
+                >
+                </p-button>
+              }
+              <p-button
+                [outlined]="true"
+                [rounded]="true"
+                severity="danger"
+                (onClick)="delete(messages)"
+                icon="pi pi-trash"
+              >
+              </p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    }
+  </p-card>
 </div>
 
 <div class="block md:hidden">
   <div class="flex flex-col gap-4 p-4">
+    <div>
+      <h2 class="mt-2 ml-2 text-3xl">All Messages</h2>
+      <p class="ml-2 text-base font-light text-gray-500">
+        Manage and respond to contact form submissions
+      </p>
+    </div>
+    <div class="flex justify-between">
+      <p-inputgroup styleClass="!w-xs">
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Search"></lucide-icon>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="search_messages"
+            type="text"
+            autocomplete="off"
+          />
+          <label for="search_messages">Search Messages</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      <div class="flex justify-between space-x-1">
+        <p-button
+          type="button"
+          icon="pi pi-filter"
+          [label]="selectedFilter ? selectedFilter.name : 'All'"
+          (onClick)="toggle($event)"
+          variant="outlined"
+          severity="success"
+        />
+      </div>
+    </div>
     @for (msg of messages; track $index) {
       <p-card>
         <ng-template #header>
@@ -83,8 +179,8 @@
               [rounded]="true"
               severity="danger"
               (onClick)="delete(msg)"
+              icon="pi pi-trash"
             >
-              <lucide-angular [img]="Trash2" class="h-5 w-5"></lucide-angular>
             </p-button>
             @if (!msg.read) {
               <p-button
@@ -92,8 +188,8 @@
                 [rounded]="true"
                 severity="info"
                 (onClick)="read(msg)"
+                icon="pi pi-check"
               >
-                <lucide-icon [img]="Check" class="h-5 w-5"></lucide-icon>
               </p-button>
             } @else {
               <p-button
@@ -101,8 +197,8 @@
                 [rounded]="true"
                 severity="danger"
                 (onClick)="read(msg)"
+                icon="pi pi-times"
               >
-                <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
               </p-button>
             }
           </div>
@@ -110,46 +206,6 @@
       </p-card>
     }
   </div>
-
-  <!-- <div class="flex flex-col gap-4">
-    <div
-      *ngFor="let msg of messages"
-      class="rounded-lg border bg-white p-4 shadow-md"
-    >
-      <p><strong>Name:</strong> {{ msg.name }}</p>
-      <p>
-        <strong>Email:</strong>
-        <a [href]="'mailto:' + msg.email" class="text-blue-600 hover:underline">
-          {{ msg.email }}
-        </a>
-      </p>
-      <p><strong>Subject:</strong> {{ msg.subject }}</p>
-      <p><strong>Message:</strong> {{ msg.message }}</p>
-      <p>
-        <strong>Time:</strong> {{ msg.timestamp | date: "dd/MM/yyyy HH:mm" }}
-      </p>
-      <div class="mt-2">
-        <p-button
-          *ngIf="!msg.read"
-          [outlined]="true"
-          [rounded]="true"
-          severity="info"
-          (onClick)="read(msg)"
-        >
-          <lucide-icon [img]="Check" class="h-5 w-5"></lucide-icon>
-        </p-button>
-        <p-button
-          *ngIf="msg.read"
-          [outlined]="true"
-          [rounded]="true"
-          severity="danger"
-          (onClick)="read(msg)"
-        >
-          <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
-        </p-button>
-      </div>
-    </div>
-  </div> -->
 </div>
 
 <p-toast

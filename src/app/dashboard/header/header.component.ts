@@ -27,8 +27,12 @@ export class HeaderComponent implements OnInit {
         routerLink: '/dashboard',
       },
       {
+        label: 'Edit Content',
+        routerLink: '/dashboard/edit-content',
+      },
+      {
         label: 'Messages',
-        routerLink: '/messages',
+        routerLink: '/dashboard/messages',
       },
     ];
   }

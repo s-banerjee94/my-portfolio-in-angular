@@ -9,6 +9,7 @@ import {
   orderBy,
   query,
   setDoc,
+  where,
 } from '@angular/fire/firestore';
 import { from } from 'rxjs';
 
@@ -48,6 +49,12 @@ export class ContaceMeService {
     return from(collectionData(q, { idField: 'id' }));
   }
 
+  getMessageByFilter(filter: boolean) {
+    const messagesRef = collection(this.firestore, this.collectionName);
+    const q = query(messagesRef, where('read', '==', filter));
+    return from(collectionData(q, { idField: 'id' }));
+  }
+
   updateMessageStatus(messageId: string, status: boolean) {
     const messageRef = doc(
       this.firestore,
@@ -66,5 +73,17 @@ export class ContaceMeService {
       `${this.collectionName}/${messageId}`,
     );
     return from(deleteDoc(messageRef));
+  }
+
+  searchMessages(term: string) {
+    const messagesRef = collection(this.firestore, this.collectionName);
+    // Firestore does not support full text search natively, so we search by name, email, subject, or message (prefix match)
+    // This example searches by name (add more fields as needed)
+    const q = query(
+      messagesRef,
+      where('name', '>=', term),
+      where('name', '<=', term + '\uf8ff'),
+    );
+    return from(collectionData(q, { idField: 'id' }));
   }
 }

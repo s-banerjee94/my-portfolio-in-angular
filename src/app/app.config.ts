@@ -1,6 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -26,22 +25,33 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideFirebaseApp(() => initializeApp(environment)),
+
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+
     provideFirestore(() => {
       const firestore = getFirestore();
-      connectFirestoreEmulator(firestore, 'localhost', 8080);
+      if (environment.useEmulators) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080);
+      }
       return firestore;
     }),
+
     provideStorage(() => {
-      const firestore = getStorage();
-      connectStorageEmulator(firestore, 'localhost', 9199);
-      return getStorage();
+      const storage = getStorage();
+      if (environment.useEmulators) {
+        connectStorageEmulator(storage, 'localhost', 9199);
+      }
+      return storage;
     }),
+
     provideAuth(() => {
       const auth = getAuth();
-      connectAuthEmulator(auth, 'http://localhost:9099');
+      if (environment.useEmulators) {
+        connectAuthEmulator(auth, 'http://localhost:9099');
+      }
       return auth;
     }),
+
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
