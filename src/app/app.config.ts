@@ -19,7 +19,7 @@ import {
 } from '@angular/fire/storage';
 import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 
-import { environment } from '../env/environment';
+import { environment } from '../../env/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,7 +31,7 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => {
       const firestore = getFirestore();
       if (environment.useEmulators) {
-        connectFirestoreEmulator(firestore, 'localhost', 8080);
+        connectFirestoreEmulator(firestore, 'localhost', 8081);
       }
       return firestore;
     }),
@@ -56,8 +56,12 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
+        // options: {
+        //   darkModeSelector: '.my-app-dark'
+        // }
       },
       ripple: true,
+
     }),
   ],
 };
