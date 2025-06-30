@@ -19,7 +19,7 @@ import {
 } from '@angular/fire/storage';
 import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 
-import { environment } from '../../env/environment';
+import { environment } from '../env/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -56,9 +56,9 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
-        // options: {
-        //   darkModeSelector: '.my-app-dark'
-        // }
+        options: {
+          darkModeSelector: '.my-app-dark'
+        }
       },
       ripple: true,
 
