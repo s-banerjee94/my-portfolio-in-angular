@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {
   addDoc,
   collectionData,
@@ -6,17 +6,13 @@ import {
   doc,
   Firestore,
   getDocFromServer,
+  orderBy,
+  query,
   setDoc,
 } from '@angular/fire/firestore';
-import { collection } from 'firebase/firestore';
-import { from, Observable } from 'rxjs';
-import {
-  Storage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from '@angular/fire/storage';
+import {collection} from 'firebase/firestore';
+import {from, Observable} from 'rxjs';
+import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +21,10 @@ export class ProfileService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
   readonly initial: string = 'profile/';
-  constructor() {}
+
+  constructor() {
+  }
+
   getSectionData(sectionName: string) {
     const docRef = doc(this.firestore, `${this.initial}${sectionName}`);
     return from(getDocFromServer(docRef));
@@ -38,12 +37,14 @@ export class ProfileService {
 
   getAllProjects() {
     const projectsRef = collection(this.firestore, `projects`);
-    return collectionData(projectsRef, { idField: 'id' });
+    const q = query(projectsRef, orderBy('projectDate', 'desc'));
+    return collectionData(q, {idField: 'id'});
   }
 
   saveProject(projectData: any): Observable<void> {
     const projectRef = collection(this.firestore, 'projects');
-    return from(addDoc(projectRef, projectData).then(() => {}));
+    return from(addDoc(projectRef, projectData).then(() => {
+    }));
   }
 
   deleteProject(projectId: string): Observable<void> {
@@ -53,7 +54,7 @@ export class ProfileService {
 
   updateProject(projectId: string, projectData: any): Observable<void> {
     const projectRef = doc(this.firestore, `projects/${projectId}`);
-    return from(setDoc(projectRef, projectData, { merge: true }));
+    return from(setDoc(projectRef, projectData, {merge: true}));
   }
 
   uploadFile(file: File): Observable<string> {
