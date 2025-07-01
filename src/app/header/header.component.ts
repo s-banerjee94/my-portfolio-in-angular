@@ -25,6 +25,11 @@ export class HeaderComponent implements OnInit {
         fragment: 'about',
       },
       {
+        label: 'Experience',
+        routerLink: '/',
+        fragment: 'experience',
+      },
+      {
         label: 'Skill',
         routerLink: '/',
         fragment: 'about',

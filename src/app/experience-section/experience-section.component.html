@@ -1,0 +1,29 @@
+<section id="experience" class="py-20">
+
+
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="text-center mb-16">
+      <h2 class="font-display mb-4 text-3xl font-bold text-[#111827] md:text-4xl"
+      >Experience</h2>
+      <div class="mx-auto mb-8 h-1 w-20 bg-[#0D9488]"></div>
+      <p class="mx-auto max-w-3xl text-gray-600">My Professional Journey</p>
+    </div>
+    <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
+      <ng-template #marker let-event>
+              <span class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
+                    [style]="{ 'background-color': event.color }">
+                  <i [class]="event.icon"></i>
+              </span>
+      </ng-template>
+      <ng-template #content let-event>
+        <p-card [header]="event.status" [subheader]="event.date">
+          <p>
+            {{ event.summary }}
+          </p>
+        </p-card>
+      </ng-template>
+    </p-timeline>
+  </div>
+
+</section>
+
