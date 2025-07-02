@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Timeline} from 'primeng/timeline';
 import {CardModule} from 'primeng/card';
 import {ButtonModule} from 'primeng/button';
@@ -9,7 +9,7 @@ import {ButtonModule} from 'primeng/button';
   templateUrl: './experience-section.component.html',
   styleUrl: './experience-section.component.css'
 })
-export class ExperienceSectionComponent {
+export class ExperienceSectionComponent implements OnInit {
   events: any[];
 
   constructor() {
@@ -32,5 +32,8 @@ export class ExperienceSectionComponent {
         summary: ' I worked as a Junior Solutions Associate and led key initiatives to improve product performance and usability. I optimized GIFFY’s import module using Spring Boot and Syncfusion UI, achieving a 60% performance boost that greatly enhanced data processing speed and user experience. Additionally, I spearheaded the development of a project management tool featuring Syncfusion components like Kanban boards and Gantt charts to improve project tracking, visualization, and team collaboration.'
       },
     ];
+  }
+
+  ngOnInit() {
   }
 }

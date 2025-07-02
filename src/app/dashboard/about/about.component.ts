@@ -63,7 +63,7 @@ export class AboutComponent implements OnInit {
       next: (data) => {
         if (data.exists()) {
           const aboutData = data.data() as any;
-          this.formData.text = aboutData.textAbout || aboutData.text || '';
+          this.formData.text = aboutData.text || '';
           this.formData.experience = aboutData.experience || '';
           this.formData.education = aboutData.education || '';
           this.formData.certification = aboutData.certification || '';
@@ -99,7 +99,6 @@ export class AboutComponent implements OnInit {
     }
 
     const aboutData = {
-      textAbout: this.formData.text, // Keep textAbout for backward compatibility
       text: this.formData.text,
       experience: this.formData.experience,
       education: this.formData.education,
