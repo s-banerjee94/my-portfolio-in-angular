@@ -67,11 +67,14 @@ export class ProjectComponent implements OnInit {
   getAllProjects(): void {
     this.profileSevice.getAllProjects().subscribe({
       next: (projects) => {
-        console.log('Projects retrieved successfully:', projects);
         this.projects = projects;
       },
       error: (error) => {
-        console.error('Error retrieving projects:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load projects'
+        });
       },
     });
   }
@@ -87,7 +90,11 @@ export class ProjectComponent implements OnInit {
         this.getAllProjects(); // Refresh the project list after deletion
       },
       error: (error) => {
-        console.error('Error deleting project:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete project'
+        });
       },
     });
   }

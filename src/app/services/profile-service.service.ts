@@ -13,6 +13,7 @@ import {
 import {collection} from 'firebase/firestore';
 import {from, Observable} from 'rxjs';
 import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from '@angular/fire/storage';
+import {Experience} from '../dashboard/experience/experience.component';
 
 @Injectable({
   providedIn: 'root',
@@ -55,6 +56,28 @@ export class ProfileService {
   updateProject(projectId: string, projectData: any): Observable<void> {
     const projectRef = doc(this.firestore, `projects/${projectId}`);
     return from(setDoc(projectRef, projectData, {merge: true}));
+  }
+
+  getAllExperiences() {
+    const projectsRef = collection(this.firestore, `experience`);
+    const q = query(projectsRef, orderBy('startDate', 'desc'));
+    return collectionData(q, {idField: 'id'});
+  }
+
+  saveExperience(experienceData: Experience): Observable<void> {
+    const projectRef = collection(this.firestore, 'experience');
+    return from(addDoc(projectRef, experienceData).then(() => {
+    }));
+  }
+
+  deleteExperience(experienceId: string): Observable<void> {
+    const projectRef = doc(this.firestore, `experience/${experienceId}`);
+    return from(deleteDoc(projectRef));
+  }
+
+  updateExperience(experienceId: string, experienceData: Experience): Observable<void> {
+    const projectRef = doc(this.firestore, `experience/${experienceId}`);
+    return from(setDoc(projectRef, experienceData, {merge: true}));
   }
 
   uploadFile(file: File): Observable<string> {
