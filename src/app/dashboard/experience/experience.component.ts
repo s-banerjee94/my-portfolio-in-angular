@@ -91,7 +91,6 @@ export class ExperienceComponent implements OnInit{
     };
 
     if (this.isEditMode && this.currentExperienceId) {
-      // Update existing experience
       this.profileService.updateExperience(this.currentExperienceId, experienceData).subscribe({
         next: (response) => {
           this.resetForm();
@@ -112,7 +111,6 @@ export class ExperienceComponent implements OnInit{
         },
       });
     } else {
-      // Add new experience
       this.profileService.saveExperience(experienceData).subscribe({
         next: (response) => {
           this.resetForm();
@@ -133,45 +131,9 @@ export class ExperienceComponent implements OnInit{
     }
   }
 
-  updateExperienceDetails(experience: Experience) {
-    this.profileService.updateExperience(experience.id!, experience).subscribe({
-      next: (response) => {
-        this.experienceForm.resetForm();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Experience updated successfully'
-        });
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to update experience'
-        });
-      },
-    })
-  }
 
-  deleteExperience(experience: Experience) {
-    this.profileService.deleteExperience(experience.id!).subscribe({
-      next: (response) => {
-        this.experienceForm.resetForm();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Experience deleted successfully'
-        });
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to delete experience'
-        });
-      },
-    })
-  }
+
+
 
    convertToDate(timestamp: any): Date {
     if (!timestamp) return new Date();
@@ -211,13 +173,11 @@ export class ExperienceComponent implements OnInit{
     this.isEditMode = true;
     this.currentExperienceId = experience.id;
 
-    // Populate form fields
     this.companyName = experience.companyName;
     this.jobProfile = experience.jobProfile;
     this.description = experience.description;
     this.color = experience.color;
 
-    // Set start and end dates
     if (experience.startDate) {
       this.startDate = this.convertToDate(experience.startDate);
     }
@@ -225,7 +185,6 @@ export class ExperienceComponent implements OnInit{
       this.endDate = this.convertToDate(experience.endDate);
     }
 
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
