@@ -65,7 +65,11 @@ export class ContactSectionComponent implements OnInit {
         }
       },
       error: (err) => {
-        // Handle error
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load contact information'
+        });
       },
     });
   }

@@ -30,8 +30,8 @@
       }
     </div>
 
-    <div >
-      <p-floatlabel variant="on" >
+    <div>
+      <p-floatlabel variant="on">
         <textarea
           pTextarea
           id="description_label"
@@ -45,7 +45,7 @@
           required
           minlength="25"
           #descriptionField="ngModel"></textarea>
-          <label for="description_label">Description</label>
+        <label for="description_label">Description</label>
       </p-floatlabel>
       @if (descriptionField.invalid && descriptionField.dirty && descriptionField.touched) {
         <p-message severity="error" variant="simple" size="small"> Enter valid description, Min length 25 character
@@ -121,7 +121,7 @@
         <label for="datepicker">Project Date</label>
       </p-floatlabel>
       @if (projectDateField.invalid && projectDateField.dirty && projectDateField.touched) {
-        <p-message severity="error" variant="simple" size="small"> Date is required </p-message>
+        <p-message severity="error" variant="simple" size="small">Date is required</p-message>
       }
     </div>
 

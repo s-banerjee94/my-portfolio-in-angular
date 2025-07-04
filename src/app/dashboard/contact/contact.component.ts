@@ -62,7 +62,11 @@ export class ContactComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Error fetching contact details:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load contact details'
+        });
       },
     });
   }
@@ -79,7 +83,11 @@ export class ContactComponent implements OnInit {
           });
         },
         error: (error) => {
-          console.error('Error saving contact details:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to save contact details'
+          });
         },
       });
   }

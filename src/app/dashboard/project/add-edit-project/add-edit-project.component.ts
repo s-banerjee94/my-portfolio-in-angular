@@ -224,7 +224,11 @@ export class AddEditProjectComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to remove image'
+        });
       },
     });
   }
@@ -239,7 +243,11 @@ export class AddEditProjectComponent implements OnInit {
           this.projectImgUrl = downloadURL;
         },
         error: (err) => {
-          console.error(err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to upload image'
+          });
         },
       });
     }
