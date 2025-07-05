@@ -19,15 +19,15 @@
         <h1
           class="font-display animate-slide-in mb-4 text-4xl font-bold text-[#111827] md:text-5xl lg:text-6xl"
         >
-          {{ heroData!.name }}
+          {{ heroData.name }}
         </h1>
         <h2
           class="animate-slide-in mb-6 text-xl font-medium text-gray-700 md:text-2xl"
         >
-          {{ heroData!.professionalTitle }}
+          {{ heroData.professionalTitle }}
         </h2>
         <p class="animate-slide-in mb-8 max-w-lg text-gray-600">
-          {{ heroData!.description }}
+          {{ heroData.description }}
         </p>
         <div class="flex flex-col gap-4 sm:flex-row">
           <p-button
@@ -80,20 +80,27 @@
             <div
               class="flex h-full w-full items-center justify-center bg-gray-300 text-white"
             >
-              <img
-                [src]="heroData!.heroImgUrl"
-                alt="Hero Image"
-                class="object-cover"
-              />
+              @if (heroData.heroImgUrl) {
+                <img
+                  [src]="heroData.heroImgUrl"
+                  alt="Hero Image"
+                  class="object-cover"
+                />
+              } @else {
+                <lucide-icon [img]="User" class="h-20 w-20"></lucide-icon>
+              }
+
             </div>
           </div>
-          <div
-            class="absolute -bottom-6 left-1/2 -translate-x-1/2 transform rounded-full bg-white px-6 py-3 shadow-lg"
-          >
+          @if (heroData.statusBadge) {
+            <div
+              class="absolute -bottom-6 left-1/2 -translate-x-1/2 transform rounded-full bg-white px-6 py-3 shadow-lg"
+            >
             <span class="font-semibold text-[#0D9488]">
-              {{ heroData!.statusBadge }}
+              {{ heroData.statusBadge }}
             </span>
-          </div>
+            </div>
+          }
         </div>
       </div>
     </div>
