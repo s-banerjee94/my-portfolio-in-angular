@@ -1,23 +1,24 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, NgForm} from '@angular/forms';
 
-import { CardModule } from 'primeng/card';
-import { FloatLabel } from 'primeng/floatlabel';
-import { InputText } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { ChipModule } from 'primeng/chip';
-import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import {CardModule} from 'primeng/card';
+import {FloatLabel} from 'primeng/floatlabel';
+import {InputText} from 'primeng/inputtext';
+import {TextareaModule} from 'primeng/textarea';
+import {InputGroupModule} from 'primeng/inputgroup';
+import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
+import {ChipModule} from 'primeng/chip';
+import {ButtonModule} from 'primeng/button';
+import {ToastModule} from 'primeng/toast';
+import {MessageService} from 'primeng/api';
 
-import { ProfileService } from '../../../services/profile-service.service';
-import { CommunicationService } from '../../../services/communication.service';
+import {ProfileService} from '../../../services/profile-service.service';
+import {CommunicationService} from '../../../services/communication.service';
 import {Message} from 'primeng/message';
 import {DatePicker} from 'primeng/datepicker';
-import { Timestamp } from '@angular/fire/firestore';
+import {Timestamp} from '@angular/fire/firestore';
+import {Github, Link, LucideAngularModule} from 'lucide-angular';
 
 
 export interface Project {
@@ -47,12 +48,16 @@ export interface Project {
     ToastModule,
     Message,
     DatePicker,
+    LucideAngularModule,
   ],
   templateUrl: './add-edit-project.component.html',
   styleUrl: './add-edit-project.component.css',
   providers: [MessageService],
 })
 export class AddEditProjectComponent implements OnInit {
+  readonly Github = Github;
+  readonly Link = Link;
+
   techs: string[] = [];
   enteredTech: string = '';
   projectTitle: string = '';
@@ -64,11 +69,14 @@ export class AddEditProjectComponent implements OnInit {
   projectDate: Date | null = null;
   mode: string = '';
 
+
   private profileService: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
     inject(CommunicationService);
 
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService) {
+  }
+
   ngOnInit(): void {
     this.communicationService.onProjectClickedEvent.subscribe((project) => {
       if (!project?.title) {
@@ -159,7 +167,6 @@ export class AddEditProjectComponent implements OnInit {
           detail: 'Project Added Successfully',
         });
 
-        // Reset form after successful submission
         this.resetForm(form);
       },
       error: (error) => {
@@ -174,7 +181,6 @@ export class AddEditProjectComponent implements OnInit {
   }
 
   private updateProjectDetails(projectData: Project) {
-    // Add the ID to the project data for update
     projectData.id = this.projectId;
 
     this.profileService.updateProject(this.projectId, projectData).subscribe({
@@ -197,10 +203,8 @@ export class AddEditProjectComponent implements OnInit {
   }
 
   private resetForm(form: NgForm): void {
-    // Reset the form
     form.resetForm();
 
-    // Reset component properties
     this.projectTitle = '';
     this.description = '';
     this.gitHubUrl = '';
@@ -253,4 +257,6 @@ export class AddEditProjectComponent implements OnInit {
       });
     }
   }
+
+
 }
