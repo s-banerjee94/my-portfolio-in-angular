@@ -37,7 +37,9 @@
         <label for="professional_title">Professional Title</label>
       </p-floatlabel>
       @if (titleField.invalid && titleField.dirty && titleField.touched) {
-        <p-message severity="error" variant="simple" size="small">Enter a valid professional title (minimum 25 characters)</p-message>
+        <p-message severity="error" variant="simple" size="small">Enter a valid professional title (minimum 25
+          characters)
+        </p-message>
       }
     </div>
 
@@ -60,7 +62,8 @@
         <label for="description">Description</label>
       </p-floatlabel>
       @if (descriptionField.invalid && descriptionField.dirty && descriptionField.touched) {
-        <p-message severity="error" variant="simple" size="small">Enter a valid description (minimum 25 characters)</p-message>
+        <p-message severity="error" variant="simple" size="small">Enter a valid description (minimum 25 characters)
+        </p-message>
       }
     </div>
     <div class="mb-3">
@@ -80,7 +83,8 @@
         <label for="status_badge ">Status Badge</label>
       </p-floatlabel>
       @if (statusBadgeField.invalid && statusBadgeField.dirty && statusBadgeField.touched) {
-        <p-message severity="error" variant="simple" size="small">Enter a valid status badge (minimum 15 characters)</p-message>
+        <p-message severity="error" variant="simple" size="small">Enter a valid status badge (minimum 15 characters)
+        </p-message>
       }
     </div>
     <div class="mb-3 flex w-full justify-between space-x-2">
@@ -148,24 +152,24 @@
         }
       </div>
     </div>
-<!--    <div class="mb-3">-->
-<!--      @if (!hero.heroImgUrl && hero.heroImgUrl === "") {-->
-<!--        <input-->
-<!--          type="file"-->
-<!--          id="file_upload"-->
-<!--          accept="image/*"-->
-<!--          (change)="onFileSelected($event)"-->
-<!--        />-->
-<!--        <label for="file_upload">Upload File</label><br />-->
-<!--      } @else {-->
-<!--        <img-->
-<!--          [src]="hero.heroImgUrl"-->
-<!--          alt="Hero Image"-->
-<!--          style="width: 100px; height: 100px; margin-bottom: 10px; border-radius: 8px;"-->
-<!--        /><br />-->
-<!--        <p-button label="Remove Image" (click)="removeImage()"></p-button>-->
-<!--      }-->
-<!--    </div>-->
+    <!--    <div class="mb-3">-->
+    <!--      @if (!hero.heroImgUrl && hero.heroImgUrl === "") {-->
+    <!--        <input-->
+    <!--          type="file"-->
+    <!--          id="file_upload"-->
+    <!--          accept="image/*"-->
+    <!--          (change)="onFileSelected($event)"-->
+    <!--        />-->
+    <!--        <label for="file_upload">Upload File</label><br />-->
+    <!--      } @else {-->
+    <!--        <img-->
+    <!--          [src]="hero.heroImgUrl"-->
+    <!--          alt="Hero Image"-->
+    <!--          style="width: 100px; height: 100px; margin-bottom: 10px; border-radius: 8px;"-->
+    <!--        /><br />-->
+    <!--        <p-button label="Remove Image" (click)="removeImage()"></p-button>-->
+    <!--      }-->
+    <!--    </div>-->
     <div class="mb-6">
       <label class="block text-sm font-semibold text-gray-700 mb-3">Profile Image</label>
 
@@ -191,9 +195,11 @@
 
           <div class="space-y-4">
             <!-- Upload Icon -->
-            <div class="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
+            <div
+              class="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
               <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
               </svg>
             </div>
 
@@ -230,7 +236,8 @@
 
           <!-- Loading overlay -->
           @if (isUploading) {
-            <div class="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm">
+            <div
+              class="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm">
               <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent mb-4"></div>
               <p class="text-sm font-medium text-gray-700">Uploading your image...</p>
             </div>
@@ -247,10 +254,12 @@
             />
 
             <!-- Gradient overlay on hover -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-300"></div>
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-300"></div>
 
             <!-- Action buttons -->
-            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+            <div
+              class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
               <div class="flex space-x-3">
                 <!-- Change Image Button -->
                 <button
@@ -259,7 +268,8 @@
                   class="p-3 bg-white bg-opacity-90 backdrop-blur-sm rounded-full text-gray-700 hover:bg-white hover:scale-110 transition-all duration-200 shadow-lg"
                   title="Change Image">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                   </svg>
                 </button>
 
@@ -270,7 +280,8 @@
                   class="p-3 bg-red-500 bg-opacity-90 backdrop-blur-sm rounded-full text-white hover:bg-red-600 hover:scale-110 transition-all duration-200 shadow-lg"
                   title="Remove Image">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                   </svg>
                 </button>
               </div>
@@ -310,7 +321,9 @@
         </div>
       }
     </div>
-    <p-button label="Submit" type="submit" [disabled]="heroForm.invalid" class="w-full" />
+    <div class="flex justify-end">
+      <p-button label="Submit" type="submit" [disabled]="heroForm.invalid"/>
+    </div>
   </form>
 
 </p-card>
