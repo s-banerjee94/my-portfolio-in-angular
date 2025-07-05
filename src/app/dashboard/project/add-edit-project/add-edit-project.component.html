@@ -140,7 +140,7 @@
           id="add_tech_label"
           name="enteredTech"
           [(ngModel)]="enteredTech"
-          (keydown.enter)="addTech()"
+          (keydown.enter)="addTech($event)"
           autocomplete="off"
           fluid="true"
         />

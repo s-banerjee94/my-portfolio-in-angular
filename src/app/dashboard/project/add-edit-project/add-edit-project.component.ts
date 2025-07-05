@@ -110,7 +110,8 @@ export class AddEditProjectComponent implements OnInit {
     return new Date(timestamp);
   }
 
-  addTech(): void {
+  addTech(event: Event): void {
+    event.preventDefault();
     const tech = this.enteredTech.trim();
     if (tech && !this.techs.includes(tech)) {
       this.techs.push(tech);

@@ -87,7 +87,7 @@
           id="add_skills_label"
           name="enteredSkill"
           [(ngModel)]="enteredSkill"
-          (keydown.enter)="addSkill()"
+          (keydown.enter)="addSkill($event)"
           autocomplete="off"
           fluid="true"
         />

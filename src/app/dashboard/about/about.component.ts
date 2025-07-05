@@ -81,7 +81,8 @@ export class AboutComponent implements OnInit {
     });
   }
 
-  addSkill(): void {
+  addSkill(event: Event): void {
+    event.preventDefault();
     const skill = this.enteredSkill.trim();
     if (skill && !this.formData.skills.includes(skill)) {
       this.formData.skills.push(skill);

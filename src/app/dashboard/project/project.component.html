@@ -16,31 +16,33 @@
       <div class="w-full p-4">
         <h4 class="mb-3 font-semibold">Project List</h4>
 
-        <div *ngFor="let project of projects" class="mb-2">
-          <p-card
-            styleClass="cursor-pointer p-0"
-            (click)="selectProject(project)"
-          >
-            <ng-template pTemplate="content">
-              <div class="flex items-center justify-between">
-                <span>{{ project.title }}</span>
+        <div class="flex flex-col gap-3">
+          @for (project of projects; track project) {
+            <p-card
+              styleClass="cursor-pointer p-0"
+              (click)="selectProject(project)"
+            >
+              <ng-template pTemplate="content">
+                <div class="flex items-center justify-between">
+                  <span>{{ project.title }}</span>
 
-                <p-button
-                  severity="danger"
-                  [outlined]="true"
-                  (onClick)="deleteProject(project, $event)"
-                >
-                  <lucide-angular [img]="Trash2"></lucide-angular>
-                </p-button>
-              </div>
-            </ng-template>
-          </p-card>
+                  <p-button
+                    severity="danger"
+                    [outlined]="true"
+                    (onClick)="deleteProject(project, $event)"
+                  >
+                    <lucide-angular [img]="Trash2"></lucide-angular>
+                  </p-button>
+                </div>
+              </ng-template>
+            </p-card>
+          }
         </div>
       </div>
     </ng-template>
     <ng-template #panel>
       <div class="m-1 flex w-full flex-col justify-center p-10">
-        <app-add-edit-project> </app-add-edit-project>
+        <app-add-edit-project></app-add-edit-project>
       </div>
     </ng-template>
   </p-splitter>
