@@ -14,6 +14,7 @@ import { MessageService } from 'primeng/api';
 import { ProfileService } from '../services/profile-service.service';
 import { ContactInfo } from '../dashboard/contact/contact.component';
 import { ContaceMeService } from '../services/contace-me.service';
+import {Card} from 'primeng/card';
 
 @Component({
   selector: 'app-contact-section',
@@ -27,6 +28,7 @@ import { ContaceMeService } from '../services/contace-me.service';
     ButtonModule,
     ToastModule,
     MessageModule,
+    Card,
   ],
   templateUrl: './contact-section.component.html',
   styleUrl: './contact-section.component.css',
@@ -65,7 +67,11 @@ export class ContactSectionComponent implements OnInit {
         }
       },
       error: (err) => {
-        // Handle error
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load contact information'
+        });
       },
     });
   }

@@ -3,7 +3,9 @@
     <div class="flex w-full flex-col gap-2 p-2 md:w-1/2 md:py-2">
       <h1 class="text-xl">Contact Details</h1>
       <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Phone"></lucide-icon>
+        </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
@@ -17,7 +19,9 @@
         </p-floatlabel>
       </p-inputgroup>
       <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Mail"></lucide-icon>
+        </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
@@ -34,7 +38,9 @@
     <div class="flex w-full flex-col gap-2 p-2 md:w-1/2 md:py-2">
       <h1 class="text-xl">Social Media & Settings</h1>
       <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Github"></lucide-icon>
+        </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
@@ -47,7 +53,9 @@
         </p-floatlabel>
       </p-inputgroup>
       <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Linkedin"></lucide-icon>
+        </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
@@ -60,7 +68,9 @@
         </p-floatlabel>
       </p-inputgroup>
       <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Twitter"></lucide-icon>
+        </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
@@ -73,7 +83,9 @@
         </p-floatlabel>
       </p-inputgroup>
       <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <lucide-icon [img]="Instagram"></lucide-icon>
+        </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
@@ -87,7 +99,7 @@
       </p-inputgroup>
     </div>
   </div>
-  <p-button label="Submit" fluid="true" (click)="saveContactDetails()" />
+  <p-button label="Submit" fluid="true" (click)="saveContactDetails()"/>
 </p-card>
 
 <p-toast

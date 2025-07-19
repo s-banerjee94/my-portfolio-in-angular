@@ -3,109 +3,196 @@
   <div class="flex h-full items-center justify-center text-gray-500">
     <div class="text-center">
       <p>Select a project to edit or</p>
-      <Button variant="link" class="text-blue-500 hover:text-blue-700">
+      <Button class="text-blue-500 hover:text-blue-700">
         create a new one
       </Button>
     </div>
   </div>
 } @else {
-  <p-floatlabel variant="on" class="mb-2">
-    <input
-      pInputText
-      id="project_title_label"
-      [(ngModel)]="projectTitle"
-      autocomplete="off"
-      fluid="true"
-    />
-    <label for="project_title_label">Project Title</label>
-  </p-floatlabel>
-  <p-floatlabel variant="on" class="">
-    <textarea
-      pTextarea
-      id="description_label"
-      [(ngModel)]="description"
-      rows="5"
-      cols="30"
-      [autoResize]="true"
-      fluid="true"
-      class="h-20"
-    ></textarea>
-    <label for="description_label">Description</label>
-  </p-floatlabel>
-  <div class="flex flex-col gap-x-2 md:flex-row">
-    <div class="flex w-full flex-col md:w-1/2 md:py-2">
-      <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
-        <p-floatlabel variant="on">
+  <form #projectForm="ngForm" (ngSubmit)="onSubmit(projectForm)">
+    <div class="mb-2">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="project_title_label"
+          name="projectTitle"
+          [(ngModel)]="projectTitle"
+          autocomplete="off"
+          fluid="true"
+          required
+          #projectTitleField="ngModel"
+          minlength="3"
+        />
+        <label for="project_title_label">Project Title</label>
+      </p-floatlabel>
+      @if (projectTitleField.invalid && projectTitleField.dirty && projectTitleField.touched) {
+        <p-message severity="error" variant="simple" size="small"> Enter valid tile, Min length 3 character</p-message>
+      }
+    </div>
+
+    <div>
+      <p-floatlabel variant="on">
+        <textarea
+          pTextarea
+          id="description_label"
+          name="description"
+          [(ngModel)]="description"
+          rows="5"
+          cols="30"
+          [autoResize]="true"
+          fluid="true"
+          class="h-20"
+          required
+          minlength="25"
+          #descriptionField="ngModel"></textarea>
+        <label for="description_label">Description</label>
+      </p-floatlabel>
+      @if (descriptionField.invalid && descriptionField.dirty && descriptionField.touched) {
+        <p-message severity="error" variant="simple" size="small"> Enter valid description, Min length 25 character
+        </p-message>
+      }
+    </div>
+
+
+    <div class="flex flex-col gap-x-2 md:flex-row gap-y-2">
+      <div class="flex w-full flex-col md:w-1/2 md:py-2 ">
+        <div>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <lucide-icon [img]="Github"></lucide-icon>
+            </p-inputgroup-addon>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="gitHub_url_label"
+                name="gitHubUrl"
+                [(ngModel)]="gitHubUrl"
+                autocomplete="off"
+                fluid="true"
+                required
+                #gitHubUrlField="ngModel"
+                pattern="^https?://.*github\.com/.*"
+              />
+              <label for="gitHub_url_label">GitHub Profile URL</label>
+            </p-floatlabel>
+          </p-inputgroup>
+          @if (gitHubUrlField.invalid && gitHubUrlField.dirty && gitHubUrlField.touched) {
+            <p-message severity="error" variant="simple" size="small"> Enter valid GitHub URL
+            </p-message>
+          }
+        </div>
+      </div>
+      <div class="flex w-full flex-col md:w-1/2 md:py-2">
+        <div>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <lucide-icon [img]="Link"></lucide-icon>
+            </p-inputgroup-addon>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="live_demo_url_label"
+                name="liveDemoUrl"
+                [(ngModel)]="liveDemoUrl"
+                autocomplete="off"
+                fluid="true"
+                #liveDemoUrlField="ngModel"
+                pattern="^https?://.*"
+              />
+              <label for="live_demo_url_label">Live Demo Link</label>
+            </p-floatlabel>
+          </p-inputgroup>
+          @if (liveDemoUrlField.invalid && liveDemoUrlField.dirty && liveDemoUrlField.touched) {
+            <p-message severity="error" variant="simple" size="small"> Enter valid Url
+            </p-message>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="mb-2">
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="datepicker"
+          showIcon
+          iconDisplay="input"
+          fluid="true"
+          [(ngModel)]="projectDate"
+          name="projectDate"
+          required
+          #projectDateField="ngModel"
+          dateFormat="dd/mm/yy"
+        />
+        <label for="datepicker">Project Date</label>
+      </p-floatlabel>
+      @if (projectDateField.invalid && projectDateField.dirty && projectDateField.touched) {
+        <p-message severity="error" variant="simple" size="small">Date is required</p-message>
+      }
+    </div>
+
+    <p-card header="Technologies / Tags">
+      @for (tech of techs; track tech) {
+        <p-chip
+          [label]="tech"
+          [removable]="true"
+          (onRemove)="removeTech(tech)"
+          styleClass = "!mx-1 !my-1"
+        />
+      }
+      <div class="my-3 flex items-center gap-2">
+        <p-floatlabel variant="on" class="flex-1">
           <input
             pInputText
-            id="gitHub_url_label"
-            [(ngModel)]="gitHubUrl"
+            id="add_tech_label"
+            name="enteredTech"
+            [(ngModel)]="enteredTech"
+            (keydown.enter)="addTech($event)"
             autocomplete="off"
             fluid="true"
+            class="w-full"
           />
-          <label for="gitHub_url_label">GitHub Profile URL</label>
+          <label for="add_tech_label">Add Technologies</label>
         </p-floatlabel>
-      </p-inputgroup>
-    </div>
-    <div class="flex w-full flex-col md:w-1/2 md:py-2">
-      <p-inputgroup>
-        <p-inputgroup-addon> # </p-inputgroup-addon>
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="live_demo_url_label"
-            [(ngModel)]="liveDemoUrl"
-            autocomplete="off"
-            fluid="true"
+        <p-button
+          icon="pi pi-plus"
+          (onClick)="addTech($event)"
+          [disabled]="!enteredTech.trim()"
+        ></p-button>
+      </div>
+    </p-card>
+
+    <div class="mt-3 mb-3">
+      <label class="block mb-2">Project Image</label>
+      @if (!projectImgUrl && projectImgUrl === "") {
+        <input
+          type="file"
+          id="file_upload_label"
+          name="projectImage"
+          (change)="onFileSelected($event)"
+          fluid="true"
+          #fileInput
+        />
+        <label for="file_upload_label">Upload File</label><br/>
+      } @else {
+        <div class="flex flex-col items-start">
+          <img
+            [src]="projectImgUrl"
+            alt="Project Image"
+            style="width: 100px; height: 100px; margin-bottom: 10px"
           />
-          <label for="live_demo_url_label">Live Demo Link</label>
-        </p-floatlabel>
-      </p-inputgroup>
+          <p-button type="button" label="Remove Image" (click)="removeImage()"></p-button>
+        </div>
+      }
     </div>
-  </div>
-  <p-card header="Technologies / Tags">
-    @for (tech of techs; track tech) {
-      <p-chip
-        [label]="tech"
-        [removable]="true"
-        (onRemove)="removeTech(tech)"
-        styleClass
-      />
-    }
-    <p-floatlabel variant="on" class="my-3 flex-1/3">
-      <input
-        pInputText
-        id="add_tech_label"
-        [(ngModel)]="enteredTech"
-        (keydown.enter)="addTech()"
-        autocomplete="off"
+
+    <div class="mt-4">
+      <p-button
+        type="submit"
+        [label]="mode === 'Add Project' ? 'Submit' : 'Update'"
         fluid="true"
-      />
-      <label for="add_tech_label">Add Technologies</label>
-    </p-floatlabel>
-  </p-card>
-  @if (!projectImgUrl && projectImgUrl === "") {
-    <input
-      type="file"
-      id="file_upload_label"
-      (change)="onFileSelected($event)"
-      fluid="true"
-    />
-    <label for="file_upload_label">Upload File</label><br />
-  } @else {
-    <img
-      [src]="projectImgUrl"
-      alt="Project Image"
-      style="width: 100px; height: 100px; margin-bottom: 10px"
-    /><br />
-    <p-button label="Remove Image" (click)="removeImage()"></p-button>
-  }
-  @if (mode === "Add Project") {
-    <p-button label="Submit" fluid="true" (click)="saveProjectDetails()" />
-  } @else {
-    <p-button label="Update" fluid="true" (click)="updateProjectDetails()" />
-  }
+        [disabled]="projectForm.invalid"
+      ></p-button>
+    </div>
+  </form>
 }
 
 <p-toast

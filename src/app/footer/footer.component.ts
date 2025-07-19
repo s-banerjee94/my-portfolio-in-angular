@@ -34,6 +34,11 @@ export class FooterComponent implements OnInit {
         fragment: 'about',
       },
       {
+        label: 'Experience',
+        routerLink: '/',
+        fragment: 'experience',
+      },
+      {
         label: 'Projects',
         routerLink: '/',
         fragment: 'projects',

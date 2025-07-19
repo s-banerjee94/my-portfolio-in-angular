@@ -9,6 +9,7 @@ import { HeaderComponent } from '../header/header.component';
 import { ButtonModule } from 'primeng/button';
 import { ScrollTop } from 'primeng/scrolltop';
 import { ActivatedRoute } from '@angular/router';
+import {ExperienceSectionComponent} from '../experience-section/experience-section.component';
 
 @Component({
   selector: 'app-home-component',
@@ -21,6 +22,7 @@ import { ActivatedRoute } from '@angular/router';
     ContactSectionComponent,
     FooterComponent,
     ScrollTop,
+    ExperienceSectionComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',

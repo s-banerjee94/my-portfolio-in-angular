@@ -6,7 +6,7 @@
       >
         Contact Me
       </h2>
-      <div class="bg-portfolio-teal mx-auto mb-8 h-1 w-20"></div>
+      <div class="mx-auto mb-8 h-1 w-20 bg-[#0D9488]"></div>
       <p class="mx-auto max-w-3xl text-gray-600">
         Feel free to contact me for any work or suggestions. I'm always open to
         discussing new projects, creative ideas, or opportunities to be part of
@@ -15,11 +15,7 @@
     </div>
 
     <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
-      <div class="rounded-xl bg-[#1E40AF]/5 p-8">
-        <h3 class="mb-8 text-2xl font-bold text-[#111827]">
-          Contact Information
-        </h3>
-
+      <p-card header="Contact Information" styleClass="bg-[#1E40AF]/5">
         <div class="space-y-6">
           <div class="flex items-start">
             <div class="mr-4 rounded-full bg-[#1E40AF]/10 p-3">
@@ -55,35 +51,21 @@
             <a
               [href]="contactInfo.linkedin"
               target="_blank"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
-              >L</a
-            >
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md hover:bg-[#0A66C2] hover:text-white">
+              <i class="pi  pi-linkedin"></i>
+            </a>
             <a
               [href]="contactInfo.github"
               target="_blank"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
-              >G</a
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md hover:bg-[#181717] hover:text-white"
             >
-            <!-- <a
-              [href]="contactInfo.instagram"
-              target="_blank"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
-              >I</a
-            >
-            <a
-              [href]="contactInfo.facebook"
-              target="_blank"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition-shadow hover:shadow-md"
-              >F</a
-            > -->
+              <i class="pi pi-github"></i>
+            </a>
           </div>
         </div>
-      </div>
+      </p-card>
 
-      <div class="rounded-xl bg-white p-8 shadow-md">
-        <h3 class="text-portfolio-dark mb-8 text-2xl font-bold">
-          Send Me a Message
-        </h3>
+      <p-card header="Send Me a Message" styleClass="shadow-md">
         <form
           (ngSubmit)="onSubmit(contactForm)"
           #contactForm="ngForm"
@@ -107,7 +89,8 @@
             </p-floatlabel>
             @if (nameInput.invalid && nameInput.dirty && nameInput.touched) {
               <p-message severity="error" variant="simple" size="small"
-                >Enter a valid name</p-message
+              >Enter a valid name
+              </p-message
               >
             }
           </div>
@@ -128,7 +111,8 @@
             </p-floatlabel>
             @if (emailInput.invalid && emailInput.dirty && emailInput.touched) {
               <p-message severity="error" variant="simple" size="small"
-                >Enter a valid Email</p-message
+              >Enter a valid Email
+              </p-message
               >
             }
           </div>
@@ -148,11 +132,10 @@
               />
               <label for="your_subject">Subject</label>
             </p-floatlabel>
-            @if (
-              subjectInput.invalid && subjectInput.dirty && subjectInput.touched
-            ) {
+            @if (subjectInput.invalid && subjectInput.dirty && subjectInput.touched) {
               <p-message severity="error" variant="simple" size="small"
-                >Subject is required</p-message
+              >Subject is required
+              </p-message
               >
             }
           </div>
@@ -176,11 +159,10 @@
               ></textarea>
               <label for="your_message">Message</label>
             </p-floatlabel>
-            @if (
-              messageInput.invalid && messageInput.dirty && messageInput.touched
-            ) {
+            @if (messageInput.invalid && messageInput.dirty && messageInput.touched) {
               <p-message severity="error" variant="simple" size="small"
-                >Message is required</p-message
+              >Message is required
+              </p-message
               >
             }
           </div>
@@ -193,7 +175,7 @@
             [disabled]="!contactForm.valid"
           />
         </form>
-      </div>
+      </p-card>
     </div>
   </div>
   <p-toast

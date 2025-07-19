@@ -20,18 +20,20 @@ import {
 import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 
 import { environment } from '../env/environment';
+import {provideHttpClient, withFetch} from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideHttpClient(withFetch()),
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
 
     provideFirestore(() => {
       const firestore = getFirestore();
       if (environment.useEmulators) {
-        connectFirestoreEmulator(firestore, 'localhost', 8080);
+        connectFirestoreEmulator(firestore, 'localhost', 8081);
       }
       return firestore;
     }),
@@ -56,8 +58,12 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
+        options: {
+          darkModeSelector: '.my-app-dark'
+        }
       },
       ripple: true,
+
     }),
   ],
 };
