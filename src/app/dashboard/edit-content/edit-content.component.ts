@@ -9,6 +9,7 @@ import {AboutComponent} from '../about/about.component';
 import {ContactComponent} from '../contact/contact.component';
 import {ProjectComponent} from '../project/project.component';
 import {ExperienceComponent} from '../experience/experience.component';
+import {ResumeComponent} from '../resume/resume.component';
 
 @Component({
   selector: 'app-edit-content',
@@ -21,6 +22,7 @@ import {ExperienceComponent} from '../experience/experience.component';
     MenubarModule,
     ButtonModule,
     ExperienceComponent,
+    ResumeComponent,
   ],
   templateUrl: './edit-content.component.html',
   styleUrl: './edit-content.component.css',

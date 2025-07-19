@@ -1,6 +1,7 @@
 <p-menubar
   [model]="items"
-  styleClass="!border-none !w-full !fixed !top-0 !left-0 !z-50 !transition-all !duration-300"
+  class="bg-amber-200 justify-around"
+  styleClass="flex justify-around !border-none !w-full !fixed !top-0 !left-0 !z-50 !transition-all !justify-end !duration-300 !rounded-none"
 >
   <ng-template #start>
     <a
@@ -10,4 +11,8 @@
       connect<span class="text-amber-400">with</span>sandeepan
     </a>
   </ng-template>
+  <ng-template #end>
+    <p-button label="View Resume" (onClick)="downloadResume()" text severity="info" />
+  </ng-template>
 </p-menubar>
+

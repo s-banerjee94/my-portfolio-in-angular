@@ -8,12 +8,13 @@ import {
   getDocFromServer,
   orderBy,
   query,
-  setDoc,
+  setDoc, where,
 } from '@angular/fire/firestore';
 import {collection} from 'firebase/firestore';
 import {from, Observable} from 'rxjs';
 import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from '@angular/fire/storage';
 import {Experience} from '../dashboard/experience/experience.component';
+import {Resume} from '../dashboard/resume/resume.component';
 
 @Injectable({
   providedIn: 'root',
@@ -102,5 +103,31 @@ export class ProfileService {
   deleteFile(fileUrl: string): Observable<void> {
     const storageRef = ref(this.storage, fileUrl);
     return from(deleteObject(storageRef));
+  }
+
+  getAllResumes(): Observable<Resume[]> {
+    const resumesRef = collection(this.firestore, 'resumes');
+    const q = query(resumesRef, orderBy('uploadDate', 'desc'));
+    return collectionData(q, {idField: 'id'}) as Observable<Resume[]>;
+  }
+  getPrimaryResume(): Observable<Resume[]> {
+    const resumesRef = collection(this.firestore, 'resumes');
+    const q = query(resumesRef, where('isPrimary', '==', true));
+    return collectionData(q, {idField: 'id'}) as Observable<Resume[]>;
+  }
+
+  saveResume(resumeData: Resume): Observable<void> {
+    const resumeRef = collection(this.firestore, 'resumes');
+    return from(addDoc(resumeRef, resumeData).then(() => {}));
+  }
+
+  deleteResume(resumeId: string): Observable<void> {
+    const resumeRef = doc(this.firestore, `resumes/${resumeId}`);
+    return from(deleteDoc(resumeRef));
+  }
+
+  updateResume(resumeId: string, resumeData: Partial<Resume>): Observable<void> {
+    const resumeRef = doc(this.firestore, `resumes/${resumeId}`);
+    return from(setDoc(resumeRef, resumeData, {merge: true}));
   }
 }
