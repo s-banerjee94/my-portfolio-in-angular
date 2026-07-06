@@ -38,6 +38,11 @@ export class HeaderComponent implements OnInit {
         fragment: 'about',
       },
       {
+        label: 'Services',
+        routerLink: '/',
+        fragment: 'services',
+      },
+      {
         label: 'Experience',
         routerLink: '/',
         fragment: 'experience',
@@ -46,6 +51,11 @@ export class HeaderComponent implements OnInit {
         label: 'Projects',
         routerLink: '/',
         fragment: 'projects',
+      },
+      {
+        label: 'Certifications',
+        routerLink: '/',
+        fragment: 'certifications',
       },
       {
         label: 'Contact',

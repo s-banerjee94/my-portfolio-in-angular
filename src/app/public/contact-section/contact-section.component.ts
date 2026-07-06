@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
-import { LucideAngularModule, Mail, MapPin, Phone } from 'lucide-angular';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -12,13 +11,13 @@ import { MessageService } from 'primeng/api';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { ContactInfo } from '@dashboard/contact/contact.component';
-import { ContaceMeService } from '@core/services/contace-me.service';
-import { Card } from 'primeng/card';
+import { ContactMeService } from '@core/services/contact-me.service';
+import { SectionHeaderComponent } from '@shared/section-header.component';
+import { RevealDirective } from '@shared/reveal.directive';
 
 @Component({
   selector: 'app-contact-section',
   imports: [
-    LucideAngularModule,
     FormsModule,
     InputTextModule,
     FloatLabel,
@@ -26,7 +25,8 @@ import { Card } from 'primeng/card';
     ButtonModule,
     ToastModule,
     MessageModule,
-    Card,
+    SectionHeaderComponent,
+    RevealDirective,
   ],
   templateUrl: './contact-section.component.html',
   styleUrl: './contact-section.component.css',
@@ -35,12 +35,7 @@ import { Card } from 'primeng/card';
 export class ContactSectionComponent implements OnInit {
   private messageService = inject(MessageService);
 
-  readonly Mail = Mail;
-  readonly Phone = Phone;
-  readonly MapPin = MapPin;
-
   contactInfo: ContactInfo = {
-    phone: '',
     email: '',
     github: '',
     linkedin: '',
@@ -53,9 +48,12 @@ export class ContactSectionComponent implements OnInit {
   yourEmail: string = '';
   subject: string = '';
   message: string = '';
+  /** Honeypot — visually hidden field; humans leave it empty, bots fill it. */
+  company: string = '';
+  sending = false;
 
   private profileService: ProfileService = inject(ProfileService);
-  private contaceMeService: ContaceMeService = inject(ContaceMeService);
+  private contactMeService: ContactMeService = inject(ContactMeService);
 
   ngOnInit(): void {
     this.profileService.getSectionData('contact').subscribe({
@@ -75,7 +73,12 @@ export class ContactSectionComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    if (form.invalid) {
+    if (form.invalid || this.sending) {
+      return;
+    }
+    // Bot filled the honeypot: pretend success, write nothing.
+    if (this.company) {
+      form.resetForm();
       return;
     }
     const message = {
@@ -85,9 +88,10 @@ export class ContactSectionComponent implements OnInit {
       message: this.message,
     };
 
-    this.contaceMeService.saveMessage(message).subscribe({
-      next: (data) => {
-        console.log('Message saved successfully:', data);
+    this.sending = true;
+    this.contactMeService.saveMessage(message).subscribe({
+      next: () => {
+        this.sending = false;
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -96,6 +100,7 @@ export class ContactSectionComponent implements OnInit {
         form.resetForm();
       },
       error: (err) => {
+        this.sending = false;
         console.error('Error saving message:', err);
         this.messageService.add({
           severity: 'error',

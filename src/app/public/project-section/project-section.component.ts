@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, inject, OnInit, signal } from '@angular/core';
 
-import { ExternalLink, Folder, Github, LucideAngularModule } from 'lucide-angular';
+import { LucideExternalLink, LucideFolder } from '@lucide/angular';
 
 import { Dialog } from 'primeng/dialog';
 import { TabsModule } from 'primeng/tabs';
@@ -14,7 +14,8 @@ import { RevealDirective } from '@shared/reveal.directive';
 @Component({
   selector: 'app-project-section',
   imports: [
-    LucideAngularModule,
+    LucideExternalLink,
+    LucideFolder,
     Dialog,
     TabsModule,
     SectionHeaderComponent,
@@ -24,30 +25,41 @@ import { RevealDirective } from '@shared/reveal.directive';
   styleUrl: './project-section.component.css',
 })
 export class ProjectSectionComponent implements OnInit {
-  readonly ExternalLink = ExternalLink;
-  readonly Github = Github;
-  readonly Folder = Folder;
-
-  featured: Project | undefined;
+  featured: Project[] = [];
   others: Project[] = [];
+  loading = true;
 
   protected readonly dialogVisible = signal(false);
   protected readonly selected = signal<Project | undefined>(undefined);
   protected readonly activeTab = signal<'overview' | 'readme'>('overview');
   protected readonly readmeHtml = signal('');
   protected readonly readmeState = signal<'idle' | 'loading' | 'error'>('idle');
+  protected readonly failedImgIds = new Set<string>();
 
   private profileService = inject(ProfileService);
   private readmeService = inject(GithubReadmeService);
 
   ngOnInit(): void {
-    this.profileService.getAllProjects().subscribe((projects) => {
-      const all = projects as Project[];
-      // One featured project leads the section; ties go to the newest
-      // (the list arrives ordered by projectDate desc).
-      this.featured = all.find((project) => project.featured) ?? all[0];
-      this.others = all.filter((project) => project !== this.featured);
+    this.profileService.getAllProjects().subscribe({
+      next: (projects) => {
+        const all = projects as Project[];
+        // Up to 3 featured projects lead the section (the dashboard enforces the
+        // cap); with none flagged, the newest project takes the spot — the list
+        // arrives ordered by projectDate desc.
+        const flagged = all.filter((project) => project.featured).slice(0, 3);
+        this.featured = flagged.length ? flagged : all.slice(0, 1);
+        this.others = all.filter((project) => !this.featured.includes(project));
+        this.failedImgIds.clear();
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
+  }
+
+  protected onImgError(project: Project): void {
+    this.failedImgIds.add(project.id ?? project.title);
   }
 
   openDetails(project: Project): void {

@@ -83,6 +83,9 @@
   line-height: 1.7;
   white-space: pre;
   overflow-x: auto;
+  /* keep the horizontal escape hatch on narrow screens, but never show a
+     native scrollbar inside the animation */
+  scrollbar-width: none;
   max-height: 300px;
   transition: max-height 0.5s ease, opacity 0.45s ease, transform 0.45s ease,
     margin 0.5s ease;
@@ -115,6 +118,9 @@
   transform: translateY(-10px) scale(0.98);
   margin: 0;
   overflow: hidden;
+}
+.json::-webkit-scrollbar {
+  display: none;
 }
 .json .k { color: var(--site-code-key); }
 .json .s { color: var(--site-code-str); }

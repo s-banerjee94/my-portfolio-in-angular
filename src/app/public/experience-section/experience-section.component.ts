@@ -12,23 +12,34 @@ import { RevealDirective } from '@shared/reveal.directive';
 })
 export class ExperienceSectionComponent implements OnInit {
   experiences: Experience[] = [];
+  loading = true;
   private profileService: ProfileService = inject(ProfileService);
 
   ngOnInit() {
     this.profileService.getAllExperiences().subscribe({
       next: (data) => {
         this.experiences = data as Experience[];
+        this.loading = false;
       },
-      error: (err) => {
-
-      }
-    })
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   /** Experiences arrive newest-first, so the newest role gets the highest
    *  "release" number: 3 roles → v3.x, v2.x, v1.x. */
   versionTag(index: number): string {
     return `v${this.experiences.length - index}.x`;
+  }
+
+  /** The description is authored one highlight per line; each line becomes a
+   *  changelog-style bullet. Leading list markers are tolerated and stripped. */
+  highlights(description: string): string[] {
+    return (description ?? '')
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^[-•+*]\s*/, '').trim())
+      .filter(Boolean);
   }
 
   convertToDate(timestamp: any): string {
@@ -47,8 +58,18 @@ export class ExperienceSectionComponent implements OnInit {
     }
 
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
 
     const month = monthNames[date.getMonth()];

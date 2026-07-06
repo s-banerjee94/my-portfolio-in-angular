@@ -31,7 +31,7 @@ export class ApiStatusCardComponent implements OnInit {
     'firebase',
   ]);
 
-  protected readonly command = '$ curl -s https://api.sandeepan.dev/v1/status';
+  protected readonly command = '$ curl -s https://api.sandeepan.dev/api/v1/status';
   protected readonly typed = signal('');
   protected readonly phase = signal<Phase>('typing');
 

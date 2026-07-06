@@ -10,6 +10,8 @@ import { ButtonModule } from 'primeng/button';
 import { ScrollTop } from 'primeng/scrolltop';
 import { ActivatedRoute } from '@angular/router';
 import {ExperienceSectionComponent} from '../experience-section/experience-section.component';
+import {CertificationSectionComponent} from '../certification-section/certification-section.component';
+import { ServicesSectionComponent } from '../services-section/services-section.component';
 
 @Component({
   selector: 'app-home-component',
@@ -23,6 +25,8 @@ import {ExperienceSectionComponent} from '../experience-section/experience-secti
     FooterComponent,
     ScrollTop,
     ExperienceSectionComponent,
+    CertificationSectionComponent,
+    ServicesSectionComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',

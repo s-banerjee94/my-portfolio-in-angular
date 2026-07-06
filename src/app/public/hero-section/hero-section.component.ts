@@ -25,6 +25,7 @@ export class HeroSectionComponent implements OnInit {
     linkedInUrl: '',
     email: '',
   };
+  loading = true;
   private profileSevice: ProfileService = inject(ProfileService);
 
   private router: Router = inject(Router);
@@ -35,6 +36,10 @@ export class HeroSectionComponent implements OnInit {
         if (data.exists()) {
           this.heroData = data.data() as Hero;
         }
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
       },
     });
   }

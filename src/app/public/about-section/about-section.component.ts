@@ -14,7 +14,7 @@ import { RevealDirective } from '@shared/reveal.directive';
 })
 export class AboutSectionComponent implements OnInit {
   aboutData: AboutData | undefined;
-  heroImgUrl = '';
+  role = '';
   private profileSevice: ProfileService = inject(ProfileService);
 
   ngOnInit(): void {
@@ -29,12 +29,12 @@ export class AboutSectionComponent implements OnInit {
       },
     });
 
-    // The portrait lives on the hero document; the hero section itself now
-    // shows the status card instead, so the photo moved here.
+    // "Role" in the quick-facts card mirrors the hero's professional title,
+    // so it's edited in one place (the Hero tab of the dashboard).
     this.profileSevice.getSectionData('hero').subscribe({
       next: (data) => {
         if (data.exists()) {
-          this.heroImgUrl = (data.data() as Hero).heroImgUrl;
+          this.role = (data.data() as Hero).professionalTitle;
         }
       },
     });

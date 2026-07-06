@@ -1,0 +1,114 @@
+@if (hasAny) {
+  <section id="certifications" class="py-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+      <app-section-header
+        eyebrow="GET /certifications"
+        title="Certified, and verifiable."
+        lede="Credentials with public verify links — no trust required."
+      />
+
+      @if (featured.length) {
+        <div
+          class="mb-6 grid gap-6"
+          [class]="
+            featured.length === 2
+              ? 'md:grid-cols-2'
+              : featured.length >= 3
+                ? 'md:grid-cols-2 xl:grid-cols-3'
+                : ''
+          "
+        >
+          @for (certification of featured; track certification.id) {
+            <article
+              class="flex flex-col items-start gap-6 rounded-2xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-8 shadow-lg sm:flex-row sm:items-center"
+            >
+              <div
+                class="grad-bg flex h-20 w-20 flex-none items-center justify-center rounded-full"
+              >
+                <div
+                  class="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--p-content-background)]"
+                >
+                  <svg lucideAward class="text-primary h-8 w-8"></svg>
+                </div>
+              </div>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-3">
+                  <h3 class="text-lg font-semibold">
+                    {{ certification.name }}
+                  </h3>
+                  <span
+                    class="text-primary rounded-full bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-3 py-0.5 font-mono text-xs"
+                  >
+                    featured
+                  </span>
+                </div>
+                <p class="text-muted-color mt-1 mb-1 text-sm">
+                  {{ certification.issuer }} · issued
+                  {{
+                    certification.issueDate | firebaseDate | date: "MMM yyyy"
+                  }}
+                  @if (certification.expiryDate) {
+                    · valid through
+                    {{
+                      certification.expiryDate | firebaseDate | date: "MMM yyyy"
+                    }}
+                  }
+                </p>
+                @if (certification.credentialId) {
+                  <p class="text-muted-color mb-2 font-mono text-xs">
+                    credential-id: {{ certification.credentialId }}
+                  </p>
+                }
+                @if (certification.verifyUrl) {
+                  <a
+                    class="text-primary inline-flex items-center gap-1.5 text-sm font-semibold hover:underline"
+                    [href]="certification.verifyUrl"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Verify credential
+                    <svg lucideExternalLink class="h-4 w-4"></svg>
+                  </a>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        @for (certification of others; track certification.id) {
+          <article
+            class="flex flex-col gap-2 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-6 transition hover:-translate-y-1 hover:border-[var(--p-primary-color)]"
+          >
+            @if (certification.type === "course") {
+              <svg lucideGraduationCap class="text-primary h-6 w-6"></svg>
+            } @else {
+              <svg lucideAward class="text-primary h-6 w-6"></svg>
+            }
+            <h3 class="font-semibold">{{ certification.name }}</h3>
+            <p class="text-muted-color flex-1 text-sm">
+              {{
+                certification.type === "course"
+                  ? "Course completion"
+                  : "Certification"
+              }}
+              · {{ certification.issuer }} ·
+              {{ certification.issueDate | firebaseDate | date: "yyyy" }}
+            </p>
+            @if (certification.verifyUrl) {
+              <a
+                class="text-primary self-start text-sm font-semibold hover:underline"
+                [href]="certification.verifyUrl"
+                target="_blank"
+                rel="noopener"
+              >
+                Certificate ↗
+              </a>
+            }
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+}
