@@ -24,15 +24,17 @@
       <div>
         <h3 class="mb-4 text-lg font-bold">Quick Links</h3>
         <ul class="space-y-2">
-          <li *ngFor="let link of items">
-            <a
-              [routerLink]="link.routerLink"
-              [fragment]="link.fragment"
-              class="text-gray-400 transition-colors hover:text-white"
-            >
-              {{ link.label }}
-            </a>
-          </li>
+          @for (link of items; track link) {
+            <li>
+              <a
+                [routerLink]="link.routerLink"
+                [fragment]="link.fragment"
+                class="text-gray-400 transition-colors hover:text-white"
+              >
+                {{ link.label }}
+              </a>
+            </li>
+          }
         </ul>
       </div>
 

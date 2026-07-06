@@ -1,25 +1,24 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule, NgForm} from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
 
-import {CardModule} from 'primeng/card';
-import {FloatLabel} from 'primeng/floatlabel';
-import {InputText} from 'primeng/inputtext';
-import {TextareaModule} from 'primeng/textarea';
-import {InputGroupModule} from 'primeng/inputgroup';
-import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
-import {ChipModule} from 'primeng/chip';
-import {ButtonModule} from 'primeng/button';
-import {ToastModule} from 'primeng/toast';
-import {MessageService} from 'primeng/api';
+import { FormsModule, NgForm } from '@angular/forms';
 
-import {ProfileService} from '../../../services/profile-service.service';
-import {CommunicationService} from '../../../services/communication.service';
-import {Message} from 'primeng/message';
-import {DatePicker} from 'primeng/datepicker';
-import {Timestamp} from '@angular/fire/firestore';
-import {Github, Link, LucideAngularModule} from 'lucide-angular';
+import { CardModule } from 'primeng/card';
+import { FloatLabel } from 'primeng/floatlabel';
+import { InputText } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { ChipModule } from 'primeng/chip';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
+import { ProfileService } from '../../../services/profile-service.service';
+import { CommunicationService } from '../../../services/communication.service';
+import { Message } from 'primeng/message';
+import { DatePicker } from 'primeng/datepicker';
+import { Timestamp } from '@angular/fire/firestore';
+import { Github, Link, LucideAngularModule } from 'lucide-angular';
 
 export interface Project {
   id?: string;
@@ -35,7 +34,6 @@ export interface Project {
 @Component({
   selector: 'app-add-edit-project',
   imports: [
-    CommonModule,
     FormsModule,
     CardModule,
     FloatLabel,
@@ -69,13 +67,11 @@ export class AddEditProjectComponent implements OnInit {
   projectDate: Date | null = null;
   mode: string = '';
 
-
   private profileService: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
     inject(CommunicationService);
 
-  constructor(private messageService: MessageService) {
-  }
+  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.communicationService.onProjectClickedEvent.subscribe((project) => {
@@ -148,7 +144,7 @@ export class AddEditProjectComponent implements OnInit {
       liveDemoUrl: this.liveDemoUrl,
       technologies: this.techs,
       projectImgUrl: this.projectImgUrl,
-      projectDate: this.projectDate!
+      projectDate: this.projectDate!,
     };
 
     if (this.mode === 'Add Project') {
@@ -232,7 +228,7 @@ export class AddEditProjectComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to remove image'
+          detail: 'Failed to remove image',
         });
       },
     });
@@ -251,12 +247,10 @@ export class AddEditProjectComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to upload image'
+            detail: 'Failed to upload image',
           });
         },
       });
     }
   }
-
-
 }

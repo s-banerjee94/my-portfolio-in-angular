@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
@@ -14,12 +13,11 @@ import { MessageService } from 'primeng/api';
 import { ProfileService } from '../services/profile-service.service';
 import { ContactInfo } from '../dashboard/contact/contact.component';
 import { ContaceMeService } from '../services/contace-me.service';
-import {Card} from 'primeng/card';
+import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-contact-section',
   imports: [
-    CommonModule,
     LucideAngularModule,
     FormsModule,
     InputTextModule,
@@ -70,7 +68,7 @@ export class ContactSectionComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load contact information'
+          detail: 'Failed to load contact information',
         });
       },
     });

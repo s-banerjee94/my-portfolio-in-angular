@@ -1,17 +1,16 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {FormsModule, NgForm} from '@angular/forms';
-import {CommonModule} from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 
-import {InputTextModule} from 'primeng/inputtext';
-import {FloatLabel} from 'primeng/floatlabel';
-import {TextareaModule} from 'primeng/textarea';
-import {ToastModule} from 'primeng/toast';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {MessageService} from 'primeng/api';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabel } from 'primeng/floatlabel';
+import { TextareaModule } from 'primeng/textarea';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { MessageService } from 'primeng/api';
 
-import {ProfileService} from '../../services/profile-service.service';
-import {Message} from 'primeng/message';
+import { ProfileService } from '../../services/profile-service.service';
+import { Message } from 'primeng/message';
 
 export interface Hero {
   name: string;
@@ -27,7 +26,6 @@ export interface Hero {
 @Component({
   selector: 'app-hero',
   imports: [
-    CommonModule,
     FormsModule,
     InputTextModule,
     FloatLabel,
@@ -36,7 +34,6 @@ export interface Hero {
     CardModule,
     ButtonModule,
     Message,
-
   ],
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.css',
@@ -57,8 +54,7 @@ export class HeroComponent implements OnInit {
   private profileService: ProfileService = inject(ProfileService);
   private isSubmitting: boolean = false;
 
-  constructor(private messageService: MessageService) {
-  }
+  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.loadHeroData();
@@ -79,7 +75,7 @@ export class HeroComponent implements OnInit {
         });
       },
     });
-  }
+  };
 
   // onFileSelected(event: Event): void {
   //   const input = event.target as HTMLInputElement;
@@ -122,7 +118,7 @@ export class HeroComponent implements OnInit {
   //     });
   //   }
   // }
-/*
+  /*
   removeImage(): void {
     if (!this.hero.heroImgUrl) {
       return;
@@ -152,7 +148,6 @@ export class HeroComponent implements OnInit {
       return; // Prevent double submission
     }
     if (heroForm.invalid) {
-
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -181,7 +176,6 @@ export class HeroComponent implements OnInit {
       },
     });
   }
-
 
   isDragging = false;
   isUploading = false;
@@ -219,7 +213,9 @@ export class HeroComponent implements OnInit {
   }
 
   triggerFileInput(): void {
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
     if (fileInput) {
       fileInput.click();
     }
@@ -249,8 +245,6 @@ export class HeroComponent implements OnInit {
 
     this.isUploading = true;
     this.uploadProgress = 0;
-
-
 
     this.profileService.uploadFile(file).subscribe({
       next: (downloadURL) => {
@@ -303,5 +297,4 @@ export class HeroComponent implements OnInit {
       },
     });
   }
-
 }

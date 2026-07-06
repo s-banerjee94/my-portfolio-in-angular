@@ -1,16 +1,23 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
-import {ButtonModule} from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
 
-import {ArrowRight, Github, Linkedin, LucideAngularModule, Mail, User,} from 'lucide-angular';
-import {ProfileService} from '../services/profile-service.service';
-import {Hero} from '../dashboard/hero/hero.component';
-import {CommonModule} from '@angular/common';
-import {Router} from '@angular/router';
+import {
+  ArrowRight,
+  Github,
+  Linkedin,
+  LucideAngularModule,
+  Mail,
+  User,
+} from 'lucide-angular';
+import { ProfileService } from '../services/profile-service.service';
+import { Hero } from '../dashboard/hero/hero.component';
+
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hero-section',
-  imports: [CommonModule, ButtonModule, LucideAngularModule],
+  imports: [ButtonModule, LucideAngularModule],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })
@@ -52,6 +59,4 @@ export class HeroSectionComponent implements OnInit {
   navigateToContact() {
     this.router.navigateByUrl('/#contact');
   }
-
-
 }

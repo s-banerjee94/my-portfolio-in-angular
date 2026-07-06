@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 
 import { MenuModule } from 'primeng/menu';
@@ -7,7 +7,7 @@ import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, RouterLink, MenuModule],
+  imports: [RouterLink, MenuModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css',
 })
