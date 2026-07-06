@@ -90,30 +90,17 @@
     </div>
 
     <div>
-      <p-floatlabel variant="on">
-        <input
-          pInputText
-          name="statusBadge"
-          required="true"
-          minlength="15"
-          maxlength="50"
-          id="status_badge"
-          [(ngModel)]="hero.statusBadge"
-          #statusBadgeField="ngModel"
-          autocomplete="off"
-          fluid="true"
-        />
-        <label for="status_badge">Status Badge</label>
-      </p-floatlabel>
-      @if (
-        statusBadgeField.invalid &&
-        statusBadgeField.dirty &&
-        statusBadgeField.touched
-      ) {
-        <p-message severity="error" variant="simple" size="small"
-          >Enter a valid status badge (minimum 15 characters)
-        </p-message>
-      }
+      <p class="text-muted-color m-0 mb-2 font-mono text-xs">
+        // status badge — the pill shown at the top of the hero
+      </p>
+      <p-selectbutton
+        name="statusBadge"
+        [(ngModel)]="hero.statusBadge"
+        [options]="statusBadgeOptions"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+      />
     </div>
 
     <div class="grid gap-5 md:grid-cols-3">

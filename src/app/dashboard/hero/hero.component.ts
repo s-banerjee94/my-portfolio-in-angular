@@ -6,6 +6,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
+import { SelectButton } from 'primeng/selectbutton';
 import { MessageService } from 'primeng/api';
 
 import { ProfileService } from '@core/services/profile-service.service';
@@ -31,6 +32,7 @@ export interface Hero {
     TextareaModule,
     ToastModule,
     ButtonModule,
+    SelectButton,
     Message,
   ],
   templateUrl: './hero.component.html',
@@ -40,11 +42,18 @@ export interface Hero {
 export class HeroComponent implements OnInit {
   private messageService = inject(MessageService);
 
+  /** Fixed states for the hero badge — free text invited typos and
+   *  off-brand copy; the public site just renders the chosen string. */
+  readonly statusBadgeOptions = [
+    { label: 'Available for hire', value: 'Available for hire' },
+    { label: 'Open to opportunities', value: 'Open to opportunities' },
+  ];
+
   hero: Hero = {
     name: '',
     professionalTitle: '',
     description: '',
-    statusBadge: '',
+    statusBadge: 'Available for hire',
     heroImgUrl: '',
     githubUrl: '',
     linkedInUrl: '',
@@ -63,6 +72,15 @@ export class HeroComponent implements OnInit {
       next: (data) => {
         if (data.exists()) {
           this.hero = data.data() as Hero;
+          // Older docs may hold free-text badges; snap to a valid option so
+          // the select button has a selection.
+          if (
+            !this.statusBadgeOptions.some(
+              (option) => option.value === this.hero.statusBadge,
+            )
+          ) {
+            this.hero.statusBadge = this.statusBadgeOptions[0].value;
+          }
         }
       },
       error: (err) => {
