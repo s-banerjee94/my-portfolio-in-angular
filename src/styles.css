@@ -31,7 +31,8 @@
      so these are not overridden under .my-app-dark. */
   --site-code-bg: #160a10;
   --site-code-text: #ffe9de;
-  --site-code-muted: #8e6b78;
+  /* ≥4.5:1 on both card grounds (#160a10 / #1e1318) — WCAG AA */
+  --site-code-muted: #a58a96;
   --site-code-key: #ff9377;
   --site-code-str: #fcd34d;
   --site-code-num: #f0abfc;
@@ -68,6 +69,16 @@
 /* Typography for rendered HTML (Quill write-ups, GitHub READMEs).
    Global on purpose: [innerHTML] content is not reachable from component
    styles under emulated view encapsulation. */
+
+/* Stored rich text can carry fixed colors from old designs or the Quill
+   color picker; force theme colors so content survives light/dark mode.
+   .rich-text neutralizes everything; .markdown-body only inline styles so
+   its own heading/link rules below still apply. */
+.rich-text *,
+.markdown-body [style*='color'] {
+  color: inherit !important;
+}
+
 .markdown-body {
   color: var(--p-text-muted-color);
   font-size: 0.95rem;

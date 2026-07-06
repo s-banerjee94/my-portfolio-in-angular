@@ -24,5 +24,10 @@
 <p-scrolltop
   target="window"
   [threshold]="100"
-  [buttonProps]="{ severity: 'contrast', raised: true, rounded: true }"
+  [buttonProps]="{
+    severity: 'contrast',
+    raised: true,
+    rounded: true,
+    ariaLabel: 'Scroll back to top',
+  }"
 />
