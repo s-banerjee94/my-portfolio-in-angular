@@ -4,7 +4,7 @@ import { routes } from './app.routes';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import { MagmaPreset } from './theme/magma.preset';
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import {
@@ -57,7 +57,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: MagmaPreset,
         options: {
           darkModeSelector: '.my-app-dark'
         }

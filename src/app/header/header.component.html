@@ -15,7 +15,17 @@
     </a>
   </ng-template>
   <ng-template #end>
-    <p-button label="View Resume" (onClick)="downloadResume()" text severity="info" />
+    <div class="flex items-center gap-1">
+      <p-button
+        [icon]="themeService.darkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+        (onClick)="themeService.toggle()"
+        text
+        rounded
+        severity="secondary"
+        ariaLabel="Toggle dark mode"
+      />
+      <p-button label="View Resume" (onClick)="downloadResume()" text severity="info" />
+    </div>
   </ng-template>
 </p-menubar>
 

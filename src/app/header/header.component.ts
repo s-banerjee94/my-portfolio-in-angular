@@ -5,6 +5,7 @@ import {MenubarModule} from 'primeng/menubar';
 import {ProfileService} from '../services/profile-service.service';
 import {Resume} from '../dashboard/resume/resume.component';
 import {Button} from 'primeng/button';
+import {ThemeService} from '../theme/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,7 @@ export class HeaderComponent implements OnInit {
 
 
   private profileService: ProfileService = inject(ProfileService);
+  protected readonly themeService = inject(ThemeService);
 
   ngOnInit() {
     this.items = [
