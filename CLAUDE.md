@@ -9,7 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm test` — Karma/Jasmine tests in watch mode (opens Chrome)
 - `ng test --watch=false --browsers=ChromeHeadless` — single test run
 - `ng test --include='**/hero.component.spec.ts'` — run a single spec file
-- `firebase emulators:start` — start local Firebase emulators (Auth 9099, Firestore 8081, Storage 9199)
+- `npm run emulators` — start local Firebase emulators (Auth 9099, Firestore 8081, Storage 9199) with import/export in `./emulator-data`. Always use this instead of bare `firebase emulators:start`: the wrapper (`scripts/emulators.mjs`) runs firebase-tools with its cwd inside `node_modules/.cache`, so debug logs never land in the project root — a locked/delete-pending log there crashes `ng build` with `TS500 EPERM` on Windows.
+- `npm run seed` — fill running emulators with portfolio content + the admin login user (`scripts/seed-emulator.mjs`, idempotent)
 - `firebase deploy` — deploy to Firebase Hosting (serves `dist/my-portfolio-angular/browser`)
 
 **Important:** `src/env/environment.ts` has `useEmulators: true`, so the dev server connects to local Firebase emulators (wired up in `app.config.ts`). Start the emulators before `npm start`, or Firestore/Auth/Storage calls will fail. The production build swaps in `src/env/environment.prod.ts` via `fileReplacements` (note: `src/env/`, not the conventional `src/environments/`).
