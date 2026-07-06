@@ -1,0 +1,118 @@
+<section
+  id="home"
+  class="relative overflow-hidden border-b border-[var(--p-content-border-color)]"
+>
+  <div class="hero-grid absolute inset-0" aria-hidden="true"></div>
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+
+  <div
+    class="relative z-10 container mx-auto grid grid-cols-1 items-center gap-12 px-4 pt-28 pb-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:pt-36 lg:pb-20"
+  >
+    @if (loading) {
+      <div class="animate-pulse" aria-hidden="true">
+        <div
+          class="mb-6 h-8 w-56 rounded-full bg-[color-mix(in_srgb,var(--p-text-muted-color)_14%,transparent)]"
+        ></div>
+        <div
+          class="mb-3 h-4 w-24 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_14%,transparent)]"
+        ></div>
+        <div
+          class="mb-4 h-12 w-4/5 rounded-lg bg-[color-mix(in_srgb,var(--p-text-muted-color)_18%,transparent)]"
+        ></div>
+        <div
+          class="mb-7 h-8 w-3/5 rounded-lg bg-[color-mix(in_srgb,var(--p-text-muted-color)_14%,transparent)]"
+        ></div>
+        <div class="mb-8 max-w-lg space-y-2.5">
+          <div
+            class="h-4 w-full rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+          ></div>
+          <div
+            class="h-4 w-11/12 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+          ></div>
+          <div
+            class="h-4 w-2/3 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+          ></div>
+        </div>
+        <div class="flex gap-4">
+          <div
+            class="h-11 w-36 rounded-md bg-[color-mix(in_srgb,var(--p-text-muted-color)_18%,transparent)]"
+          ></div>
+          <div
+            class="h-11 w-32 rounded-md bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+          ></div>
+        </div>
+      </div>
+    } @else {
+      <div>
+        @if (heroData.statusBadge) {
+          <span
+            class="text-muted-color mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-3 py-1 text-sm"
+          >
+            <span class="status-dot" aria-hidden="true"></span>
+            {{ heroData.statusBadge }}
+          </span>
+        }
+
+        <p class="text-muted-color mb-3 font-mono text-sm">$ whoami</p>
+
+        <h1
+          class="font-display mb-3 text-4xl font-semibold text-balance md:text-5xl lg:text-6xl"
+        >
+          {{ heroData.name }}
+        </h1>
+
+        <h2 class="font-display grad-text mb-6 text-2xl italic md:text-3xl">
+          {{ heroData.professionalTitle }}
+        </h2>
+
+        <p class="text-muted-color mb-8 max-w-lg">
+          {{ heroData.description }}
+        </p>
+
+        <div class="mb-8 flex flex-col gap-4 sm:flex-row">
+          <p-button
+            label="View projects"
+            (onClick)="navigateToProjects()"
+            styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110"
+          />
+          <p-button
+            label="Contact me"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="navigateToContact()"
+          />
+        </div>
+
+        <div class="flex gap-5 font-mono text-sm">
+          @if (heroData.githubUrl) {
+            <a
+              class="social-link"
+              [href]="heroData.githubUrl"
+              target="_blank"
+              rel="noopener"
+              >github</a
+            >
+          }
+          @if (heroData.linkedInUrl) {
+            <a
+              class="social-link"
+              [href]="heroData.linkedInUrl"
+              target="_blank"
+              rel="noopener"
+              >linkedin</a
+            >
+          }
+          @if (heroData.email) {
+            <a class="social-link" [href]="'mailto:' + heroData.email">email</a>
+          }
+        </div>
+      </div>
+    }
+
+    <app-api-status-card
+      [name]="heroData.name || 'Sandeepan Banerjee'"
+      [role]="heroData.professionalTitle || 'full-stack developer'"
+    />
+  </div>
+</section>

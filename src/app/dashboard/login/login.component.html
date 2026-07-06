@@ -1,64 +1,78 @@
-<div class="flex min-h-screen items-center justify-center px-4">
-  <p-card>
-    <ng-template #header>
-      <h1 class="mx-4 pt-2 text-2xl font-bold">Login</h1>
-    </ng-template>
-    <ng-template #title>
-      <p class="text-base font-normal">
-        Enter your credentials to access the edit page
+<div class="bg-ground flex min-h-screen items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div
+      class="rounded-2xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-8"
+    >
+      <p class="text-primary m-0 font-mono text-sm">
+        <span class="text-muted-color">// </span>POST /auth/login
       </p>
-    </ng-template>
-    <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" novalidate>
-      <div class="space-y-2">
-        <div>
-          <p-floatlabel variant="on">
-            <input
-              pInputText
-              id="email"
-              name="email"
-              [(ngModel)]="email"
-              #emailInput="ngModel"
-              required
-              email
-              autocomplete="off"
-              fluid="true"
-            />
-            <label for="email">Email</label>
-          </p-floatlabel>
-          @if (emailInput.invalid && emailInput.dirty && emailInput.touched) {
-            <p-message severity="error" variant="simple" size="small">Enter a valid email address</p-message>
-          }
+      <h1 class="font-display mt-2 mb-1 text-3xl font-semibold">
+        Admin sign-in
+      </h1>
+      <p class="text-muted-color mt-0 mb-6 text-sm">
+        Content dashboard — authorized humans only.
+      </p>
+
+      <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" novalidate>
+        <div class="space-y-4">
+          <div>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="email"
+                name="email"
+                [(ngModel)]="email"
+                #emailInput="ngModel"
+                required
+                email
+                autocomplete="off"
+                fluid="true"
+              />
+              <label for="email">Email</label>
+            </p-floatlabel>
+            @if (emailInput.invalid && emailInput.dirty && emailInput.touched) {
+              <p-message severity="error" variant="simple" size="small"
+                >Enter a valid email address</p-message
+              >
+            }
+          </div>
+
+          <div>
+            <p-floatlabel variant="on">
+              <p-password
+                [(ngModel)]="password"
+                name="password"
+                #passwordInput="ngModel"
+                required
+                inputId="password"
+                fluid="true"
+                feedback="false"
+              />
+              <label for="password">Password</label>
+            </p-floatlabel>
+          </div>
         </div>
 
+        <div class="mt-6">
+          <p-button
+            type="submit"
+            label="Sign in"
+            fluid="true"
+            styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110 disabled:!opacity-45 disabled:!saturate-50"
+            [disabled]="loginForm.invalid"
+            [loading]="loading()"
+          />
+        </div>
+      </form>
+    </div>
 
-       <div>
-         <p-floatlabel variant="on">
-           <p-password
-             [(ngModel)]="password"
-             name="password"
-             #passwordInput="ngModel"
-             required
-             inputId="password"
-             fluid="true"
-             feedback="false"
-           />
-           <label for="password">Password</label>
-         </p-floatlabel>
-
-
-       </div>
-      </div>
-      <div class="mt-4">
-        <p-button
-          type="submit"
-          label="Login"
-          class="w-full"
-          styleClass="w-full"
-          [disabled]="loginForm.invalid"
-        />
-      </div>
-    </form>
-  </p-card>
+    <a
+      routerLink="/"
+      class="text-muted-color hover:text-primary mt-4 inline-block font-mono text-sm transition-colors"
+    >
+      ← back to site
+    </a>
+  </div>
 </div>
 
 <p-toast

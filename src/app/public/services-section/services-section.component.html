@@ -1,0 +1,39 @@
+@if (services.length) {
+  <section id="services" class="py-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+      <app-section-header
+        eyebrow="GET /services"
+        title="Full stack, for hire."
+        lede="Hire me for the whole stack or just the piece that hurts — these are the lanes I work in daily."
+      />
+
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        @for (service of services; track service.title) {
+          <article
+            class="flex flex-col gap-3 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-6 transition hover:-translate-y-1 hover:border-[var(--p-primary-color)]"
+          >
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-lg bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)]"
+            >
+              <svg
+                lucideIcon
+                [lucideIcon]="iconFor(service.icon)"
+                class="text-primary h-6 w-6"
+              ></svg>
+            </div>
+            <h3 class="text-lg font-semibold">{{ service.title }}</h3>
+            <p class="text-muted-color flex-1 text-sm">
+              {{ service.description }}
+            </p>
+            <a
+              class="text-primary self-start font-mono text-sm font-semibold hover:underline"
+              href="#contact"
+            >
+              $ lets-talk →
+            </a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+}

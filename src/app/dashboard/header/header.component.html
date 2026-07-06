@@ -1,5 +1,49 @@
-<p-menubar [model]="items">
-  <ng-template #end>
-    <p-button label="Log Out" (onClick)="logout()" severity="danger" />
-  </ng-template>
-</p-menubar>
+<header
+  class="sticky top-0 z-50 border-b border-[var(--p-content-border-color)] bg-[color-mix(in_srgb,var(--site-ground)_86%,transparent)] backdrop-blur-md"
+>
+  <div
+    class="container mx-auto flex h-14 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+  >
+    <a routerLink="/dashboard" class="font-mono text-base font-semibold">
+      ~/<span class="grad-text">sandeepan</span
+      ><span class="text-muted-color">/admin</span>
+    </a>
+
+    <nav class="flex items-center gap-1 font-mono text-sm">
+      @for (item of navItems; track item.link) {
+        <a
+          [routerLink]="item.link"
+          routerLinkActive="!text-primary"
+          class="text-muted-color hover:text-primary rounded-md px-3 py-1.5 transition-colors"
+        >
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        routerLink="/"
+        class="text-muted-color hover:text-primary hidden font-mono text-sm transition-colors sm:inline"
+      >
+        view site ↗
+      </a>
+      <p-button
+        [icon]="themeService.darkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+        (onClick)="themeService.toggle()"
+        text
+        rounded
+        severity="secondary"
+        ariaLabel="Toggle dark mode"
+      />
+      <p-button
+        label="Log out"
+        icon="pi pi-sign-out"
+        (onClick)="logout()"
+        size="small"
+        severity="danger"
+        [outlined]="true"
+      />
+    </div>
+  </div>
+</header>

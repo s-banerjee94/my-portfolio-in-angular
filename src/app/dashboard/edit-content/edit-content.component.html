@@ -1,11 +1,19 @@
+<app-section-header
+  eyebrow="PUT /profile"
+  title="Edit content"
+  lede="Each tab writes straight to its own Firestore document or collection — the public site updates on the next load."
+/>
+
 <p-tabs value="0" scrollable>
   <p-tablist>
-    <p-tab value="0">Hero</p-tab>
-    <p-tab value="1">About</p-tab>
-    <p-tab value="2">Project</p-tab>
-    <p-tab value="3">Experience</p-tab>
-    <p-tab value="4">Contact</p-tab>
-    <p-tab value="5">Resume</p-tab>
+    <p-tab value="0" class="!font-mono !text-sm">hero</p-tab>
+    <p-tab value="1" class="!font-mono !text-sm">about</p-tab>
+    <p-tab value="2" class="!font-mono !text-sm">services</p-tab>
+    <p-tab value="3" class="!font-mono !text-sm">projects</p-tab>
+    <p-tab value="4" class="!font-mono !text-sm">experience</p-tab>
+    <p-tab value="5" class="!font-mono !text-sm">contact</p-tab>
+    <p-tab value="6" class="!font-mono !text-sm">resume</p-tab>
+    <p-tab value="7" class="!font-mono !text-sm">certifications</p-tab>
   </p-tablist>
   <p-tabpanels>
     <p-tabpanel value="0">
@@ -15,16 +23,22 @@
       <app-about></app-about>
     </p-tabpanel>
     <p-tabpanel value="2">
-      <app-project></app-project>
+      <app-services></app-services>
     </p-tabpanel>
     <p-tabpanel value="3">
-      <app-experience></app-experience>
+      <app-project></app-project>
     </p-tabpanel>
     <p-tabpanel value="4">
-      <app-contact></app-contact>
+      <app-experience></app-experience>
     </p-tabpanel>
     <p-tabpanel value="5">
-            <app-resume></app-resume>
+      <app-contact></app-contact>
+    </p-tabpanel>
+    <p-tabpanel value="6">
+      <app-resume></app-resume>
+    </p-tabpanel>
+    <p-tabpanel value="7">
+      <app-certification></app-certification>
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

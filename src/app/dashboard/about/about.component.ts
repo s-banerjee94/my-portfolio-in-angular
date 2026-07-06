@@ -1,18 +1,16 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {FormsModule, NgForm} from '@angular/forms';
-import {CommonModule} from '@angular/common';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 
-import {CardModule} from 'primeng/card';
-import {EditorModule} from 'primeng/editor';
-import {FloatLabel} from 'primeng/floatlabel';
-import {InputTextModule} from 'primeng/inputtext';
-import {ChipModule} from 'primeng/chip';
-import {ButtonModule} from 'primeng/button';
-import {ToastModule} from 'primeng/toast';
-import {MessageService} from 'primeng/api';
+import { EditorModule } from 'primeng/editor';
+import { FloatLabel } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { ChipModule } from 'primeng/chip';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
-import {ProfileService} from '../../services/profile-service.service';
-import {Message} from 'primeng/message';
+import { ProfileService } from '@core/services/profile-service.service';
+import { Message } from 'primeng/message';
 
 export interface AboutData {
   text: string;
@@ -25,9 +23,7 @@ export interface AboutData {
 @Component({
   selector: 'app-about',
   imports: [
-    CommonModule,
     FormsModule,
-    CardModule,
     EditorModule,
     FloatLabel,
     InputTextModule,
@@ -41,6 +37,8 @@ export interface AboutData {
   providers: [MessageService],
 })
 export class AboutComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   @ViewChild('aboutForm') aboutForm!: NgForm;
 
   formData: AboutData = {
@@ -48,15 +46,12 @@ export class AboutComponent implements OnInit {
     experience: '',
     education: '',
     certification: '',
-    skills: []
+    skills: [],
   };
 
   enteredSkill = '';
   isEditorReady = false;
   private profileService: ProfileService = inject(ProfileService);
-
-  constructor(private messageService: MessageService) {
-  }
 
   ngOnInit() {
     this.profileService.getSectionData('about').subscribe({
@@ -75,7 +70,7 @@ export class AboutComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load about data'
+          detail: 'Failed to load about data',
         });
       },
     });
@@ -119,9 +114,9 @@ export class AboutComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to update content'
+          detail: 'Failed to update content',
         });
-      }
+      },
     });
   }
 }

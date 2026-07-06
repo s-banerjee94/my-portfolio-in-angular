@@ -1,25 +1,22 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {Card} from 'primeng/card';
-import {FormsModule, NgForm} from '@angular/forms';
-import {DatePicker} from 'primeng/datepicker';
-import {FloatLabel} from 'primeng/floatlabel';
-import {InputText} from 'primeng/inputtext';
-import {Timestamp} from '@angular/fire/firestore';
-import {Button} from 'primeng/button';
-import {Textarea} from 'primeng/textarea';
-import {ProfileService} from '../../services/profile-service.service';
-import {Avatar} from 'primeng/avatar';
-import {Panel} from 'primeng/panel';
-import {DatePipe, NgIf} from '@angular/common';
-import {ColorPicker} from 'primeng/colorpicker';
-import {Toast} from 'primeng/toast';
-import {MessageService} from 'primeng/api';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { DatePicker } from 'primeng/datepicker';
+import { FloatLabel } from 'primeng/floatlabel';
+import { InputText } from 'primeng/inputtext';
+import { Timestamp } from '@angular/fire/firestore';
+import { Button } from 'primeng/button';
+import { Textarea } from 'primeng/textarea';
+import { ProfileService } from '@core/services/profile-service.service';
+import { DatePipe } from '@angular/common';
+import { TooltipModule } from 'primeng/tooltip';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
-export interface Experience{
+export interface Experience {
   id?: string;
   companyName: string;
   jobProfile: string;
-  color: string
+  color: string;
   startDate: Date | Timestamp | undefined;
   endDate: Date | Timestamp | undefined;
   description: string;
@@ -28,25 +25,23 @@ export interface Experience{
 @Component({
   selector: 'app-experience',
   imports: [
-    Card,
     FormsModule,
     DatePicker,
     Button,
     FloatLabel,
     InputText,
     Textarea,
-    Avatar,
-    Panel,
     DatePipe,
-    ColorPicker,
+    TooltipModule,
     Toast,
-    NgIf,
   ],
   templateUrl: './experience.component.html',
   styleUrl: './experience.component.css',
-  providers: [MessageService]
+  providers: [MessageService],
 })
-export class ExperienceComponent implements OnInit{
+export class ExperienceComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   startDate: Date | undefined;
   endDate: Date | undefined;
   companyName: string = '';
@@ -62,22 +57,19 @@ export class ExperienceComponent implements OnInit{
   @ViewChild('experienceForm') experienceForm!: NgForm;
   private profileService: ProfileService = inject(ProfileService);
 
-  constructor(private messageService: MessageService) {
-  }
-
   ngOnInit() {
     this.profileService.getAllExperiences().subscribe({
-      next: (experiences)=> {
-        this.experiences = experiences as Experience[] || [];
+      next: (experiences) => {
+        this.experiences = (experiences as Experience[]) || [];
       },
       error: (error) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load experiences'
+          detail: 'Failed to load experiences',
         });
-      }
-    })
+      },
+    });
   }
 
   onSubmit() {
@@ -87,29 +79,31 @@ export class ExperienceComponent implements OnInit{
       startDate: this.startDate,
       endDate: this.endDate,
       description: this.description,
-      color: this.color
+      color: this.color,
     };
 
     if (this.isEditMode && this.currentExperienceId) {
-      this.profileService.updateExperience(this.currentExperienceId, experienceData).subscribe({
-        next: (response) => {
-          this.resetForm();
-          this.isEditMode = false;
-          this.currentExperienceId = undefined;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Experience updated successfully'
-          });
-        },
-        error: (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update experience'
-          });
-        },
-      });
+      this.profileService
+        .updateExperience(this.currentExperienceId, experienceData)
+        .subscribe({
+          next: (response) => {
+            this.resetForm();
+            this.isEditMode = false;
+            this.currentExperienceId = undefined;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Experience updated successfully',
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to update experience',
+            });
+          },
+        });
     } else {
       this.profileService.saveExperience(experienceData).subscribe({
         next: (response) => {
@@ -117,25 +111,21 @@ export class ExperienceComponent implements OnInit{
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Experience added successfully'
+            detail: 'Experience added successfully',
           });
         },
         error: (error) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to add experience'
+            detail: 'Failed to add experience',
           });
         },
       });
     }
   }
 
-
-
-
-
-   convertToDate(timestamp: any): Date {
+  convertToDate(timestamp: any): Date {
     if (!timestamp) return new Date();
 
     if (timestamp.toDate) {
@@ -156,17 +146,17 @@ export class ExperienceComponent implements OnInit{
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Experience deleted successfully'
+          detail: 'Experience deleted successfully',
         });
       },
       error: (error) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to delete experience'
+          detail: 'Failed to delete experience',
         });
       },
-    })
+    });
   }
 
   editExp(experience: Experience) {
@@ -203,5 +193,4 @@ export class ExperienceComponent implements OnInit{
     this.endDate = undefined;
     this.experienceForm.resetForm();
   }
-
 }

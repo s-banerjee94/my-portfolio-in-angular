@@ -2,4 +2,201 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
-/* @config "../tailwind.config.ts"; */
+
+/* Tailwind's `dark:` variant follows PrimeNG's dark-mode class (toggled by
+   ThemeService) instead of the OS setting, so both systems switch together. */
+@custom-variant dark (&:where(.my-app-dark, .my-app-dark *));
+
+/* Typography roles from the design: serif for display headings, mono for the
+   code-flavored details (eyebrows, chips). Body text stays on the default
+   system sans stack — fast, no webfont download. */
+@theme {
+  --font-display: Charter, "Iowan Old Style", Georgia, Cambria, serif;
+  --font-mono:
+    "Cascadia Code", "JetBrains Mono", Consolas, "SF Mono", ui-monospace,
+    monospace;
+}
+
+/* Magma design tokens that go beyond PrimeNG's semantic set.
+   Light values on :root, dark overrides under .my-app-dark. */
+:root {
+  --site-ground: #fdf3ec;
+  --site-accent-2: #b45309;
+  --site-accent-3: #be185d;
+  --site-ok: #15803d;
+  --site-grad: linear-gradient(90deg, #be185d, #e0431f 50%, #d97706);
+  --site-glow: 0 8px 32px rgb(224 67 31 / 0.22);
+
+  /* Terminal/status-card tokens — the card keeps a dark ground in both modes,
+     so these are not overridden under .my-app-dark. */
+  --site-code-bg: #160a10;
+  --site-code-text: #ffe9de;
+  --site-code-muted: #8e6b78;
+  --site-code-key: #ff9377;
+  --site-code-str: #fcd34d;
+  --site-code-num: #f0abfc;
+}
+.my-app-dark {
+  --site-ground: #120812;
+  --site-accent-2: #fbbf24;
+  --site-accent-3: #e64980;
+  --site-ok: #4ade80;
+  --site-grad: linear-gradient(90deg, #e64980, #ff6d4d 50%, #fbbf24);
+  --site-glow: 0 8px 32px rgb(255 109 77 / 0.24);
+}
+
+/* Expose the extra tokens as Tailwind utilities: text-accent2, bg-accent3/10,
+   text-ok, bg-ground, … (`inline` because the values are CSS variables). */
+@theme inline {
+  --color-ground: var(--site-ground);
+  --color-accent2: var(--site-accent-2);
+  --color-accent3: var(--site-accent-3);
+  --color-ok: var(--site-ok);
+}
+
+/* Gradient helpers used across the site (brand, headline accent, CTAs). */
+@utility grad-text {
+  background-image: var(--site-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility grad-bg {
+  background-image: var(--site-grad);
+}
+
+/* Typography for rendered HTML (Quill write-ups, GitHub READMEs).
+   Global on purpose: [innerHTML] content is not reachable from component
+   styles under emulated view encapsulation. */
+.markdown-body {
+  color: var(--p-text-muted-color);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  color: var(--p-text-color);
+  font-weight: 600;
+  margin: 1.4rem 0 0.6rem;
+}
+.markdown-body h1:first-child,
+.markdown-body h2:first-child,
+.markdown-body p:first-child {
+  margin-top: 0;
+}
+.markdown-body h1 {
+  font-size: 1.4rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+.markdown-body h2 {
+  font-size: 1.15rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+.markdown-body h3 {
+  font-size: 1.02rem;
+}
+.markdown-body p {
+  margin: 0 0 0.9rem;
+}
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 0.9rem;
+  padding-left: 1.4rem;
+}
+.markdown-body ul {
+  list-style: disc;
+}
+.markdown-body ol {
+  list-style: decimal;
+}
+.markdown-body li {
+  margin-bottom: 0.3rem;
+}
+.markdown-body li::marker {
+  color: var(--p-primary-color);
+}
+.markdown-body a {
+  color: var(--p-primary-color);
+  text-decoration: underline;
+}
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--p-text-color) 8%, transparent);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+.markdown-body pre {
+  background: var(--site-code-bg);
+  color: var(--site-code-text);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  margin: 0 0 1rem;
+}
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+.markdown-body img {
+  max-width: 100%;
+  border-radius: 6px;
+}
+.markdown-body blockquote {
+  border-left: 3px solid var(--p-primary-color);
+  margin: 0 0 0.9rem;
+  padding-left: 1rem;
+}
+.markdown-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 1rem;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--p-content-border-color);
+  padding: 0.4rem 0.7rem;
+  text-align: left;
+}
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--p-content-border-color);
+  margin: 1.2rem 0;
+}
+
+/* Scroll-reveal states, driven by RevealDirective. */
+.reveal {
+  opacity: 0;
+  translate: 0 18px;
+  transition:
+    opacity 0.55s ease,
+    translate 0.55s ease;
+}
+.reveal-in {
+  opacity: 1;
+  translate: 0 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--site-ground);
+  color: var(--p-text-color);
+  transition: background-color 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

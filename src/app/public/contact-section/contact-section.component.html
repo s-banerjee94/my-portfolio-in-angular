@@ -1,0 +1,200 @@
+<section id="contact" class="py-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+    <app-section-header
+      eyebrow="POST /contact"
+      title="The inbox is the fastest route."
+      lede="Recruiter with a role, founder with an idea, or team that needs a hand — send a message and I'll reply within a day."
+    />
+
+    <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
+      <div class="flex h-full flex-col gap-6">
+        <div
+          class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+        >
+          <p
+            class="text-muted-color m-0 border-b border-[var(--p-content-border-color)] px-5 py-3 font-mono text-xs"
+          >
+            // direct channels
+          </p>
+          @if (contactInfo.email) {
+            <a
+              class="group flex items-center justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              [href]="'mailto:' + contactInfo.email"
+            >
+              <span class="text-muted-color shrink-0">mail</span>
+              <span class="group-hover:text-primary truncate transition-colors"
+                >{{ contactInfo.email }}</span
+              >
+            </a>
+          }
+          @if (contactInfo.github) {
+            <a
+              class="group flex items-center justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              [href]="contactInfo.github"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="text-muted-color shrink-0">code</span>
+              <span class="group-hover:text-primary truncate transition-colors"
+                >github ↗</span
+              >
+            </a>
+          }
+          @if (contactInfo.linkedin) {
+            <a
+              class="group flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              [href]="contactInfo.linkedin"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="text-muted-color shrink-0">work</span>
+              <span class="group-hover:text-primary truncate transition-colors"
+                >linkedin ↗</span
+              >
+            </a>
+          }
+        </div>
+
+        <div
+          class="rounded-xl border border-dashed border-[var(--p-content-border-color)] p-5"
+        >
+          <p class="text-muted-color m-0 font-mono text-xs leading-relaxed">
+            // no form-into-the-void: messages land in a real inbox<br />
+            // I actually read. Expect a reply within 24 hours.
+          </p>
+        </div>
+      </div>
+
+      <form
+        (ngSubmit)="onSubmit(contactForm)"
+        #contactForm="ngForm"
+        class="space-y-5"
+      >
+        <!-- honeypot: hidden from humans and screen readers, bait for bots -->
+        <div class="sr-only" aria-hidden="true">
+          <label for="your_company">Company</label>
+          <input
+            type="text"
+            name="company"
+            id="your_company"
+            [(ngModel)]="company"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                name="your_name"
+                id="your_name"
+                [(ngModel)]="yourName"
+                autocomplete="off"
+                fluid="true"
+                required="true"
+                minlength="3"
+                maxlength="50"
+                #nameInput="ngModel"
+              />
+              <label for="your_name">Your Name</label>
+            </p-floatlabel>
+            @if (nameInput.invalid && nameInput.dirty && nameInput.touched) {
+              <p-message severity="error" variant="simple" size="small"
+                >Enter a valid name
+              </p-message>
+            }
+          </div>
+          <div>
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                name="your_email"
+                id="your_email"
+                [(ngModel)]="yourEmail"
+                autocomplete="off"
+                fluid="true"
+                email="true"
+                required="true"
+                #emailInput="ngModel"
+              />
+              <label for="your_email">Your Email</label>
+            </p-floatlabel>
+            @if (emailInput.invalid && emailInput.dirty && emailInput.touched) {
+              <p-message severity="error" variant="simple" size="small"
+                >Enter a valid Email
+              </p-message>
+            }
+          </div>
+        </div>
+        <div>
+          <p-floatlabel variant="on">
+            <input
+              pInputText
+              name="your_subject"
+              id="your_subject"
+              [(ngModel)]="subject"
+              autocomplete="off"
+              fluid="true"
+              required="true"
+              minlength="10"
+              maxlength="200"
+              #subjectInput="ngModel"
+            />
+            <label for="your_subject">Subject</label>
+          </p-floatlabel>
+          @if (
+            subjectInput.invalid && subjectInput.dirty && subjectInput.touched
+          ) {
+            <p-message severity="error" variant="simple" size="small"
+              >Subject is required, min 10 characters
+            </p-message>
+          }
+        </div>
+        <div>
+          <p-floatlabel variant="on">
+            <textarea
+              pTextarea
+              name="your_message"
+              id="your_message"
+              [(ngModel)]="message"
+              [autoResize]="true"
+              rows="5"
+              cols="30"
+              style="resize: none"
+              class="h-full"
+              fluid="true"
+              required="true"
+              minlength="20"
+              maxlength="500"
+              #messageInput="ngModel"
+            ></textarea>
+            <label for="your_message">Message</label>
+          </p-floatlabel>
+          @if (
+            messageInput.invalid && messageInput.dirty && messageInput.touched
+          ) {
+            <p-message severity="error" variant="simple" size="small"
+              >Message is required, min 20 characters
+            </p-message>
+          }
+        </div>
+
+        <p-button
+          type="submit"
+          label="Send message"
+          fluid="true"
+          styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110 disabled:!opacity-45 disabled:!saturate-50"
+          [disabled]="!contactForm.valid || sending"
+          [loading]="sending"
+        />
+      </form>
+    </div>
+  </div>
+  <p-toast
+    [showTransformOptions]="'translateY(100%)'"
+    [showTransitionOptions]="'1000ms'"
+    [hideTransitionOptions]="'1000ms'"
+    [showTransformOptions]="'translateX(100%)'"
+  />
+</section>

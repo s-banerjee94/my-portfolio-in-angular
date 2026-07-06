@@ -1,0 +1,205 @@
+<div
+  class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+>
+  <div class="border-b border-[var(--p-content-border-color)] px-5 py-3">
+    <p class="text-muted-color m-0 font-mono text-xs">
+      @if (isEditMode) {
+        // PATCH /certifications — editing a credential
+      } @else {
+        // POST /certifications — certificates &amp; courses
+      }
+    </p>
+  </div>
+
+  <form
+    #certificationForm="ngForm"
+    (ngSubmit)="onSubmit()"
+    class="space-y-5 p-5 sm:p-6"
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <div class="md:col-span-2">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="cert_name"
+            name="name"
+            [(ngModel)]="name"
+            autocomplete="off"
+            fluid="true"
+            required
+            minlength="3"
+          />
+          <label for="cert_name">Name (e.g. AWS Solutions Architect)</label>
+        </p-floatlabel>
+      </div>
+      <div>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="cert_issuer"
+            name="issuer"
+            [(ngModel)]="issuer"
+            autocomplete="off"
+            fluid="true"
+            required
+          />
+          <label for="cert_issuer">Issuer (e.g. Amazon Web Services)</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-5">
+      <p-selectbutton
+        name="type"
+        [(ngModel)]="type"
+        [options]="typeOptions"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+      />
+      <div class="flex items-center gap-2">
+        <p-toggleswitch
+          name="featured"
+          [(ngModel)]="featured"
+          inputId="cert_featured"
+        />
+        <label for="cert_featured" class="text-sm"
+          >Featured (<span class="font-mono">max 3</span>)</label
+        >
+      </div>
+    </div>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="cert_issue_date"
+          name="issueDate"
+          [(ngModel)]="issueDate"
+          showIcon
+          iconDisplay="input"
+          fluid="true"
+          required
+          dateFormat="dd/mm/yy"
+        />
+        <label for="cert_issue_date">Issue Date</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="cert_expiry_date"
+          name="expiryDate"
+          [(ngModel)]="expiryDate"
+          showIcon
+          iconDisplay="input"
+          fluid="true"
+          dateFormat="dd/mm/yy"
+        />
+        <label for="cert_expiry_date">Expiry Date (optional)</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="cert_credential_id"
+          name="credentialId"
+          [(ngModel)]="credentialId"
+          autocomplete="off"
+          fluid="true"
+        />
+        <label for="cert_credential_id">Credential ID (optional)</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="cert_verify_url"
+          name="verifyUrl"
+          [(ngModel)]="verifyUrl"
+          autocomplete="off"
+          fluid="true"
+          pattern="^https?://.*"
+        />
+        <label for="cert_verify_url">Verify / Certificate URL (optional)</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      @if (isEditMode) {
+        <p-button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="cancelEdit()"
+        />
+      }
+      <p-button
+        type="submit"
+        [label]="isEditMode ? 'Save changes' : 'Add credential'"
+        styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110 disabled:!opacity-45 disabled:!saturate-50"
+        [disabled]="certificationForm.invalid"
+      />
+    </div>
+  </form>
+</div>
+
+<div
+  class="mt-6 overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+>
+  <div class="border-b border-[var(--p-content-border-color)] px-5 py-3">
+    <p class="text-muted-color m-0 font-mono text-xs">
+      // GET /certifications — {{ certifications.length }} credentials
+    </p>
+  </div>
+
+  @for (certification of certifications; track certification.id) {
+    <div
+      class="flex items-start justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 last:border-b-0"
+    >
+      <div class="min-w-0">
+        <h4 class="m-0 flex items-center gap-2 text-sm font-semibold">
+          <span class="truncate">{{ certification.name }}</span>
+          @if (certification.featured) {
+            <span class="text-primary shrink-0 text-xs">★ featured</span>
+          }
+        </h4>
+        <p class="text-muted-color m-0 mt-0.5 font-mono text-xs">
+          {{ certification.issuer }} · {{ certification.type }} ·
+          {{ convertToDate(certification.issueDate) | date: "MMM yyyy" }}
+        </p>
+        @if (certification.credentialId) {
+          <p class="text-muted-color m-0 mt-0.5 font-mono text-xs opacity-70">
+            ID: {{ certification.credentialId }}
+          </p>
+        }
+      </div>
+      <div class="flex shrink-0 gap-1">
+        <p-button
+          icon="pi pi-pencil"
+          size="small"
+          [text]="true"
+          [rounded]="true"
+          pTooltip="Edit"
+          tooltipPosition="top"
+          (onClick)="editCertification(certification)"
+        />
+        <p-button
+          icon="pi pi-trash"
+          size="small"
+          severity="danger"
+          [text]="true"
+          [rounded]="true"
+          pTooltip="Delete"
+          tooltipPosition="top"
+          (onClick)="deleteCertification(certification.id)"
+        />
+      </div>
+    </div>
+  } @empty {
+    <p class="text-muted-color m-0 px-5 py-8 text-center font-mono text-xs">
+      // 204 — no certifications yet, add your first one above
+    </p>
+  }
+</div>
+
+<p-toast />

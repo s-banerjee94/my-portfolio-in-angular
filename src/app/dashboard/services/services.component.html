@@ -1,0 +1,100 @@
+<div
+  class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+>
+  <div
+    class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--p-content-border-color)] px-5 py-3"
+  >
+    <p class="text-muted-color m-0 font-mono text-xs">
+      // PUT /profile/services — {{ services.length }}/{{ maxServices }} cards
+      shown on the public site
+    </p>
+    <p-button
+      label="+ add service"
+      size="small"
+      [text]="true"
+      styleClass="!font-mono !text-xs"
+      [disabled]="services.length >= maxServices"
+      (onClick)="addService()"
+    />
+  </div>
+
+  <div class="space-y-5 p-5 sm:p-6">
+    @for (service of services; track $index) {
+      <div
+        class="rounded-lg border border-dashed border-[var(--p-content-border-color)] p-4"
+      >
+        <div class="mb-4 flex items-center justify-between gap-2">
+          <p class="text-muted-color m-0 font-mono text-xs">
+            // service {{ $index + 1 }}
+          </p>
+          <p-button
+            icon="pi pi-trash"
+            size="small"
+            severity="danger"
+            [text]="true"
+            [rounded]="true"
+            (onClick)="removeService($index)"
+          />
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-[200px_1fr]">
+          <p-select
+            [name]="'service_icon_' + $index"
+            [(ngModel)]="service.icon"
+            [options]="iconOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Icon"
+            fluid="true"
+          />
+          <p-floatlabel variant="on">
+            <input
+              pInputText
+              [id]="'service_title_' + $index"
+              [name]="'service_title_' + $index"
+              [(ngModel)]="service.title"
+              autocomplete="off"
+              fluid="true"
+              required
+            />
+            <label [for]="'service_title_' + $index">Title</label>
+          </p-floatlabel>
+        </div>
+
+        <p-floatlabel variant="on" class="mt-5 block">
+          <textarea
+            pTextarea
+            [id]="'service_description_' + $index"
+            [name]="'service_description_' + $index"
+            [(ngModel)]="service.description"
+            rows="3"
+            [autoResize]="true"
+            fluid="true"
+            required
+          ></textarea>
+          <label [for]="'service_description_' + $index">Description</label>
+        </p-floatlabel>
+      </div>
+    } @empty {
+      <p class="text-muted-color m-0 py-6 text-center font-mono text-xs">
+        // 204 — no services yet; the section stays hidden on the site until you
+        add one
+      </p>
+    }
+
+    <div class="flex justify-end">
+      <p-button
+        label="Save changes"
+        styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110 disabled:!opacity-45 disabled:!saturate-50"
+        [disabled]="hasInvalidService"
+        (onClick)="saveServices()"
+      />
+    </div>
+  </div>
+</div>
+
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'500ms'"
+  [hideTransitionOptions]="'1000ms'"
+/>

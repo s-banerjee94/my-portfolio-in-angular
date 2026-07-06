@@ -3,26 +3,54 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      //allow read, write: if request.time < timestamp.date(2025, 6, 20);
+    // Public site content: world-readable, only the authenticated admin writes.
+    // Collections are enumerated on purpose — no catch-all, so nothing added
+    // later is exposed by accident and /messages is not readable via a
+    // wildcard (rules are OR'ed: any matching allow grants access).
+    match /profile/{section} {
       allow read: if true;
-      allow  write: if request.auth != null;
+      allow write: if request.auth != null;
     }
 
-    match /messages/{document=**} {
-      // Allow write access to anyone
-      allow write: if true;
-      // Allow read access only to authenticated users
-      allow read: if request.auth != null;
+    match /projects/{project} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /experience/{role} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /certifications/{certification} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /resumes/{resume} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Contact-form inbox: anyone may CREATE a well-formed message, but only
+    // the authenticated admin can read, mark as read, or delete. Public
+    // update/delete stays forbidden so strangers can't tamper with the inbox.
+    match /messages/{message} {
+      allow create: if isValidMessage();
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Shape check for public message creation — mirrors the contact form's
+    // fields and caps sizes so bots can't dump arbitrary payloads.
+    function isValidMessage() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['name', 'email', 'subject', 'message', 'timestamp', 'read'])
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 100
+        && data.email is string && data.email.size() <= 100 && data.email.matches('.+@.+\\..+')
+        && data.subject is string && data.subject.size() >= 1 && data.subject.size() <= 300
+        && data.message is string && data.message.size() >= 1 && data.message.size() <= 2000
+        && data.timestamp is number
+        && data.read == false;
     }
   }
 }

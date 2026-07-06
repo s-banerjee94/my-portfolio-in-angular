@@ -1,0 +1,295 @@
+<section id="projects" class="py-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+    <app-section-header
+      eyebrow="GET /projects"
+      title="Built, shipped, and running."
+      lede="Every project opens a detail view — what it does, what I implemented, and the README straight from the repo."
+    />
+
+    @if (loading) {
+      <div class="animate-pulse" aria-hidden="true">
+        <div
+          class="mb-8 grid overflow-hidden rounded-2xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] lg:grid-cols-2"
+        >
+          <div
+            class="min-h-56 bg-[color-mix(in_srgb,var(--p-text-muted-color)_10%,transparent)]"
+          ></div>
+          <div class="space-y-4 p-8">
+            <div
+              class="h-7 w-2/3 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_16%,transparent)]"
+            ></div>
+            <div class="space-y-2">
+              <div
+                class="h-4 w-full rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+              ></div>
+              <div
+                class="h-4 w-5/6 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+              ></div>
+            </div>
+            <div class="flex gap-2">
+              <div
+                class="h-5 w-16 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+              ></div>
+              <div
+                class="h-5 w-20 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+              ></div>
+              <div
+                class="h-5 w-14 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          @for (card of [1, 2, 3]; track card) {
+            <div
+              class="space-y-3 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-6"
+            >
+              <div
+                class="h-6 w-6 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_14%,transparent)]"
+              ></div>
+              <div
+                class="h-5 w-3/4 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_16%,transparent)]"
+              ></div>
+              <div class="space-y-2">
+                <div
+                  class="h-4 w-full rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+                ></div>
+                <div
+                  class="h-4 w-2/3 rounded bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    } @else {
+      @if (featured.length) {
+        <div class="mb-8 flex flex-col gap-6">
+          @for (project of featured; track project.id) {
+            <article
+              class="grid overflow-hidden rounded-2xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] shadow-lg lg:grid-cols-2"
+            >
+              <div class="relative min-h-56 bg-[var(--site-code-bg)]">
+                @if (
+                  project.projectImgUrl &&
+                  !failedImgIds.has(project.id ?? project.title)
+                ) {
+                  <img
+                    [src]="project.projectImgUrl"
+                    [alt]="project.title"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    (error)="onImgError(project)"
+                  />
+                } @else {
+                  <div
+                    class="absolute inset-0 flex items-center justify-center text-[var(--site-code-muted)]"
+                  >
+                    <svg lucideFolder class="h-16 w-16"></svg>
+                  </div>
+                }
+                <span
+                  class="absolute top-4 left-4 rounded-full border border-[color-mix(in_srgb,var(--site-code-key)_40%,transparent)] bg-black/55 px-3 py-1 font-mono text-xs text-[var(--site-code-key)]"
+                >
+                  featured
+                </span>
+              </div>
+
+              <div class="flex flex-col gap-4 p-8">
+                <h3 class="font-display text-2xl font-semibold">
+                  {{ project.title }}
+                </h3>
+                <p class="text-muted-color">{{ project.description }}</p>
+                <div class="flex flex-wrap gap-2">
+                  @for (tech of project.technologies; track tech) {
+                    <span
+                      class="text-primary rounded bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-2 py-0.5 font-mono text-xs"
+                    >
+                      {{ tech }}
+                    </span>
+                  }
+                </div>
+                <div class="mt-auto flex flex-wrap items-center gap-5 pt-2">
+                  @if (project.liveDemoUrl) {
+                    <a
+                      class="text-primary inline-flex items-center gap-1.5 text-sm font-semibold hover:underline"
+                      [href]="project.liveDemoUrl"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <svg lucideExternalLink class="h-4 w-4"></svg>
+                      Live
+                    </a>
+                  }
+                  <a
+                    class="text-primary inline-flex items-center gap-1.5 text-sm font-semibold hover:underline"
+                    [href]="project.gitHubUrl"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <i class="pi pi-github"></i>
+                    Source
+                  </a>
+                  <button
+                    type="button"
+                    class="text-primary cursor-pointer text-sm font-semibold hover:underline"
+                    (click)="openDetails(project)"
+                  >
+                    Details →
+                  </button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
+
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        @for (project of others; track project.id) {
+          <article
+            class="flex flex-col gap-3 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-6 transition hover:-translate-y-1 hover:border-[var(--p-primary-color)] hover:shadow-[var(--site-glow)]"
+          >
+            <div class="flex items-center justify-between">
+              <svg lucideFolder class="text-primary h-6 w-6"></svg>
+              <div class="flex items-center gap-3">
+                @if (project.liveDemoUrl) {
+                  <a
+                    [href]="project.liveDemoUrl"
+                    target="_blank"
+                    rel="noopener"
+                    class="text-muted-color hover:text-primary transition-colors"
+                    [attr.aria-label]="'Open live demo of ' + project.title"
+                  >
+                    <svg lucideExternalLink class="h-4 w-4"></svg>
+                  </a>
+                }
+                <a
+                  [href]="project.gitHubUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="text-muted-color hover:text-primary transition-colors"
+                  [attr.aria-label]="'Open source of ' + project.title"
+                >
+                  <i class="pi pi-github"></i>
+                </a>
+              </div>
+            </div>
+
+            <h3 class="text-lg font-semibold">{{ project.title }}</h3>
+            <p class="text-muted-color flex-1 text-sm">
+              {{ project.description }}
+            </p>
+
+            <div class="flex flex-wrap gap-2">
+              @for (tech of project.technologies; track tech) {
+                <span
+                  class="text-primary rounded bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-2 py-0.5 font-mono text-xs"
+                >
+                  {{ tech }}
+                </span>
+              }
+            </div>
+
+            <button
+              type="button"
+              class="text-primary mt-1 cursor-pointer self-start text-sm font-semibold hover:underline"
+              (click)="openDetails(project)"
+            >
+              Details →
+            </button>
+          </article>
+        }
+      </div>
+    }
+  </div>
+
+  <p-dialog
+    [header]="selected()?.title ?? ''"
+    [modal]="true"
+    [(visible)]="dialogVisible"
+    [style]="{ width: '52rem' }"
+    [breakpoints]="{ '1199px': '80vw', '575px': '95vw' }"
+    [maximizable]="true"
+    [dismissableMask]="true"
+  >
+    @if (selected(); as project) {
+      <p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
+        <p-tablist>
+          <p-tab value="overview">Overview</p-tab>
+          <p-tab value="readme">README.md</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="overview">
+            @if (project.detailsHtml) {
+              <div
+                class="markdown-body"
+                [innerHTML]="project.detailsHtml"
+              ></div>
+            } @else {
+              <p class="text-muted-color">{{ project.description }}</p>
+            }
+
+            <p class="text-muted-color mt-6 mb-2 font-mono text-sm">// stack</p>
+            <div class="flex flex-wrap gap-2">
+              @for (tech of project.technologies; track tech) {
+                <span
+                  class="text-primary rounded bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-2 py-0.5 font-mono text-xs"
+                >
+                  {{ tech }}
+                </span>
+              }
+            </div>
+
+            <div
+              class="mt-6 flex gap-5 border-t border-[var(--p-content-border-color)] pt-4"
+            >
+              @if (project.liveDemoUrl) {
+                <a
+                  class="text-primary text-sm font-semibold hover:underline"
+                  [href]="project.liveDemoUrl"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Live ↗
+                </a>
+              }
+              <a
+                class="text-primary text-sm font-semibold hover:underline"
+                [href]="project.gitHubUrl"
+                target="_blank"
+                rel="noopener"
+              >
+                Source ↗
+              </a>
+            </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="readme">
+            @switch (readmeState()) {
+              @case ("loading") {
+                <p class="text-muted-color font-mono text-sm">
+                  // fetching README from GitHub…
+                </p>
+              }
+              @case ("error") {
+                <p class="text-muted-color font-mono text-sm">
+                  // couldn't load the README —
+                  <a
+                    class="text-primary underline"
+                    [href]="project.gitHubUrl"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    view it on GitHub ↗
+                  </a>
+                </p>
+              }
+              @default {
+                <div class="markdown-body" [innerHTML]="readmeHtml()"></div>
+              }
+            }
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    }
+  </p-dialog>
+</section>

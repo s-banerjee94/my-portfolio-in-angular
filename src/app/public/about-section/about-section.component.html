@@ -1,0 +1,92 @@
+<section id="about" class="py-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+    <app-section-header
+      eyebrow="GET /about"
+      title="The short version, for people who scan."
+    />
+
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
+      <div>
+        <div
+          [innerHTML]="aboutData?.text"
+          class="text-muted-color max-w-[65ch] space-y-4"
+        ></div>
+
+        @if (aboutData?.skills?.length) {
+          <p class="text-muted-color mt-10 mb-4 font-mono text-sm">
+            // skills — daily drivers
+          </p>
+          <div class="flex flex-wrap gap-2">
+            @for (skill of aboutData?.skills; track skill) {
+              <span
+                class="text-muted-color hover:text-primary hover:border-primary rounded-full border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-4 py-1.5 text-sm transition-colors"
+              >
+                {{ skill }}
+              </span>
+            }
+          </div>
+        }
+      </div>
+
+      <aside
+        class="h-fit rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-7 py-6"
+      >
+        <h3
+          class="text-muted-color mb-5 text-xs font-semibold tracking-widest uppercase"
+        >
+          Quick facts
+        </h3>
+        <dl class="grid gap-3 text-sm">
+          @if (role) {
+            <div
+              class="flex justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] pb-3"
+            >
+              <dt class="text-muted-color">Role</dt>
+              <dd class="m-0 text-right font-semibold">{{ role }}</dd>
+            </div>
+          }
+          @if (aboutData?.experience) {
+            <div
+              class="flex justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] pb-3"
+            >
+              <dt class="text-muted-color">Experience</dt>
+              <dd class="m-0 text-right font-semibold">
+                {{ aboutData?.experience }}
+              </dd>
+            </div>
+          }
+          @if (aboutData?.education) {
+            <div
+              class="flex justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] pb-3"
+            >
+              <dt class="text-muted-color">Education</dt>
+              <dd class="m-0 text-right font-semibold">
+                {{ aboutData?.education }}
+              </dd>
+            </div>
+          }
+          @if (aboutData?.certification) {
+            <div
+              class="flex justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] pb-3"
+            >
+              <dt class="text-muted-color">Certification</dt>
+              <dd class="m-0 text-right font-semibold">
+                {{ aboutData?.certification }}
+              </dd>
+            </div>
+          }
+          <div
+            class="flex justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] pb-3"
+          >
+            <dt class="text-muted-color">Open to</dt>
+            <dd class="m-0 text-right font-semibold">Full-time & freelance</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-muted-color">Replies within</dt>
+            <dd class="m-0 text-right font-semibold">24 hours</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>

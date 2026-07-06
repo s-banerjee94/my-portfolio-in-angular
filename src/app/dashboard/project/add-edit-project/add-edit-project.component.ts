@@ -1,25 +1,26 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule, NgForm} from '@angular/forms';
+﻿import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {CardModule} from 'primeng/card';
-import {FloatLabel} from 'primeng/floatlabel';
-import {InputText} from 'primeng/inputtext';
-import {TextareaModule} from 'primeng/textarea';
-import {InputGroupModule} from 'primeng/inputgroup';
-import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
-import {ChipModule} from 'primeng/chip';
-import {ButtonModule} from 'primeng/button';
-import {ToastModule} from 'primeng/toast';
-import {MessageService} from 'primeng/api';
+import { FormsModule, NgForm } from '@angular/forms';
 
-import {ProfileService} from '../../../services/profile-service.service';
-import {CommunicationService} from '../../../services/communication.service';
-import {Message} from 'primeng/message';
-import {DatePicker} from 'primeng/datepicker';
-import {Timestamp} from '@angular/fire/firestore';
-import {Github, Link, LucideAngularModule} from 'lucide-angular';
+import { FloatLabel } from 'primeng/floatlabel';
+import { InputText } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { ChipModule } from 'primeng/chip';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
+import { ProfileService } from '@core/services/profile-service.service';
+import { CommunicationService } from '@core/services/communication.service';
+import { Message } from 'primeng/message';
+import { DatePicker } from 'primeng/datepicker';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { SelectButton } from 'primeng/selectbutton';
+import { EditorModule } from 'primeng/editor';
+import { Timestamp } from '@angular/fire/firestore';
 
 export interface Project {
   id?: string;
@@ -30,14 +31,18 @@ export interface Project {
   technologies: string[];
   projectImgUrl: string;
   projectDate: Timestamp | Date;
+  /** Shown as the large card at the top of the projects section. */
+  featured?: boolean;
+  /** Rich write-up for the detail dialog (Quill HTML). */
+  detailsHtml?: string;
+  /** Which detail tab opens first: the write-up or the repo README. */
+  detailsSource?: 'custom' | 'readme';
 }
 
 @Component({
   selector: 'app-add-edit-project',
   imports: [
-    CommonModule,
     FormsModule,
-    CardModule,
     FloatLabel,
     InputText,
     TextareaModule,
@@ -48,15 +53,16 @@ export interface Project {
     ToastModule,
     Message,
     DatePicker,
-    LucideAngularModule,
+    ToggleSwitch,
+    SelectButton,
+    EditorModule,
   ],
   templateUrl: './add-edit-project.component.html',
   styleUrl: './add-edit-project.component.css',
   providers: [MessageService],
 })
 export class AddEditProjectComponent implements OnInit {
-  readonly Github = Github;
-  readonly Link = Link;
+  private messageService = inject(MessageService);
 
   techs: string[] = [];
   enteredTech: string = '';
@@ -67,17 +73,34 @@ export class AddEditProjectComponent implements OnInit {
   projectId: string = '';
   projectImgUrl: string = '';
   projectDate: Date | null = null;
+  featured: boolean = false;
+  detailsHtml: string = '';
+  detailsSource: 'custom' | 'readme' = 'custom';
   mode: string = '';
 
+  readonly detailsSourceOptions = [
+    { label: 'My write-up', value: 'custom' },
+    { label: 'GitHub README', value: 'readme' },
+  ];
+
+  /** Featured items render as large spotlight cards — the site caps them at 3. */
+  static readonly MAX_FEATURED = 3;
+
+  private allProjects: Project[] = [];
 
   private profileService: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
     inject(CommunicationService);
-
-  constructor(private messageService: MessageService) {
-  }
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.profileService
+      .getAllProjects()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((projects) => {
+        this.allProjects = projects as Project[];
+      });
+
     this.communicationService.onProjectClickedEvent.subscribe((project) => {
       if (!project?.title) {
         this.mode = 'Add Project';
@@ -89,6 +112,9 @@ export class AddEditProjectComponent implements OnInit {
         this.projectId = '';
         this.projectImgUrl = '';
         this.projectDate = null;
+        this.featured = false;
+        this.detailsHtml = '';
+        this.detailsSource = 'custom';
         return;
       }
       this.mode = 'Edit Project';
@@ -100,6 +126,9 @@ export class AddEditProjectComponent implements OnInit {
       this.projectId = project!.id || '';
       this.projectImgUrl = project!.projectImgUrl || '';
       this.projectDate = this.convertToDate(project.projectDate);
+      this.featured = project!.featured || false;
+      this.detailsHtml = project!.detailsHtml || '';
+      this.detailsSource = project!.detailsSource || 'custom';
     });
   }
 
@@ -116,6 +145,10 @@ export class AddEditProjectComponent implements OnInit {
       return new Date(timestamp.seconds * 1000);
     }
     return new Date(timestamp);
+  }
+
+  startNew(): void {
+    this.communicationService.onProjectClicked({} as Project);
   }
 
   addTech(event: Event): void {
@@ -141,6 +174,20 @@ export class AddEditProjectComponent implements OnInit {
       return;
     }
 
+    if (this.featured) {
+      const otherFeatured = this.allProjects.filter(
+        (project) => project.featured && project.id !== this.projectId,
+      ).length;
+      if (otherFeatured >= AddEditProjectComponent.MAX_FEATURED) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Featured limit reached',
+          detail: 'Max 3 featured projects — unfeature one first.',
+        });
+        return;
+      }
+    }
+
     const projectData: Project = {
       title: this.projectTitle,
       description: this.description,
@@ -148,7 +195,10 @@ export class AddEditProjectComponent implements OnInit {
       liveDemoUrl: this.liveDemoUrl,
       technologies: this.techs,
       projectImgUrl: this.projectImgUrl,
-      projectDate: this.projectDate!
+      projectDate: this.projectDate!,
+      featured: this.featured,
+      detailsHtml: this.detailsHtml,
+      detailsSource: this.detailsSource,
     };
 
     if (this.mode === 'Add Project') {
@@ -213,6 +263,9 @@ export class AddEditProjectComponent implements OnInit {
     this.enteredTech = '';
     this.projectImgUrl = '';
     this.projectDate = null;
+    this.featured = false;
+    this.detailsHtml = '';
+    this.detailsSource = 'custom';
 
     // Keep the mode as "Add Project"
     this.mode = 'Add Project';
@@ -232,7 +285,7 @@ export class AddEditProjectComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to remove image'
+          detail: 'Failed to remove image',
         });
       },
     });
@@ -251,12 +304,10 @@ export class AddEditProjectComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to upload image'
+            detail: 'Failed to upload image',
           });
         },
       });
     }
   }
-
-
 }

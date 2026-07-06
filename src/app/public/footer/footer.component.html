@@ -1,0 +1,41 @@
+<footer class="border-t border-[var(--p-content-border-color)] py-8">
+  <div
+    class="container mx-auto flex flex-col items-center justify-between gap-4 px-4 font-mono text-sm sm:px-6 md:flex-row md:pr-24 lg:px-8 lg:pr-24"
+  >
+    <span class="text-muted-color">
+      © {{ currentYear }} Sandeepan Banerjee
+    </span>
+
+    <div class="flex items-center gap-5">
+      @for (item of socials; track item.label) {
+        <a
+          [href]="item.url"
+          target="_blank"
+          rel="noopener"
+          class="text-muted-color hover:text-primary transition-colors"
+        >
+          {{ item.label }} ↗
+        </a>
+      }
+    </div>
+
+    <span class="text-muted-color">
+      built with
+      <a
+        href="https://angular.dev"
+        target="_blank"
+        rel="noopener"
+        class="hover:text-primary transition-colors"
+        >Angular 21</a
+      >
+      +
+      <a
+        href="https://firebase.google.com"
+        target="_blank"
+        rel="noopener"
+        class="hover:text-primary transition-colors"
+        >Firebase</a
+      >
+    </span>
+  </div>
+</footer>
