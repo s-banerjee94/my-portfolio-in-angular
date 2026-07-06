@@ -6,6 +6,12 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Content comes from Firestore; warming the connection early shaves
+         ~400ms off the first data fetch. Image hosts get a cheap DNS warmup. -->
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
+    <link rel="dns-prefetch" href="https://github.com" />
+
     <meta
       name="description"
       content="Java full-stack developer — Spring Boot microservices, Angular frontends, and AWS. 3 years shipping production systems. Open to full-time and freelance work."
