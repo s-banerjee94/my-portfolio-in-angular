@@ -13,8 +13,8 @@ import { MessageService } from 'primeng/api';
 import { LucideAngularModule, Trash2 } from 'lucide-angular';
 
 import { AddEditProjectComponent } from './add-edit-project/add-edit-project.component';
-import { ProfileService } from '../../services/profile-service.service';
-import { CommunicationService } from '../../services/communication.service';
+import { ProfileService } from '@core/services/profile-service.service';
+import { CommunicationService } from '@core/services/communication.service';
 
 @Component({
   selector: 'app-project',

@@ -2,10 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
-import { ProfileService } from '../services/profile-service.service';
-import { Resume } from '../dashboard/resume/resume.component';
+import { ProfileService } from '@core/services/profile-service.service';
+import { Resume } from '@dashboard/resume/resume.component';
 import { Button } from 'primeng/button';
-import { ThemeService } from '../theme/theme.service';
+import { ThemeService } from '@core/theme/theme.service';
 
 @Component({
   selector: 'app-header',

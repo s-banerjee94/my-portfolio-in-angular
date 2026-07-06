@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ProfileService } from '../services/profile-service.service';
-import { Experience } from '../dashboard/experience/experience.component';
-import { SectionHeaderComponent } from '../shared/section-header.component';
-import { RevealDirective } from '../shared/reveal.directive';
+import { ProfileService } from '@core/services/profile-service.service';
+import { Experience } from '@dashboard/experience/experience.component';
+import { SectionHeaderComponent } from '@shared/section-header.component';
+import { RevealDirective } from '@shared/reveal.directive';
 
 @Component({
   selector: 'app-experience-section',

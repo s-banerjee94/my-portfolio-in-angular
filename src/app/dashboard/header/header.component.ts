@@ -5,7 +5,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 
-import { AuthService } from '../../services/auth-service.service';
+import { AuthService } from '@core/services/auth-service.service';
 
 @Component({
   selector: 'app-header',

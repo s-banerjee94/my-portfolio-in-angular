@@ -18,18 +18,25 @@ Formatting is Prettier with `prettier-plugin-tailwindcss` (sorts Tailwind classe
 
 ## Architecture
 
-Angular 19 personal-portfolio SPA backed entirely by Firebase (no custom backend). All components are standalone (no NgModules); app bootstraps via `app.config.ts` providers.
+Angular 21 personal-portfolio SPA backed entirely by Firebase (no custom backend). All components are standalone (no NgModules); app bootstraps via `app.config.ts` providers.
+
+`src/app` is organized by feature area, with TS path aliases (defined in `tsconfig.json`):
+
+- `core/` (`@core/*`) — app-wide singletons: `guards/`, `services/`, `theme/` (PrimeNG preset + `ThemeService`)
+- `public/` (`@public/*`) — the public site: `header`, `footer`, `home`, `page-not-found`, and the `*-section` components
+- `dashboard/` (`@dashboard/*`) — the admin CMS (editor per section, messages inbox, login)
+- `shared/` (`@shared/*`) — reusable presentation pieces: `SectionHeaderComponent`, `RevealDirective`, `pipes/`
 
 The app has two halves, defined in `src/app/app.routes.ts`:
 
 1. **Public site** (`/` → `HomeComponent`): a single scrolling page composed of `*-section` components (`hero-section`, `about-section`, `project-section`, `experience-section`, `contact-section`) plus `header`/`footer`. Navigation uses URL fragments; `HomeComponent` scrolls to the matching element id.
-2. **Admin dashboard** (`/dashboard` → `DashboardComponent`): CMS for the site's content. Child routes: `edit-content` (PrimeNG tabs hosting one editor component per section in `src/app/dashboard/*`) and `messages` (contact-form inbox). Protected by `authGuard`; `/login` uses `noAuthGuard` to redirect authenticated users. Both guards wrap Firebase `onAuthStateChanged` in an Observable (`src/app/guard/auth.guard.ts`).
+2. **Admin dashboard** (`/dashboard` → `DashboardComponent`): CMS for the site's content. Child routes: `edit-content` (PrimeNG tabs hosting one editor component per section in `src/app/dashboard/*`) and `messages` (contact-form inbox). Protected by `authGuard`; `/login` uses `noAuthGuard` to redirect authenticated users. Both guards wrap Firebase `onAuthStateChanged` in an Observable (`src/app/core/guards/auth.guard.ts`).
 
 ### Data layer
 
 Firestore structure (accessed through `@angular/fire`):
 - `profile/<sectionName>` docs — singleton content per section (hero, about, contact...), read/written generically via `ProfileService.getSectionData`/`saveSectionData`
-- `projects`, `experience`, `resumes` collections — CRUD in `ProfileService` (`src/app/services/profile-service.service.ts`), which also handles Firebase Storage uploads/deletes
+- `projects`, `experience`, `resumes` collections — CRUD in `ProfileService` (`src/app/core/services/profile-service.service.ts`), which also handles Firebase Storage uploads/deletes
 - `messages` collection — `ContaceMeService` (note the typo in the name/file), which also defines the `Message` interface
 
 Services wrap Firebase promises in RxJS with `from(...)`; components subscribe. Data model interfaces live in the component files that own them (e.g. `Project` in `add-edit-project.component.ts`, `Experience` in `experience.component.ts`, `Resume` in `resume.component.ts`), and services import types from those components — follow this pattern rather than creating a separate models directory.
@@ -40,7 +47,7 @@ Security rules (`firestore.rules`, `storage.rules`): everything is world-readabl
 
 ### UI stack
 
-- **PrimeNG 19** with the Aura theme preset; dark mode toggled by adding the `.my-app-dark` class (configured in `app.config.ts`)
+- **PrimeNG 21** themed by the custom "Magma" preset (`src/app/core/theme/magma.preset.ts`, built on Aura via `definePreset`); dark mode = `.my-app-dark` class on `<html>`, owned by `ThemeService` (persists to localStorage)
 - **Tailwind CSS 4** via PostCSS (`.postcssrc.json`); global styles in `src/styles.css` import `tailwindcss`, `tailwindcss-primeui`, and PrimeIcons — there is no tailwind.config file
 - Lucide icons (`lucide-angular`) and Quill (rich text) are also used
 - Component style budget is tight (8kB error per component style) — keep styling in Tailwind utility classes, not component CSS

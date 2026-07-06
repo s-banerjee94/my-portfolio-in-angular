@@ -7,7 +7,7 @@ import { InputText } from 'primeng/inputtext';
 import { Timestamp } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { Textarea } from 'primeng/textarea';
-import { ProfileService } from '../../services/profile-service.service';
+import { ProfileService } from '@core/services/profile-service.service';
 import { Avatar } from 'primeng/avatar';
 import { Panel } from 'primeng/panel';
 import { DatePipe } from '@angular/common';

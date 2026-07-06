@@ -4,7 +4,7 @@ import { routes } from './app.routes';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-import { MagmaPreset } from './theme/magma.preset';
+import { MagmaPreset } from '@core/theme/magma.preset';
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import {

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ExternalLink, LucideAngularModule, Github } from 'lucide-angular';
 
 import { ChipModule } from 'primeng/chip';
-import { ProfileService } from '../services/profile-service.service';
+import { ProfileService } from '@core/services/profile-service.service';
 import {Card} from 'primeng/card';
 import {Button} from 'primeng/button';
 import {Dialog} from 'primeng/dialog';

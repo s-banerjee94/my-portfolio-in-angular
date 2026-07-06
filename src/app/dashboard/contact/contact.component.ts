@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
-import { ProfileService } from '../../services/profile-service.service';
+import { ProfileService } from '@core/services/profile-service.service';
 import {
   Github,
   Instagram,

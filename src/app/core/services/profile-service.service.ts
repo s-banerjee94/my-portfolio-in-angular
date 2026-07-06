@@ -13,8 +13,8 @@ import {
 import {collection} from 'firebase/firestore';
 import {from, Observable} from 'rxjs';
 import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from '@angular/fire/storage';
-import {Experience} from '../dashboard/experience/experience.component';
-import {Resume} from '../dashboard/resume/resume.component';
+import {Experience} from '@dashboard/experience/experience.component';
+import {Resume} from '@dashboard/resume/resume.component';
 
 @Injectable({
   providedIn: 'root',

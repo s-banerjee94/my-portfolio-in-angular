@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 
-import { AboutData } from '../dashboard/about/about.component';
-import { Hero } from '../dashboard/hero/hero.component';
-import { ProfileService } from '../services/profile-service.service';
-import { SectionHeaderComponent } from '../shared/section-header.component';
-import { RevealDirective } from '../shared/reveal.directive';
+import { AboutData } from '@dashboard/about/about.component';
+import { Hero } from '@dashboard/hero/hero.component';
+import { ProfileService } from '@core/services/profile-service.service';
+import { SectionHeaderComponent } from '@shared/section-header.component';
+import { RevealDirective } from '@shared/reveal.directive';
 
 @Component({
   selector: 'app-about-section',

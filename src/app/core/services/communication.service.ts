@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Project } from '../dashboard/project/add-edit-project/add-edit-project.component';
+import { Project } from '@dashboard/project/add-edit-project/add-edit-project.component';
 
 @Injectable({
   providedIn: 'root',

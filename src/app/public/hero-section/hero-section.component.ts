@@ -2,8 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 
-import { ProfileService } from '../services/profile-service.service';
-import { Hero } from '../dashboard/hero/hero.component';
+import { ProfileService } from '@core/services/profile-service.service';
+import { Hero } from '@dashboard/hero/hero.component';
 
 import { Router } from '@angular/router';
 import { ApiStatusCardComponent } from './api-status-card/api-status-card.component';

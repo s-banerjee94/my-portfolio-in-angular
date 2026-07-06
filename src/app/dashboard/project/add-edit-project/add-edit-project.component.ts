@@ -13,8 +13,8 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
-import { ProfileService } from '../../../services/profile-service.service';
-import { CommunicationService } from '../../../services/communication.service';
+import { ProfileService } from '@core/services/profile-service.service';
+import { CommunicationService } from '@core/services/communication.service';
 import { Message } from 'primeng/message';
 import { DatePicker } from 'primeng/datepicker';
 import { Timestamp } from '@angular/fire/firestore';

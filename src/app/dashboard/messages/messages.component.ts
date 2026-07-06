@@ -21,7 +21,7 @@ import {
   Inbox,
 } from 'lucide-angular';
 
-import { ContaceMeService, Message } from '../../services/contace-me.service';
+import { ContaceMeService, Message } from '@core/services/contace-me.service';
 import { take } from 'rxjs/operators';
 
 @Component({
