@@ -18,7 +18,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       {{ title() }}
     </h2>
     @if (lede()) {
-      <p class="text-muted-color max-w-xl">{{ lede() }}</p>
+      <p class="text-muted-color">{{ lede() }}</p>
     }
   `,
 })
