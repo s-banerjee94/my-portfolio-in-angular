@@ -1,118 +1,232 @@
-<section id="projects" class="bg-gray-50 py-20">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-16 text-center">
-      <h2
-        class="font-display mb-4 text-3xl font-bold text-[#111827] md:text-4xl"
-      >
-        Projects
-      </h2>
-      <div class="mx-auto mb-8 h-1 w-20 bg-[#0D9488]"></div>
-      <p class="mx-auto max-w-4xl text-gray-600">
-        Here are some of the projects I've worked on. Each project reflects my
-        skills and experience in different technologies.
-      </p>
-    </div>
+<section id="projects" class="py-20">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+    <app-section-header
+      eyebrow="GET /projects"
+      title="Built, shipped, and running."
+      lede="Every project opens a detail view — what it does, what I implemented, and the README straight from the repo."
+    />
 
-    <div class="flex flex-wrap gap-4 items-center justify-center">
-      @for (project of projects.slice(0, 3); track project.id) {
-        <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
-          <ng-template #header>
-            <img alt="" class="w-full h-50" [src]="project.projectImgUrl"/>
-          </ng-template>
-          <ng-template #title> {{ project.title }}</ng-template>
-          <ng-template #content>
-            <p>{{ project.description }}</p>
-            <div class="my-4 flex flex-wrap gap-2">
-              @for (tech of project.technologies; track tech.id) {
-                <p-chip label="{{ tech }}"></p-chip>
-              }
+    @if (featured; as project) {
+      <article
+        class="mb-8 grid overflow-hidden rounded-2xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] shadow-lg lg:grid-cols-2"
+      >
+        <div class="relative min-h-56 bg-[var(--site-code-bg)]">
+          @if (project.projectImgUrl) {
+            <img
+              [src]="project.projectImgUrl"
+              [alt]="project.title"
+              class="absolute inset-0 h-full w-full object-cover"
+            />
+          } @else {
+            <div
+              class="absolute inset-0 flex items-center justify-center text-[var(--site-code-muted)]"
+            >
+              <lucide-icon [img]="Folder" class="h-16 w-16"></lucide-icon>
             </div>
-          </ng-template>
-          <ng-template #footer>
-            <div class="flex gap-4">
-              <a
-                [href]="project.gitHubUrl"
-                class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#111827]"
+          }
+          <span
+            class="absolute top-4 left-4 rounded-full border border-[color-mix(in_srgb,var(--site-code-key)_40%,transparent)] bg-black/55 px-3 py-1 font-mono text-xs text-[var(--site-code-key)]"
+          >
+            featured
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-4 p-8">
+          <h3 class="font-display text-2xl font-semibold">
+            {{ project.title }}
+          </h3>
+          <p class="text-muted-color">{{ project.description }}</p>
+          <div class="flex flex-wrap gap-2">
+            @for (tech of project.technologies; track tech) {
+              <span
+                class="text-primary rounded bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-2 py-0.5 font-mono text-xs"
               >
-                <lucide-icon
-                  [img]="Github"
-                  class="hover:text-[#111827]"
-                ></lucide-icon>
-                <span>Code</span>
+                {{ tech }}
+              </span>
+            }
+          </div>
+          <div class="mt-auto flex flex-wrap items-center gap-5 pt-2">
+            @if (project.liveDemoUrl) {
+              <a
+                class="text-primary inline-flex items-center gap-1.5 text-sm font-semibold hover:underline"
+                [href]="project.liveDemoUrl"
+                target="_blank"
+                rel="noopener"
+              >
+                <lucide-icon [img]="ExternalLink" class="h-4 w-4"></lucide-icon>
+                Live
               </a>
+            }
+            <a
+              class="text-primary inline-flex items-center gap-1.5 text-sm font-semibold hover:underline"
+              [href]="project.gitHubUrl"
+              target="_blank"
+              rel="noopener"
+            >
+              <lucide-icon [img]="Github" class="h-4 w-4"></lucide-icon>
+              Source
+            </a>
+            <button
+              type="button"
+              class="text-primary cursor-pointer text-sm font-semibold hover:underline"
+              (click)="openDetails(project)"
+            >
+              Details →
+            </button>
+          </div>
+        </div>
+      </article>
+    }
+
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      @for (project of others; track project.id) {
+        <article
+          class="flex flex-col gap-3 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-6 transition hover:-translate-y-1 hover:border-[var(--p-primary-color)] hover:shadow-[var(--site-glow)]"
+        >
+          <div class="flex items-center justify-between">
+            <lucide-icon
+              [img]="Folder"
+              class="text-primary h-6 w-6"
+            ></lucide-icon>
+            <div class="flex items-center gap-3">
               @if (project.liveDemoUrl) {
                 <a
                   [href]="project.liveDemoUrl"
                   target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#0D9488]"
+                  rel="noopener"
+                  class="text-muted-color hover:text-primary transition-colors"
+                  [attr.aria-label]="'Open live demo of ' + project.title"
                 >
                   <lucide-icon
                     [img]="ExternalLink"
-                    class="hover:text-[#0D9488]"
+                    class="h-4 w-4"
                   ></lucide-icon>
-                  <span>Live Demo</span>
                 </a>
               }
+              <a
+                [href]="project.gitHubUrl"
+                target="_blank"
+                rel="noopener"
+                class="text-muted-color hover:text-primary transition-colors"
+                [attr.aria-label]="'Open source of ' + project.title"
+              >
+                <lucide-icon [img]="Github" class="h-4 w-4"></lucide-icon>
+              </a>
             </div>
-          </ng-template>
-        </p-card>
+          </div>
+
+          <h3 class="text-lg font-semibold">{{ project.title }}</h3>
+          <p class="text-muted-color flex-1 text-sm">
+            {{ project.description }}
+          </p>
+
+          <div class="flex flex-wrap gap-2">
+            @for (tech of project.technologies; track tech) {
+              <span
+                class="text-primary rounded bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-2 py-0.5 font-mono text-xs"
+              >
+                {{ tech }}
+              </span>
+            }
+          </div>
+
+          <button
+            type="button"
+            class="text-primary mt-1 cursor-pointer self-start text-sm font-semibold hover:underline"
+            (click)="openDetails(project)"
+          >
+            Details →
+          </button>
+        </article>
       }
     </div>
-    @if (projects && projects.length > 3) {
-      <div class="mt-16 text-center">
-        <p-button label="See More Projects" variant="text" severity="info" (click)="showDialog()"/>
-      </div>
-    }
   </div>
 
-  <p-dialog header="Projects" [modal]="true" [(visible)]="visible" [style]="{ width: '60rem' }"
-            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
-    <div class="flex flex-wrap gap-4 items-center justify-center">
-      @for (project of projects; track project.id) {
-        <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
-          <ng-template #header>
-            <img alt="" class="w-full h-50" [src]="project.projectImgUrl"/>
-          </ng-template>
-          <ng-template #title> {{ project.title }}</ng-template>
-          <ng-template #content>
-            <p>{{ project.description }}</p>
-            <div class="my-4 flex flex-wrap gap-2">
-              @for (tech of project.technologies; track tech.id) {
-                <p-chip label="{{ tech }}"></p-chip>
+  <p-dialog
+    [header]="selected()?.title ?? ''"
+    [modal]="true"
+    [(visible)]="dialogVisible"
+    [style]="{ width: '52rem' }"
+    [breakpoints]="{ '1199px': '80vw', '575px': '95vw' }"
+    [maximizable]="true"
+    [dismissableMask]="true"
+  >
+    @if (selected(); as project) {
+      <p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
+        <p-tablist>
+          <p-tab value="overview">Overview</p-tab>
+          <p-tab value="readme">README.md</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="overview">
+            @if (project.detailsHtml) {
+              <div class="markdown-body" [innerHTML]="project.detailsHtml"></div>
+            } @else {
+              <p class="text-muted-color">{{ project.description }}</p>
+            }
+
+            <p class="text-muted-color mt-6 mb-2 font-mono text-sm">// stack</p>
+            <div class="flex flex-wrap gap-2">
+              @for (tech of project.technologies; track tech) {
+                <span
+                  class="text-primary rounded bg-[color-mix(in_srgb,var(--p-primary-color)_12%,transparent)] px-2 py-0.5 font-mono text-xs"
+                >
+                  {{ tech }}
+                </span>
               }
             </div>
-          </ng-template>
-          <ng-template #footer>
-            <div class="flex gap-4">
-              <a
-                [href]="project.gitHubUrl"
-                class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#111827]"
-              >
-                <lucide-icon
-                  [img]="Github"
-                  class="hover:text-[#111827]"
-                ></lucide-icon>
-                <span>Code</span>
-              </a>
+
+            <div
+              class="mt-6 flex gap-5 border-t border-[var(--p-content-border-color)] pt-4"
+            >
               @if (project.liveDemoUrl) {
                 <a
+                  class="text-primary text-sm font-semibold hover:underline"
                   [href]="project.liveDemoUrl"
                   target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-center gap-2 text-gray-700 transition-colors hover:text-[#0D9488]"
+                  rel="noopener"
                 >
-                  <lucide-icon
-                    [img]="ExternalLink"
-                    class="hover:text-[#0D9488]"
-                  ></lucide-icon>
-                  <span>Live Demo</span>
+                  Live ↗
                 </a>
               }
+              <a
+                class="text-primary text-sm font-semibold hover:underline"
+                [href]="project.gitHubUrl"
+                target="_blank"
+                rel="noopener"
+              >
+                Source ↗
+              </a>
             </div>
-          </ng-template>
-        </p-card>
-      }
-    </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="readme">
+            @switch (readmeState()) {
+              @case ('loading') {
+                <p class="text-muted-color font-mono text-sm">
+                  // fetching README from GitHub…
+                </p>
+              }
+              @case ('error') {
+                <p class="text-muted-color font-mono text-sm">
+                  // couldn't load the README —
+                  <a
+                    class="text-primary underline"
+                    [href]="project.gitHubUrl"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    view it on GitHub ↗
+                  </a>
+                </p>
+              }
+              @default {
+                <div class="markdown-body" [innerHTML]="readmeHtml()"></div>
+              }
+            }
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    }
   </p-dialog>
 </section>

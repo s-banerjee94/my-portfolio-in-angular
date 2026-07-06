@@ -160,6 +160,68 @@
       </div>
     </p-card>
 
+    <p-card header="Detail View" styleClass="!mt-3">
+      <div class="mb-4 flex items-center gap-3">
+        <p-toggleswitch
+          name="featured"
+          [(ngModel)]="featured"
+          inputId="featured_toggle"
+        />
+        <label for="featured_toggle">
+          Featured project (shown large at the top of the section)
+        </label>
+      </div>
+
+      <div class="mb-4">
+        <label class="mb-2 block">Default details tab</label>
+        <p-selectbutton
+          name="detailsSource"
+          [(ngModel)]="detailsSource"
+          [options]="detailsSourceOptions"
+          optionLabel="label"
+          optionValue="value"
+          [allowEmpty]="false"
+        />
+      </div>
+
+      <label class="mb-2 block">
+        Detailed write-up — what it does, what you implemented
+      </label>
+      <p-editor
+        name="detailsHtml"
+        [(ngModel)]="detailsHtml"
+        [style]="{ height: '220px' }"
+      >
+        <ng-template #header>
+          <span class="ql-formats">
+            <button type="button" class="ql-bold" aria-label="Bold"></button>
+            <button
+              type="button"
+              class="ql-italic"
+              aria-label="Italic"
+            ></button>
+            <button
+              type="button"
+              class="ql-underline"
+              aria-label="Underline"
+            ></button>
+            <button
+              type="button"
+              class="ql-list"
+              value="bullet"
+              aria-label="Bullet list"
+            ></button>
+            <button
+              type="button"
+              class="ql-list"
+              value="ordered"
+              aria-label="Ordered list"
+            ></button>
+          </span>
+        </ng-template>
+      </p-editor>
+    </p-card>
+
     <div class="mt-3 mb-3">
       <label class="block mb-2">Project Image</label>
       @if (!projectImgUrl && projectImgUrl === "") {

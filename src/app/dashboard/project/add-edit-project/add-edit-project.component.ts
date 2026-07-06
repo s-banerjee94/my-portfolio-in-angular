@@ -17,6 +17,9 @@ import { ProfileService } from '@core/services/profile-service.service';
 import { CommunicationService } from '@core/services/communication.service';
 import { Message } from 'primeng/message';
 import { DatePicker } from 'primeng/datepicker';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { SelectButton } from 'primeng/selectbutton';
+import { EditorModule } from 'primeng/editor';
 import { Timestamp } from '@angular/fire/firestore';
 import { Github, Link, LucideAngularModule } from 'lucide-angular';
 
@@ -29,6 +32,12 @@ export interface Project {
   technologies: string[];
   projectImgUrl: string;
   projectDate: Timestamp | Date;
+  /** Shown as the large card at the top of the projects section. */
+  featured?: boolean;
+  /** Rich write-up for the detail dialog (Quill HTML). */
+  detailsHtml?: string;
+  /** Which detail tab opens first: the write-up or the repo README. */
+  detailsSource?: 'custom' | 'readme';
 }
 
 @Component({
@@ -46,6 +55,9 @@ export interface Project {
     ToastModule,
     Message,
     DatePicker,
+    ToggleSwitch,
+    SelectButton,
+    EditorModule,
     LucideAngularModule,
   ],
   templateUrl: './add-edit-project.component.html',
@@ -67,7 +79,15 @@ export class AddEditProjectComponent implements OnInit {
   projectId: string = '';
   projectImgUrl: string = '';
   projectDate: Date | null = null;
+  featured: boolean = false;
+  detailsHtml: string = '';
+  detailsSource: 'custom' | 'readme' = 'custom';
   mode: string = '';
+
+  readonly detailsSourceOptions = [
+    { label: 'My write-up', value: 'custom' },
+    { label: 'GitHub README', value: 'readme' },
+  ];
 
   private profileService: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
@@ -85,6 +105,9 @@ export class AddEditProjectComponent implements OnInit {
         this.projectId = '';
         this.projectImgUrl = '';
         this.projectDate = null;
+        this.featured = false;
+        this.detailsHtml = '';
+        this.detailsSource = 'custom';
         return;
       }
       this.mode = 'Edit Project';
@@ -96,6 +119,9 @@ export class AddEditProjectComponent implements OnInit {
       this.projectId = project!.id || '';
       this.projectImgUrl = project!.projectImgUrl || '';
       this.projectDate = this.convertToDate(project.projectDate);
+      this.featured = project!.featured || false;
+      this.detailsHtml = project!.detailsHtml || '';
+      this.detailsSource = project!.detailsSource || 'custom';
     });
   }
 
@@ -145,6 +171,9 @@ export class AddEditProjectComponent implements OnInit {
       technologies: this.techs,
       projectImgUrl: this.projectImgUrl,
       projectDate: this.projectDate!,
+      featured: this.featured,
+      detailsHtml: this.detailsHtml,
+      detailsSource: this.detailsSource,
     };
 
     if (this.mode === 'Add Project') {
@@ -209,6 +238,9 @@ export class AddEditProjectComponent implements OnInit {
     this.enteredTech = '';
     this.projectImgUrl = '';
     this.projectDate = null;
+    this.featured = false;
+    this.detailsHtml = '';
+    this.detailsSource = 'custom';
 
     // Keep the mode as "Add Project"
     this.mode = 'Add Project';
