@@ -21,13 +21,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Dashboard',
     children: [
+      // /dashboard alone has nothing to show — land on the content editor.
+      { path: '', redirectTo: 'edit-content', pathMatch: 'full' },
       {
         path: 'edit-content',
         component: EditContentComponent,
+        title: 'Edit Content',
       },
       {
         path: 'messages',
         component: MessagesComponent,
+        title: 'Messages',
       },
     ],
   },

@@ -6,7 +6,6 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { MessageService } from 'primeng/api';
 
 import { ProfileService } from '@core/services/profile-service.service';
@@ -31,7 +30,6 @@ export interface Hero {
     FloatLabel,
     TextareaModule,
     ToastModule,
-    CardModule,
     ButtonModule,
     Message,
   ],
@@ -77,73 +75,7 @@ export class HeroComponent implements OnInit {
     });
   };
 
-  // onFileSelected(event: Event): void {
-  //   const input = event.target as HTMLInputElement;
-  //
-  //   if (input.files && input.files.length > 0) {
-  //     const file = input.files[0];
-  //     if (!file.type.startsWith('image/')) {
-  //       this.messageService.add({
-  //         severity: 'error',
-  //         summary: 'Error',
-  //         detail: 'Invalid Image Type',
-  //       });
-  //       return;
-  //     }
-  //     const maxSizeInMB = 5;
-  //     if (file.size > maxSizeInMB * 1024 * 1024) {
-  //       this.messageService.add({
-  //         severity: 'warn',
-  //         summary: 'File Too Large',
-  //         detail: `File size must be less than ${maxSizeInMB}MB`,
-  //       });
-  //       return;
-  //     }
-  //     this.profileService.uploadFile(file).subscribe({
-  //       next: (downloadURL) => {
-  //         this.hero.heroImgUrl = downloadURL;
-  //         this.messageService.add({
-  //           severity: 'success',
-  //           summary: 'Success',
-  //           detail: 'Image Uploaded',
-  //         });
-  //       },
-  //       error: (err) => {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Upload Failed',
-  //           detail: 'Failed to upload image',
-  //         });
-  //       },
-  //     });
-  //   }
-  // }
-  /*
-  removeImage(): void {
-    if (!this.hero.heroImgUrl) {
-      return;
-    }
-    this.profileService.deleteFile(this.hero.heroImgUrl).subscribe({
-      next: () => {
-        this.hero.heroImgUrl = '';
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Info',
-          detail: 'Image Removed',
-        });
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to remove image',
-        });
-      },
-    });
-  }
-*/
   saveHeroDetails(heroForm: NgForm): void {
-    console.log(heroForm);
     if (this.isSubmitting) {
       return; // Prevent double submission
     }

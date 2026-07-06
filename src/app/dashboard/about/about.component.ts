@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
-import { CardModule } from 'primeng/card';
 import { EditorModule } from 'primeng/editor';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -25,7 +24,6 @@ export interface AboutData {
   selector: 'app-about',
   imports: [
     FormsModule,
-    CardModule,
     EditorModule,
     FloatLabel,
     InputTextModule,

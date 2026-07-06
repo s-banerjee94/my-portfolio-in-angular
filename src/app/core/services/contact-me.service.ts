@@ -26,7 +26,7 @@ export interface Message {
 @Injectable({
   providedIn: 'root',
 })
-export class ContaceMeService {
+export class ContactMeService {
   private firestore = inject(Firestore);
   readonly collectionName: string = 'messages';
 

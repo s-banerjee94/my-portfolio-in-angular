@@ -1,52 +1,66 @@
-<p-card>
-  <ng-template #header>
-    <div class="mx-2 flex items-center justify-between p-2">
-      <h4 class="text-2xl font-semibold">Add or Edit Projects</h4>
+<div class="grid items-start gap-6 lg:grid-cols-[minmax(240px,300px)_1fr]">
+  <div
+    class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+  >
+    <div
+      class="flex items-center justify-between gap-2 border-b border-[var(--p-content-border-color)] px-4 py-2.5"
+    >
+      <p class="text-muted-color m-0 font-mono text-xs">
+        // GET /projects — {{ projects.length }}
+      </p>
       <p-button
+        label="+ new"
+        size="small"
+        [text]="true"
+        styleClass="!font-mono !text-xs"
         (onClick)="addProject()"
-        label="+ Add Project"
-        severity="success"
-        [outlined]="true"
-      ></p-button>
+      />
     </div>
-  </ng-template>
 
-  <p-splitter [panelSizes]="[30, 70]" styleClass="mb-8 bg-black-500">
-    <ng-template #panel>
-      <div class="w-full p-4">
-        <h4 class="mb-3 font-semibold">Project List</h4>
-
-        <div class="flex flex-col gap-3">
-          @for (project of projects; track project) {
-            <p-card
-              styleClass="cursor-pointer p-0"
-              (click)="selectProject(project)"
-            >
-              <ng-template pTemplate="content">
-                <div class="flex items-center justify-between">
-                  <span>{{ project.title }}</span>
-
-                  <p-button
-                    severity="danger"
-                    [outlined]="true"
-                    (onClick)="deleteProject(project, $event)"
-                  >
-                    <lucide-angular [img]="Trash2"></lucide-angular>
-                  </p-button>
-                </div>
-              </ng-template>
-            </p-card>
-          }
-        </div>
+    @for (project of projects; track project.id ?? project.title) {
+      <div
+        role="button"
+        tabindex="0"
+        (click)="selectProject(project)"
+        (keydown.enter)="selectProject(project)"
+        class="group flex cursor-pointer items-center justify-between gap-2 border-b border-dashed border-[var(--p-content-border-color)] px-4 py-3 font-mono text-sm transition-colors last:border-b-0 hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+        [class.text-primary]="selectedProject === project"
+      >
+        <span class="truncate">
+          @if (project.featured) {
+            <span class="text-primary mr-1">★</span>
+          }{{ project.title }}
+        </span>
+        <p-button
+          icon="pi pi-trash"
+          size="small"
+          severity="danger"
+          [text]="true"
+          [rounded]="true"
+          styleClass="!h-7 !w-7 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+          (onClick)="deleteProject(project, $event)"
+        />
       </div>
-    </ng-template>
-    <ng-template #panel>
-      <div class="m-1 flex w-full flex-col justify-center p-10">
-        <app-add-edit-project></app-add-edit-project>
-      </div>
-    </ng-template>
-  </p-splitter>
-</p-card>
+    } @empty {
+      <p class="text-muted-color m-0 px-4 py-8 text-center font-mono text-xs">
+        // 204 — no projects yet
+      </p>
+    }
+  </div>
+
+  <div
+    class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+  >
+    <div class="border-b border-[var(--p-content-border-color)] px-5 py-3">
+      <p class="text-muted-color m-0 font-mono text-xs">
+        // POST /projects — pick one on the left or start fresh
+      </p>
+    </div>
+    <div class="p-5 sm:p-6">
+      <app-add-edit-project></app-add-edit-project>
+    </div>
+  </div>
+</div>
 
 <p-toast
   [showTransformOptions]="'translateY(100%)'"

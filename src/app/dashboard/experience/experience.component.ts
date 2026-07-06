@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { Card } from 'primeng/card';
 import { FormsModule, NgForm } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -8,10 +7,8 @@ import { Timestamp } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { Textarea } from 'primeng/textarea';
 import { ProfileService } from '@core/services/profile-service.service';
-import { Avatar } from 'primeng/avatar';
-import { Panel } from 'primeng/panel';
 import { DatePipe } from '@angular/common';
-import { ColorPicker } from 'primeng/colorpicker';
+import { TooltipModule } from 'primeng/tooltip';
 import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
@@ -28,17 +25,14 @@ export interface Experience {
 @Component({
   selector: 'app-experience',
   imports: [
-    Card,
     FormsModule,
     DatePicker,
     Button,
     FloatLabel,
     InputText,
     Textarea,
-    Avatar,
-    Panel,
     DatePipe,
-    ColorPicker,
+    TooltipModule,
     Toast,
   ],
   templateUrl: './experience.component.html',

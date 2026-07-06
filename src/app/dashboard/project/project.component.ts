@@ -1,16 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
-import { CardModule } from 'primeng/card';
-import { SplitterModule } from 'primeng/splitter';
-import { ListboxModule } from 'primeng/listbox';
-import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-
-import { LucideAngularModule, Trash2 } from 'lucide-angular';
 
 import { AddEditProjectComponent } from './add-edit-project/add-edit-project.component';
 import { ProfileService } from '@core/services/profile-service.service';
@@ -18,18 +10,7 @@ import { CommunicationService } from '@core/services/communication.service';
 
 @Component({
   selector: 'app-project',
-  imports: [
-    CommonModule,
-    FormsModule,
-    CardModule,
-    SplitterModule,
-    ListboxModule,
-    PanelModule,
-    ButtonModule,
-    ToastModule,
-    LucideAngularModule,
-    AddEditProjectComponent,
-  ],
+  imports: [ButtonModule, ToastModule, AddEditProjectComponent],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css',
   providers: [MessageService],
@@ -37,7 +18,6 @@ import { CommunicationService } from '@core/services/communication.service';
 export class ProjectComponent implements OnInit {
   private messageService = inject(MessageService);
 
-  readonly Trash2 = Trash2;
   private profileSevice: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
     inject(CommunicationService);

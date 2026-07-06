@@ -15,6 +15,7 @@ import {from, Observable} from 'rxjs';
 import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from '@angular/fire/storage';
 import {Experience} from '@dashboard/experience/experience.component';
 import {Resume} from '@dashboard/resume/resume.component';
+import {Certification} from '@dashboard/certification/certification.component';
 
 @Injectable({
   providedIn: 'root',
@@ -79,6 +80,28 @@ export class ProfileService {
   updateExperience(experienceId: string, experienceData: Experience): Observable<void> {
     const projectRef = doc(this.firestore, `experience/${experienceId}`);
     return from(setDoc(projectRef, experienceData, {merge: true}));
+  }
+
+  getAllCertifications() {
+    const certificationsRef = collection(this.firestore, 'certifications');
+    const q = query(certificationsRef, orderBy('issueDate', 'desc'));
+    return collectionData(q, {idField: 'id'});
+  }
+
+  saveCertification(certificationData: Certification): Observable<void> {
+    const certificationRef = collection(this.firestore, 'certifications');
+    return from(addDoc(certificationRef, certificationData).then(() => {
+    }));
+  }
+
+  updateCertification(certificationId: string, certificationData: Certification): Observable<void> {
+    const certificationRef = doc(this.firestore, `certifications/${certificationId}`);
+    return from(setDoc(certificationRef, certificationData, {merge: true}));
+  }
+
+  deleteCertification(certificationId: string): Observable<void> {
+    const certificationRef = doc(this.firestore, `certifications/${certificationId}`);
+    return from(deleteDoc(certificationRef));
   }
 
   uploadFile(file: File): Observable<string> {

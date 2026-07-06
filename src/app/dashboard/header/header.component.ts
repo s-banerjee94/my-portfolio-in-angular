@@ -1,41 +1,27 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
-import { MenuItem } from 'primeng/api';
 
 import { AuthService } from '@core/services/auth-service.service';
+import { ThemeService } from '@core/theme/theme.service';
 
 @Component({
   selector: 'app-header',
-  imports: [MenubarModule, ButtonModule],
+  imports: [RouterLink, RouterLinkActive, ButtonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit {
-  items: MenuItem[] = [];
-  private authService: AuthService = inject(AuthService);
-  private router: Router = inject(Router);
+export class HeaderComponent {
+  protected readonly themeService = inject(ThemeService);
 
-  constructor() {}
+  protected readonly navItems = [
+    { label: 'edit-content', link: '/dashboard/edit-content' },
+    { label: 'messages', link: '/dashboard/messages' },
+  ];
 
-  ngOnInit() {
-    this.items = [
-      {
-        label: 'Dashboard',
-        routerLink: '/dashboard',
-      },
-      {
-        label: 'Edit Content',
-        routerLink: '/dashboard/edit-content',
-      },
-      {
-        label: 'Messages',
-        routerLink: '/dashboard/messages',
-      },
-    ];
-  }
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   logout() {
     this.authService.logout().subscribe(() => {

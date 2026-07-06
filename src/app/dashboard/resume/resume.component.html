@@ -1,92 +1,92 @@
-<p-card header="Resume Managemetent">
-  <div class="flex flex-col gap-y-3">
-    <p-card
-      header="Upload Resume"
-      subheader="You can upload up to 3 resumes. The current date will be automatically added to each upload."
+<div
+  class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+>
+  <div
+    class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--p-content-border-color)] px-5 py-3"
+  >
+    <p class="text-muted-color m-0 font-mono text-xs">
+      // POST /resumes — {{ resumes.length }}/{{ maxResumes }} uploaded, the
+      primary one serves on the site
+    </p>
+    <p-fileUpload
+      [disabled]="resumes.length >= maxResumes"
+      mode="basic"
+      chooseLabel="Upload PDF"
+      chooseIcon="pi pi-cloud-upload"
+      [auto]="true"
+      accept=".pdf"
+      [maxFileSize]="10000000"
+      (uploadHandler)="onFileUpload($event)"
+      [customUpload]="true"
+      styleClass="p-button-sm p-button-outlined"
     >
-      <p-fileUpload
-        [disabled]="resumes.length >= maxResumes"
-        mode="basic"
-        chooseLabel="Select Resume"
-        [auto]="true"
-        accept=".pdf"
-        [maxFileSize]="10000000"
-        (uploadHandler)="onFileUpload($event)"
-        [customUpload]="true"
-      >
-      </p-fileUpload>
-    </p-card>
-    <p-card header="Your Resumes">
-      @if (resumes.length > 0) {
-        <p-table
-          [value]="resumes"
-          styleClass="p-datatable-sm"
-          [tableStyle]="{ 'min-width': '50rem' }"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th>File Name</th>
-              <th>Upload Date</th>
-              <th>Primary</th>
-              <th>Actions</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-resume>
-            <tr>
-              <td>{{ resume.fileName }}</td>
-              <td>{{ resume.uploadDate | firebaseDate | date: "medium" }}</td>
-              <td>
-                <p-checkbox
-                  [binary]="true"
-                  [ngModel]="resume.isPrimary"
-                  [disabled]="resume.isPrimary"
-                  (onChange)="setPrimary(resume)"
-                >
-                </p-checkbox>
-              </td>
-              <td>
-                <div class="flex gap-2">
-                  <a
-                    [href]="resume.fileUrl"
-                    target="_blank"
-                    class="rounded-full"
-                  >
-                    <p-button
-                      type="button"
-                      icon="pi pi-eye"
-                      [rounded]="true"
-                      severity="info"
-                      [outlined]="true"
-                    />
-                  </a>
-                  <p-button
-                    type="button"
-                    icon="pi pi-trash"
-                    [rounded]="true"
-                    severity="danger"
-                    [outlined]="true"
-                    (click)="deleteResume(resume)"
-                  />
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="4" class="p-4 text-center">
-                No resumes found. Upload your first resume.
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      }
-      @if (resumes.length === 0) {
-        <div class="rounded-md border bg-gray-50 p-4 text-center">
-          No resumes found. Upload your first resume.
-        </div>
-      }
-    </p-card>
+    </p-fileUpload>
   </div>
-</p-card>
+
+  <p-table [value]="resumes" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>File Name</th>
+        <th>Uploaded</th>
+        <th>Primary</th>
+        <th class="w-24">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-resume>
+      <tr>
+        <td>
+          <span class="font-mono text-sm">{{ resume.fileName }}</span>
+        </td>
+        <td class="text-muted-color text-sm">
+          {{ resume.uploadDate | firebaseDate | date: "medium" }}
+        </td>
+        <td>
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="resume.isPrimary"
+            [disabled]="resume.isPrimary"
+            (onChange)="setPrimary(resume)"
+          >
+          </p-checkbox>
+        </td>
+        <td>
+          <div class="flex gap-1">
+            <a [href]="resume.fileUrl" target="_blank" rel="noopener">
+              <p-button
+                type="button"
+                icon="pi pi-eye"
+                size="small"
+                [rounded]="true"
+                [text]="true"
+                pTooltip="View"
+                tooltipPosition="top"
+              />
+            </a>
+            <p-button
+              type="button"
+              icon="pi pi-trash"
+              size="small"
+              [rounded]="true"
+              severity="danger"
+              [text]="true"
+              pTooltip="Delete"
+              tooltipPosition="top"
+              (click)="deleteResume(resume)"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4">
+          <p class="text-muted-color m-0 py-6 text-center font-mono text-xs">
+            // 204 — no resumes yet, upload your first PDF
+          </p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
 
 <p-toast></p-toast>

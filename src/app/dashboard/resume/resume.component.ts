@@ -6,10 +6,10 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ProfileService } from '@core/services/profile-service.service';
 import { Observable, catchError, of, tap } from 'rxjs';
-import { Card } from 'primeng/card';
 import { Timestamp } from '@angular/fire/firestore';
 import { FirebaseDatePipe } from '@shared/pipes/firebase-date.pipe';
 
@@ -33,7 +33,7 @@ export interface Resume {
     TableModule,
     CheckboxModule,
     ToastModule,
-    Card,
+    TooltipModule,
     FirebaseDatePipe,
   ],
   providers: [MessageService],

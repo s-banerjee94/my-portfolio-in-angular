@@ -1,26 +1,17 @@
-<p-card header="Edit Contact Section">
-  <div class="flex flex-col md:flex-row">
-    <div class="flex w-full flex-col gap-2 p-2 md:w-1/2 md:py-2">
-      <h1 class="text-xl">Contact Details</h1>
+<div
+  class="overflow-hidden rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]"
+>
+  <div class="border-b border-[var(--p-content-border-color)] px-5 py-3">
+    <p class="text-muted-color m-0 font-mono text-xs">
+      // PUT /profile/contact — direct channels shown on the public site
+    </p>
+  </div>
+
+  <div class="space-y-5 p-5 sm:p-6">
+    <div class="grid gap-5 md:grid-cols-2">
       <p-inputgroup>
         <p-inputgroup-addon>
-          <lucide-icon [img]="Phone"></lucide-icon>
-        </p-inputgroup-addon>
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="phone_number_label"
-            type="tel"
-            autocomplete="off"
-            fluid="true"
-            [(ngModel)]="contactDetails.phone"
-          />
-          <label for="phone_number_label">Phone Number</label>
-        </p-floatlabel>
-      </p-inputgroup>
-      <p-inputgroup>
-        <p-inputgroup-addon>
-          <lucide-icon [img]="Mail"></lucide-icon>
+          <i class="pi pi-envelope"></i>
         </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
@@ -34,12 +25,10 @@
           <label for="email_label">Email Address</label>
         </p-floatlabel>
       </p-inputgroup>
-    </div>
-    <div class="flex w-full flex-col gap-2 p-2 md:w-1/2 md:py-2">
-      <h1 class="text-xl">Social Media & Settings</h1>
+
       <p-inputgroup>
         <p-inputgroup-addon>
-          <lucide-icon [img]="Github"></lucide-icon>
+          <i class="pi pi-github"></i>
         </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
@@ -52,9 +41,10 @@
           <label for="gitHub_profile_URL_label">GitHub Profile URL</label>
         </p-floatlabel>
       </p-inputgroup>
+
       <p-inputgroup>
         <p-inputgroup-addon>
-          <lucide-icon [img]="Linkedin"></lucide-icon>
+          <i class="pi pi-linkedin"></i>
         </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
@@ -67,9 +57,10 @@
           <label for="linkedIn_profile_URL_label">LinkedIn Profile URL</label>
         </p-floatlabel>
       </p-inputgroup>
+
       <p-inputgroup>
         <p-inputgroup-addon>
-          <lucide-icon [img]="Twitter"></lucide-icon>
+          <i class="pi pi-twitter"></i>
         </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
@@ -82,9 +73,10 @@
           <label for="twitter_profile_URL_label">Twitter Profile URL</label>
         </p-floatlabel>
       </p-inputgroup>
+
       <p-inputgroup>
         <p-inputgroup-addon>
-          <lucide-icon [img]="Instagram"></lucide-icon>
+          <i class="pi pi-instagram"></i>
         </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
@@ -98,9 +90,20 @@
         </p-floatlabel>
       </p-inputgroup>
     </div>
+
+    <p class="text-muted-color m-0 font-mono text-xs">
+      // only filled-in channels appear on the site — leave the rest empty
+    </p>
+
+    <div class="flex justify-end">
+      <p-button
+        label="Save changes"
+        styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110"
+        (onClick)="saveContactDetails()"
+      />
+    </div>
   </div>
-  <p-button label="Submit" fluid="true" (click)="saveContactDetails()"/>
-</p-card>
+</div>
 
 <p-toast
   [showTransformOptions]="'translateY(100%)'"

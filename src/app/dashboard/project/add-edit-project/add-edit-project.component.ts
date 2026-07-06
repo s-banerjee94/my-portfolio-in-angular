@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+﻿import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FormsModule, NgForm } from '@angular/forms';
 
-import { CardModule } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
@@ -21,7 +21,6 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { SelectButton } from 'primeng/selectbutton';
 import { EditorModule } from 'primeng/editor';
 import { Timestamp } from '@angular/fire/firestore';
-import { Github, Link, LucideAngularModule } from 'lucide-angular';
 
 export interface Project {
   id?: string;
@@ -44,7 +43,6 @@ export interface Project {
   selector: 'app-add-edit-project',
   imports: [
     FormsModule,
-    CardModule,
     FloatLabel,
     InputText,
     TextareaModule,
@@ -58,7 +56,6 @@ export interface Project {
     ToggleSwitch,
     SelectButton,
     EditorModule,
-    LucideAngularModule,
   ],
   templateUrl: './add-edit-project.component.html',
   styleUrl: './add-edit-project.component.css',
@@ -66,9 +63,6 @@ export interface Project {
 })
 export class AddEditProjectComponent implements OnInit {
   private messageService = inject(MessageService);
-
-  readonly Github = Github;
-  readonly Link = Link;
 
   techs: string[] = [];
   enteredTech: string = '';
@@ -89,11 +83,24 @@ export class AddEditProjectComponent implements OnInit {
     { label: 'GitHub README', value: 'readme' },
   ];
 
+  /** Featured items render as large spotlight cards — the site caps them at 3. */
+  static readonly MAX_FEATURED = 3;
+
+  private allProjects: Project[] = [];
+
   private profileService: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
     inject(CommunicationService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.profileService
+      .getAllProjects()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((projects) => {
+        this.allProjects = projects as Project[];
+      });
+
     this.communicationService.onProjectClickedEvent.subscribe((project) => {
       if (!project?.title) {
         this.mode = 'Add Project';
@@ -140,6 +147,10 @@ export class AddEditProjectComponent implements OnInit {
     return new Date(timestamp);
   }
 
+  startNew(): void {
+    this.communicationService.onProjectClicked({} as Project);
+  }
+
   addTech(event: Event): void {
     event.preventDefault();
     const tech = this.enteredTech.trim();
@@ -161,6 +172,20 @@ export class AddEditProjectComponent implements OnInit {
         detail: 'Please fix the validation errors',
       });
       return;
+    }
+
+    if (this.featured) {
+      const otherFeatured = this.allProjects.filter(
+        (project) => project.featured && project.id !== this.projectId,
+      ).length;
+      if (otherFeatured >= AddEditProjectComponent.MAX_FEATURED) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Featured limit reached',
+          detail: 'Max 3 featured projects — unfeature one first.',
+        });
+        return;
+      }
     }
 
     const projectData: Project = {
