@@ -2,32 +2,19 @@ import { Component, inject, OnInit } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 
-import {
-  ArrowRight,
-  Github,
-  Linkedin,
-  LucideAngularModule,
-  Mail,
-  User,
-} from 'lucide-angular';
 import { ProfileService } from '../services/profile-service.service';
 import { Hero } from '../dashboard/hero/hero.component';
 
 import { Router } from '@angular/router';
+import { ApiStatusCardComponent } from './api-status-card/api-status-card.component';
 
 @Component({
   selector: 'app-hero-section',
-  imports: [ButtonModule, LucideAngularModule],
+  imports: [ButtonModule, ApiStatusCardComponent],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })
 export class HeroSectionComponent implements OnInit {
-  readonly ArrowRight = ArrowRight;
-  readonly Github = Github;
-  readonly Linkedin = Linkedin;
-  readonly Mail = Mail;
-  readonly User = User;
-
   heroData: Hero = {
     name: '',
     professionalTitle: '',

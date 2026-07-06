@@ -1,23 +1,26 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
-import {MenuItem} from 'primeng/api';
-import {MenubarModule} from 'primeng/menubar';
-import {ProfileService} from '../services/profile-service.service';
-import {Resume} from '../dashboard/resume/resume.component';
-import {Button} from 'primeng/button';
-import {ThemeService} from '../theme/theme.service';
+import { MenuItem } from 'primeng/api';
+import { MenubarModule } from 'primeng/menubar';
+import { ProfileService } from '../services/profile-service.service';
+import { Resume } from '../dashboard/resume/resume.component';
+import { Button } from 'primeng/button';
+import { ThemeService } from '../theme/theme.service';
 
 @Component({
   selector: 'app-header',
   imports: [MenubarModule, Button],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
+  host: {
+    '(window:scroll)': 'updateScrollProgress()',
+  },
 })
 export class HeaderComponent implements OnInit {
   items: MenuItem[] | undefined;
-  item: MenuItem[] | undefined;
   primaryResume: Resume | undefined;
 
+  protected readonly scrollProgress = signal(0);
 
   private profileService: ProfileService = inject(ProfileService);
   protected readonly themeService = inject(ThemeService);
@@ -40,11 +43,6 @@ export class HeaderComponent implements OnInit {
         fragment: 'experience',
       },
       {
-        label: 'Skill',
-        routerLink: '/',
-        fragment: 'about',
-      },
-      {
         label: 'Projects',
         routerLink: '/',
         fragment: 'projects',
@@ -56,13 +54,13 @@ export class HeaderComponent implements OnInit {
       },
     ];
 
-    this.getPrimaryResume()
+    this.getPrimaryResume();
+  }
 
-    this.item = [{
-      label: 'Download Resume',
-      icon: 'pi pi-download',
-      command: () => this.downloadResume()
-    }];
+  protected updateScrollProgress(): void {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    this.scrollProgress.set(max > 0 ? (window.scrollY / max) * 100 : 0);
   }
 
   getPrimaryResume() {
@@ -73,8 +71,6 @@ export class HeaderComponent implements OnInit {
       }
     })
   }
-
-
 
   downloadResume() {
     const link = document.createElement('a');

@@ -1,21 +1,14 @@
 <p-menubar
   [model]="items"
-  styleClass="flex
-   !border-none !w-full !fixed
-   !top-0 !left-0 !z-50 !transition-all
-!justify-between
-     !duration-300 !rounded-none"
+  styleClass="!fixed !top-0 !left-0 !z-50 !w-full !rounded-none !border-0 !border-b !border-solid !border-[var(--p-content-border-color)] !bg-[color-mix(in_srgb,var(--site-ground)_86%,transparent)] !backdrop-blur-md !transition-colors !duration-300"
 >
   <ng-template #start>
-    <a
-      href="#home"
-      class="font-display text-xl font-bold text-blue-700 md:text-2xl"
-    >
-      connect<span class="text-amber-400">with</span>sandeepan
+    <a href="#home" class="font-mono text-lg font-semibold">
+      ~/<span class="grad-text">sandeepan</span>
     </a>
   </ng-template>
   <ng-template #end>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-2">
       <p-button
         [icon]="themeService.darkMode() ? 'pi pi-sun' : 'pi pi-moon'"
         (onClick)="themeService.toggle()"
@@ -24,8 +17,19 @@
         severity="secondary"
         ariaLabel="Toggle dark mode"
       />
-      <p-button label="View Resume" (onClick)="downloadResume()" text severity="info" />
+      <p-button
+        label="Résumé"
+        icon="pi pi-download"
+        (onClick)="downloadResume()"
+        styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110"
+      />
     </div>
   </ng-template>
 </p-menubar>
 
+<!-- reading-progress bar, sits on the top edge above the menubar -->
+<div
+  class="grad-bg fixed top-0 left-0 z-[60] h-[3px]"
+  [style.width.%]="scrollProgress()"
+  aria-hidden="true"
+></div>

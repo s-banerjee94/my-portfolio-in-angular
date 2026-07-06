@@ -1,29 +1,38 @@
 <section id="experience" class="py-20">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-    <div class="text-center mb-16">
-      <h2
-        class="font-display mb-4 text-3xl font-bold text-[#111827] md:text-4xl">
-        Experience
-      </h2>
-      <div class="mx-auto mb-8 h-1 w-20 bg-[#0D9488]"></div>
-      <p class="mx-auto max-w-3xl text-gray-600">My Professional Journey</p>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8" appReveal>
+    <app-section-header
+      eyebrow="GET /experience"
+      title="Career, as release history."
+      lede="Every role shipped something real. Highlights below; the full changelog is in the résumé."
+    />
+
+    <div>
+      @for (experience of experiences; track experience.id) {
+        <article
+          class="grid gap-2 border-b border-[var(--p-content-border-color)] py-7 first:border-t md:grid-cols-[140px_1fr] md:gap-7"
+        >
+          <div class="text-primary pt-1 font-mono text-sm">
+            {{ versionTag($index) }}
+            <small class="text-muted-color mt-1 block text-xs">
+              {{ convertToDate(experience.startDate) }} —
+              {{ convertToDate(experience.endDate) }}
+            </small>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold">{{ experience.jobProfile }}</h3>
+            <p class="text-muted-color mb-3 text-sm">
+              {{ experience.companyName }}
+            </p>
+            <p class="text-muted-color max-w-[70ch]">
+              {{ experience.description }}
+            </p>
+          </div>
+        </article>
+      } @empty {
+        <p class="text-muted-color font-mono text-sm">
+          // 204 — no experience entries yet
+        </p>
+      }
     </div>
-    <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
-      <ng-template #marker let-event>
-              <span class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
-                    [style]="{ 'background-color': event.color }">
-                  <i class="pi pi-briefcase"></i>
-              </span>
-      </ng-template>
-      <ng-template #content let-event>
-        <p-card [header]="event.companyName + ' | ' +  event.jobProfile "
-                [subheader]="convertToDate(event.startDate) + ' to ' + convertToDate(event.endDate)">
-          <p>
-            {{ event.description }}
-          </p>
-        </p-card>
-      </ng-template>
-    </p-timeline>
   </div>
 </section>
-

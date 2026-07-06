@@ -1,30 +1,34 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {Timeline} from 'primeng/timeline';
-import {CardModule} from 'primeng/card';
-import {ButtonModule} from 'primeng/button';
-import {ProfileService} from '../services/profile-service.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { ProfileService } from '../services/profile-service.service';
+import { Experience } from '../dashboard/experience/experience.component';
+import { SectionHeaderComponent } from '../shared/section-header.component';
+import { RevealDirective } from '../shared/reveal.directive';
 
 @Component({
   selector: 'app-experience-section',
-  imports: [Timeline, CardModule, ButtonModule],
+  imports: [SectionHeaderComponent, RevealDirective],
   templateUrl: './experience-section.component.html',
-  styleUrl: './experience-section.component.css'
+  styleUrl: './experience-section.component.css',
 })
 export class ExperienceSectionComponent implements OnInit {
-  events: any[] | undefined;
+  experiences: Experience[] = [];
   private profileService: ProfileService = inject(ProfileService);
-
-  constructor() {}
 
   ngOnInit() {
     this.profileService.getAllExperiences().subscribe({
       next: (data) => {
-        this.events = data as Event[];
+        this.experiences = data as Experience[];
       },
       error: (err) => {
 
       }
     })
+  }
+
+  /** Experiences arrive newest-first, so the newest role gets the highest
+   *  "release" number: 3 roles → v3.x, v2.x, v1.x. */
+  versionTag(index: number): string {
+    return `v${this.experiences.length - index}.x`;
   }
 
   convertToDate(timestamp: any): string {
@@ -50,6 +54,6 @@ export class ExperienceSectionComponent implements OnInit {
     const month = monthNames[date.getMonth()];
     const year = date.getFullYear();
 
-    return `${month} - ${year}`;
+    return `${month} ${year}`;
   }
 }

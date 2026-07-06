@@ -1,0 +1,217 @@
+.api-card {
+  background: var(--site-code-bg);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 14px;
+  box-shadow: var(--site-glow);
+  overflow: hidden;
+}
+
+.api-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.07);
+}
+
+.api-title {
+  font-size: 0.75rem;
+  color: var(--site-code-muted);
+}
+
+.replay {
+  background: none;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 6px;
+  color: var(--site-code-muted);
+  font-size: 0.72rem;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.replay:hover {
+  color: var(--site-code-text);
+  border-color: rgb(255 255 255 / 0.3);
+}
+
+.api-stage {
+  padding: 18px 20px 20px;
+  min-height: 350px;
+}
+
+.cmd {
+  margin: 0 0 4px;
+  font-size: 0.82rem;
+  color: var(--site-code-text);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.caret {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  vertical-align: text-bottom;
+  background: var(--site-code-key);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.api-meta {
+  font-size: 0.74rem;
+  color: var(--site-code-muted);
+  margin: 6px 0 10px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+.api-meta.show {
+  opacity: 1;
+  transform: none;
+}
+.api-meta b {
+  color: var(--site-ok);
+  font-weight: 600;
+}
+
+.json {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  max-height: 300px;
+  transition: max-height 0.5s ease, opacity 0.45s ease, transform 0.45s ease,
+    margin 0.5s ease;
+}
+.json .jl {
+  display: block;
+  opacity: 0;
+  transform: translateY(5px);
+}
+.json.show .jl {
+  animation: line-in 0.32s ease forwards;
+}
+.json.show .jl:nth-child(1) { animation-delay: 0.05s; }
+.json.show .jl:nth-child(2) { animation-delay: 0.15s; }
+.json.show .jl:nth-child(3) { animation-delay: 0.25s; }
+.json.show .jl:nth-child(4) { animation-delay: 0.35s; }
+.json.show .jl:nth-child(5) { animation-delay: 0.45s; }
+.json.show .jl:nth-child(6) { animation-delay: 0.55s; }
+.json.show .jl:nth-child(7) { animation-delay: 0.65s; }
+.json.show .jl:nth-child(8) { animation-delay: 0.75s; }
+@keyframes line-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.json.gone {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  margin: 0;
+  overflow: hidden;
+}
+.json .k { color: var(--site-code-key); }
+.json .s { color: var(--site-code-str); }
+.json .n { color: var(--site-code-num); }
+.json .p { color: var(--site-code-muted); }
+
+.uicard {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(14px) scale(0.97);
+  transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease 0.1s,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+.uicard.show {
+  max-height: 420px;
+  opacity: 1;
+  transform: none;
+}
+
+.uicard-in {
+  background: rgb(255 255 255 / 0.035);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-top: 4px;
+}
+.u-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.u-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--site-ok);
+  border: 1px solid color-mix(in srgb, var(--site-ok) 45%, transparent);
+  background: color-mix(in srgb, var(--site-ok) 12%, transparent);
+  padding: 4px 11px;
+  border-radius: 999px;
+}
+.u-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--site-ok);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+.u-meta {
+  font-size: 0.72rem;
+  color: var(--site-code-muted);
+}
+.u-name {
+  font-size: 1.35rem;
+  color: var(--site-code-text);
+  font-weight: 600;
+}
+.u-role {
+  font-size: 0.85rem;
+  color: var(--site-code-muted);
+  margin-bottom: 14px;
+}
+.u-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.u-chip {
+  font-size: 0.7rem;
+  color: var(--site-code-key);
+  border: 1px solid color-mix(in srgb, var(--site-code-key) 35%, transparent);
+  border-radius: 5px;
+  padding: 2px 8px;
+}
+.u-cap {
+  margin: 12px 0 0;
+  font-size: 0.72rem;
+  color: var(--site-code-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret,
+  .u-dot {
+    animation: none;
+  }
+  .json .jl {
+    opacity: 1;
+    transform: none;
+  }
+}
