@@ -29,7 +29,7 @@ export const noAuthGuard: CanActivateFn = (route, state) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // Already logged in → redirect away
-        router.navigate(['/dashboard']);
+        router.navigate(['/admin']);
         subscriber.next(false);
       } else {
         // Not logged in → allow access to /login
