@@ -40,6 +40,8 @@ export interface Hero {
   providers: [MessageService],
 })
 export class HeroComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   hero: Hero = {
     name: '',
     professionalTitle: '',
@@ -53,8 +55,6 @@ export class HeroComponent implements OnInit {
 
   private profileService: ProfileService = inject(ProfileService);
   private isSubmitting: boolean = false;
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.loadHeroData();

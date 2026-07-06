@@ -39,6 +39,8 @@ export interface AboutData {
   providers: [MessageService],
 })
 export class AboutComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   @ViewChild('aboutForm') aboutForm!: NgForm;
 
   formData: AboutData = {
@@ -52,8 +54,6 @@ export class AboutComponent implements OnInit {
   enteredSkill = '';
   isEditorReady = false;
   private profileService: ProfileService = inject(ProfileService);
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.profileService.getSectionData('about').subscribe({

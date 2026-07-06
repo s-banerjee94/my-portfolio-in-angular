@@ -44,6 +44,8 @@ import { take } from 'rxjs/operators';
   providers: [MessageService],
 })
 export class MessagesComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   readonly Check = Check;
   readonly X = X;
   readonly Trash2 = Trash2;
@@ -62,8 +64,6 @@ export class MessagesComponent implements OnInit {
   @ViewChild('filterPopover') filterPopover!: Popover;
 
   private contactService: ContaceMeService = inject(ContaceMeService);
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.selectFilter(this.selectedFilter || null);

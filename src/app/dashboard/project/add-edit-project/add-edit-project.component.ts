@@ -53,6 +53,8 @@ export interface Project {
   providers: [MessageService],
 })
 export class AddEditProjectComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   readonly Github = Github;
   readonly Link = Link;
 
@@ -70,8 +72,6 @@ export class AddEditProjectComponent implements OnInit {
   private profileService: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
     inject(CommunicationService);
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.communicationService.onProjectClickedEvent.subscribe((project) => {

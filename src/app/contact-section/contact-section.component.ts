@@ -33,6 +33,8 @@ import { Card } from 'primeng/card';
   providers: [MessageService],
 })
 export class ContactSectionComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   readonly Mail = Mail;
   readonly Phone = Phone;
   readonly MapPin = MapPin;
@@ -54,8 +56,6 @@ export class ContactSectionComponent implements OnInit {
 
   private profileService: ProfileService = inject(ProfileService);
   private contaceMeService: ContaceMeService = inject(ContaceMeService);
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.profileService.getSectionData('contact').subscribe({

@@ -35,6 +35,8 @@ import { CommunicationService } from '../../services/communication.service';
   providers: [MessageService],
 })
 export class ProjectComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   readonly Trash2 = Trash2;
   private profileSevice: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =
@@ -42,8 +44,6 @@ export class ProjectComponent implements OnInit {
   projects: any[] = [];
 
   selectedProject: any = null;
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.getAllProjects();
@@ -73,7 +73,7 @@ export class ProjectComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load projects'
+          detail: 'Failed to load projects',
         });
       },
     });
@@ -93,7 +93,7 @@ export class ProjectComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to delete project'
+          detail: 'Failed to delete project',
         });
       },
     });

@@ -46,6 +46,8 @@ export interface Experience {
   providers: [MessageService],
 })
 export class ExperienceComponent implements OnInit {
+  private messageService = inject(MessageService);
+
   startDate: Date | undefined;
   endDate: Date | undefined;
   companyName: string = '';
@@ -60,8 +62,6 @@ export class ExperienceComponent implements OnInit {
 
   @ViewChild('experienceForm') experienceForm!: NgForm;
   private profileService: ProfileService = inject(ProfileService);
-
-  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.profileService.getAllExperiences().subscribe({
