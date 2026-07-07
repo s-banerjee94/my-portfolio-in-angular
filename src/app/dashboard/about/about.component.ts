@@ -95,8 +95,13 @@ export class AboutComponent implements OnInit {
       return;
     }
 
+    // Text pasted from chat apps/docs often arrives with every space as a
+    // no-break space (&nbsp;), which renders as one unwrappable line on the
+    // public site. Normalize them to plain spaces on every save.
     const aboutData = {
-      text: this.formData.text,
+      text: this.formData.text
+        .replace(/&nbsp;/g, ' ')
+        .replace(/[\u00A0\u202F\u2007]/g, ' '),
       experience: this.formData.experience,
       education: this.formData.education,
       certification: this.formData.certification,

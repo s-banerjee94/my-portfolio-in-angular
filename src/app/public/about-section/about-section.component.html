@@ -6,10 +6,12 @@
     />
 
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
-      <div>
+      <!-- min-w-0 + break-words: CMS-fed text can never outgrow its grid
+           column and slide under the quick-facts card -->
+      <div class="min-w-0">
         <div
           [innerHTML]="aboutData?.text"
-          class="rich-text text-muted-color max-w-[65ch] space-y-4"
+          class="rich-text text-muted-color max-w-[65ch] space-y-4 break-words"
         ></div>
 
         @if (aboutData?.skills?.length) {
