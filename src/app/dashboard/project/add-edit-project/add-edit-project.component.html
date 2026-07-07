@@ -65,7 +65,7 @@
           [autoResize]="true"
           fluid="true"
           required
-          minlength="25"
+          minlength="10"
           #descriptionField="ngModel"
         ></textarea>
         <label for="description_label">Short description (card text)</label>
@@ -76,7 +76,7 @@
         descriptionField.touched
       ) {
         <p-message severity="error" variant="simple" size="small">
-          Enter valid description, min length 25 characters
+          Enter valid description, min length 10 characters
         </p-message>
       }
     </div>

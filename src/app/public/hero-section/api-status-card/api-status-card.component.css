@@ -196,12 +196,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* the pill and meta can't always share one row on phones — wrap the meta
+     to its own line instead of colliding */
+  flex-wrap: wrap;
+  gap: 4px 12px;
   margin-bottom: 12px;
 }
 .u-pill {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  white-space: nowrap;
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--site-ok);
@@ -248,12 +253,6 @@
   border-radius: 5px;
   padding: 2px 8px;
 }
-.u-cap {
-  margin: 12px 0 0;
-  font-size: 0.72rem;
-  color: var(--site-code-muted);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .caret,
   .u-dot,

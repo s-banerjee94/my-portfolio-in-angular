@@ -22,13 +22,15 @@
         [class.show]="jsonVisible()"
         [class.gone]="uiVisible()"
         aria-hidden="true"
-      ><span class="jl" style="--d: 0.05s"><span class="p">{{ '{' }}</span></span><span class="jl" style="--d: 0.15s">  <span class="k">"name"</span><span class="p">:</span> <span class="s">"{{ name() }}"</span><span class="p">,</span></span><span class="jl" style="--d: 0.25s">  <span class="k">"role"</span><span class="p">:</span> <span class="s">"{{ role() }}"</span><span class="p">,</span></span><span class="jl" style="--d: 0.35s">  <span class="k">"open_to"</span><span class="p">:</span> <span class="p">[</span><span class="s">"full-time"</span><span class="p">,</span> <span class="s">"freelance"</span><span class="p">],</span></span><span class="jl" style="--d: 0.45s">  <span class="k">"stack"</span><span class="p">:</span> <span class="p">[</span>@for (item of stack(); track item) {<span class="s">"{{ item }}"</span>@if (!$last) {<span class="p">, </span>}}<span class="p">],</span></span><span class="jl" style="--d: 0.55s">  <span class="k">"years_in_production"</span><span class="p">:</span> <span class="n">5</span><span class="p">,</span></span><span class="jl" style="--d: 0.65s">  <span class="k">"replies_within_hours"</span><span class="p">:</span> <span class="n">24</span></span><span class="jl" style="--d: 0.75s"><span class="p">{{ '}' }}</span></span></pre>
+      ><span class="jl" style="--d: 0.05s"><span class="p">{{ '{' }}</span></span><span class="jl" style="--d: 0.15s">  <span class="k">"name"</span><span class="p">:</span> <span class="s">"{{ name() }}"</span><span class="p">,</span></span><span class="jl" style="--d: 0.25s">  <span class="k">"role"</span><span class="p">:</span> <span class="s">"{{ role() }}"</span><span class="p">,</span></span><span class="jl" style="--d: 0.35s">  <span class="k">"open_to"</span><span class="p">:</span> <span class="p">[</span><span class="s">"full-time"</span><span class="p">,</span> <span class="s">"freelance"</span><span class="p">],</span></span><span class="jl" style="--d: 0.45s">  <span class="k">"stack"</span><span class="p">:</span> <span class="p">[</span>@for (item of stack(); track item) {<span class="s">"{{ item }}"</span>@if (!$last) {<span class="p">, </span>}}<span class="p">],</span></span><span class="jl" style="--d: 0.55s">  <span class="k">"years_in_production"</span><span class="p">:</span> <span class="n">3</span><span class="p">,</span></span><span class="jl" style="--d: 0.65s">  <span class="k">"replies_within_hours"</span><span class="p">:</span> <span class="n">24</span></span><span class="jl" style="--d: 0.75s"><span class="p">{{ '}' }}</span></span></pre>
 
       <div class="uicard" [class.show]="uiVisible()">
         <div class="uicard-in">
           <div class="u-top">
             <span class="u-pill"><span class="u-dot"></span>Open to work</span>
-            <span class="u-meta font-mono">replies &lt; 24h</span>
+            <span class="u-meta font-mono"
+              >3y in production · replies &lt; 24h</span
+            >
           </div>
           <div class="u-name font-display">{{ name() }}</div>
           <div class="u-role">{{ role() }}</div>
@@ -38,9 +40,6 @@
             }
           </div>
         </div>
-        <p class="u-cap font-mono">
-          // same payload — rendered by the frontend
-        </p>
       </div>
     </div>
   </div>

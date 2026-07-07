@@ -42,7 +42,7 @@
             pInputText
             name="professionalTitle"
             required="true"
-            minlength="25"
+            minlength="5"
             maxlength="100"
             id="professional_title"
             [(ngModel)]="hero.professionalTitle"
@@ -54,7 +54,7 @@
         </p-floatlabel>
         @if (titleField.invalid && titleField.dirty && titleField.touched) {
           <p-message severity="error" variant="simple" size="small"
-            >Enter a valid professional title (minimum 25 characters)
+            >Enter a valid professional title (minimum 5 characters)
           </p-message>
         }
       </div>
@@ -66,7 +66,7 @@
           pTextarea
           name="description"
           required="true"
-          minlength="25"
+          minlength="10"
           maxlength="1000"
           id="description"
           [(ngModel)]="hero.description"
@@ -84,7 +84,7 @@
         descriptionField.touched
       ) {
         <p-message severity="error" variant="simple" size="small"
-          >Enter a valid description (minimum 25 characters)
+          >Enter a valid description (minimum 10 characters)
         </p-message>
       }
     </div>
@@ -162,7 +162,7 @@
             pInputText
             name="email"
             required="true"
-            minlength="15"
+            minlength="6"
             maxlength="50"
             id="email"
             email

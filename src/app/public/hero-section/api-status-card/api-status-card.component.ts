@@ -27,6 +27,8 @@ export class ApiStatusCardComponent implements OnInit {
   readonly stack = input<string[]>([
     'java',
     'spring-boot',
+    'AI Agent',
+    'AWS',
     'angular',
     'firebase',
   ]);

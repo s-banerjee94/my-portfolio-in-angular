@@ -132,7 +132,7 @@
                 autocomplete="off"
                 fluid="true"
                 required="true"
-                minlength="3"
+                minlength="2"
                 maxlength="50"
                 #nameInput="ngModel"
               />
@@ -176,7 +176,7 @@
               autocomplete="off"
               fluid="true"
               required="true"
-              minlength="10"
+              minlength="3"
               maxlength="200"
               #subjectInput="ngModel"
             />
@@ -186,7 +186,7 @@
             subjectInput.invalid && subjectInput.dirty && subjectInput.touched
           ) {
             <p-message severity="error" variant="simple" size="small"
-              >Subject is required, min 10 characters
+              >Subject is required, min 3 characters
             </p-message>
           }
         </div>
@@ -204,7 +204,7 @@
               class="h-full"
               fluid="true"
               required="true"
-              minlength="20"
+              minlength="5"
               maxlength="500"
               #messageInput="ngModel"
             ></textarea>
@@ -214,7 +214,7 @@
             messageInput.invalid && messageInput.dirty && messageInput.touched
           ) {
             <p-message severity="error" variant="simple" size="small"
-              >Message is required, min 20 characters
+              >Message is required, min 5 characters
             </p-message>
           }
         </div>
