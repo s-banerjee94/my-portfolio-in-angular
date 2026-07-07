@@ -1,5 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { ContactInfo } from '@dashboard/contact/contact.component';
@@ -11,7 +12,7 @@ interface SocialLink {
 
 @Component({
   selector: 'app-footer',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css',
 })

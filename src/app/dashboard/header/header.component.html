@@ -1,27 +1,40 @@
 <header
   class="sticky top-0 z-50 border-b border-[var(--p-content-border-color)] bg-[color-mix(in_srgb,var(--site-ground)_86%,transparent)] backdrop-blur-md"
 >
+  <!-- Phones get two rows (logo + actions, then a scrollable nav strip);
+       sm and up collapses back to the original single 56px row. -->
   <div
-    class="container mx-auto flex h-14 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+    class="container mx-auto flex flex-wrap items-center justify-between gap-x-4 px-4 sm:h-14 sm:flex-nowrap sm:px-6 lg:px-8"
   >
-    <a routerLink="/admin" class="font-mono text-base font-semibold">
+    <a
+      routerLink="/admin"
+      class="order-1 flex h-14 items-center font-mono text-base font-semibold"
+    >
       ~/<span class="grad-text">sandeepan</span
       ><span class="text-muted-color">/admin</span>
     </a>
 
-    <nav class="flex items-center gap-1 font-mono text-sm">
+    <nav
+      class="order-3 flex w-full items-center gap-1 overflow-x-auto pb-2 font-mono text-sm sm:order-2 sm:w-auto sm:overflow-visible sm:pb-0"
+    >
       @for (item of navItems; track item.link) {
         <a
           [routerLink]="item.link"
           routerLinkActive="!text-primary"
-          class="text-muted-color hover:text-primary rounded-md px-3 py-1.5 transition-colors"
+          class="text-muted-color hover:text-primary rounded-md px-3 py-1.5 whitespace-nowrap transition-colors"
         >
           {{ item.label }}
         </a>
       }
+      <a
+        routerLink="/"
+        class="text-muted-color hover:text-primary rounded-md px-3 py-1.5 whitespace-nowrap transition-colors sm:hidden"
+      >
+        view site ↗
+      </a>
     </nav>
 
-    <div class="flex items-center gap-2">
+    <div class="order-2 flex h-14 items-center gap-2 sm:order-3">
       <a
         routerLink="/"
         class="text-muted-color hover:text-primary hidden font-mono text-sm transition-colors sm:inline"
