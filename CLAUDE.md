@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm test` — Karma/Jasmine tests in watch mode (opens Chrome)
 - `ng test --watch=false --browsers=ChromeHeadless` — single test run
 - `ng test --include='**/hero.component.spec.ts'` — run a single spec file
-- `npm run emulators` — start local Firebase emulators (Auth 9099, Firestore 8081, Storage 9199) with import/export in `./emulator-data`. Always use this instead of bare `firebase emulators:start`: the wrapper (`scripts/emulators.mjs`) runs firebase-tools with its cwd inside `node_modules/.cache`, so debug logs never land in the project root — a locked/delete-pending log there crashes `ng build` with `TS500 EPERM` on Windows.
+- `npm run emulators` — start local Firebase emulators (Auth 9099, Firestore 8081, Storage 9199) with import/export in `./emulator-data`. Always use this instead of bare `firebase emulators:start`: the wrapper (`scripts/emulators.mjs`) runs firebase-tools with its cwd inside `node_modules/.cache`, so debug logs never land in the project root — a locked/delete-pending log there crashes `ng build` with `TS500 EPERM` on Windows. The wrapper also auto-exports the running data to `./emulator-data` every 2 minutes, because `--export-on-exit` alone only fires on a graceful shutdown (rare on Windows) — emulator edits survive closed terminals and force-kills at the cost of the last ≤2 minutes.
 - `npm run seed` — fill running emulators with portfolio content + the admin login user (`scripts/seed-emulator.mjs`, idempotent)
 - `firebase deploy` — deploy to Firebase Hosting (serves `dist/my-portfolio-angular/browser`)
 

@@ -11,9 +11,16 @@
  * impossible.
  *
  * Data import/export still uses ./emulator-data in the project root.
+ *
+ * --export-on-exit only fires on a graceful shutdown, which Windows rarely
+ * delivers (closed terminal, killed task, Ctrl+C not reaching the Java
+ * engines) — that silently threw away every edit made during the session.
+ * So this wrapper also snapshots the running emulators into ./emulator-data
+ * every 2 minutes: feed the data once and every later start re-imports the
+ * latest snapshot no matter how the previous session ended.
  */
 
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -23,13 +30,14 @@ const logDir = resolve(root, 'node_modules', '.cache', 'firebase-emulators');
 mkdirSync(logDir, { recursive: true });
 
 const dataDir = resolve(root, 'emulator-data');
+const project = 'my-portfolio-in-angular';
 
 const child = spawn(
   'firebase',
   [
     'emulators:start',
     '--project',
-    'my-portfolio-in-angular',
+    project,
     '--config',
     resolve(root, 'firebase.json'),
     '--import',
@@ -40,4 +48,30 @@ const child = spawn(
   { cwd: logDir, stdio: 'inherit', shell: true },
 );
 
-child.on('exit', (code) => process.exit(code ?? 0));
+const EXPORT_EVERY_MS = 2 * 60 * 1000;
+let exporting = false;
+
+const autoExport = setInterval(() => {
+  if (exporting) return;
+  exporting = true;
+  execFile(
+    'firebase',
+    ['emulators:export', dataDir, '--force', '--project', project],
+    { cwd: logDir, shell: true },
+    (err) => {
+      exporting = false;
+      if (!err) {
+        console.log(
+          `[emulators] data auto-saved to ./emulator-data (${new Date().toLocaleTimeString()})`,
+        );
+      }
+      // Errors are expected while the hub is still booting — stay quiet and
+      // let the next tick retry.
+    },
+  );
+}, EXPORT_EVERY_MS);
+
+child.on('exit', (code) => {
+  clearInterval(autoExport);
+  process.exit(code ?? 0);
+});
