@@ -1,4 +1,4 @@
-﻿import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FormsModule, NgForm } from '@angular/forms';
@@ -197,16 +197,24 @@ export class AddEditProjectComponent implements OnInit {
       }
     }
 
+    // Quill serializes every space as &nbsp; (unwrappable on the public
+    // site) and blank lines as empty <p></p>; normalize on save so only
+    // tidy HTML is stored — same treatment as the about editor.
     const projectData: Project = {
       title: this.projectTitle,
-      description: this.description,
+      description: this.description
+        .replace(/&nbsp;/g, ' ')
+        .replace(/[\u00A0\u202F\u2007]/g, ' '),
       gitHubUrl: this.gitHubUrl,
       liveDemoUrl: this.liveDemoUrl,
       technologies: this.techs,
       projectImgUrl: this.projectImgUrl,
       projectDate: this.projectDate!,
       featured: this.featured,
-      detailsHtml: this.detailsHtml,
+      detailsHtml: this.detailsHtml
+        .replace(/&nbsp;/g, ' ')
+        .replace(/[\u00A0\u202F\u2007]/g, ' ')
+        .replace(/<p>(\s|<br\s*\/?>)*<\/p>/g, ''),
       detailsSource: this.detailsSource,
     };
 
