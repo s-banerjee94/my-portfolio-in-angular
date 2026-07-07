@@ -16,6 +16,7 @@ export class HeaderComponent {
   protected readonly themeService = inject(ThemeService);
 
   protected readonly navItems = [
+    { label: 'analytics', link: '/admin/analytics' },
     { label: 'edit-content', link: '/admin/edit-content' },
     { label: 'messages', link: '/admin/messages' },
   ];

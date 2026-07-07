@@ -24,8 +24,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Dashboard',
     children: [
-      // /admin alone has nothing to show — land on the content editor.
-      { path: '', redirectTo: 'edit-content', pathMatch: 'full' },
+      // Land on the traffic overview — the "what happened since I last looked" page.
+      { path: '', redirectTo: 'analytics', pathMatch: 'full' },
+      {
+        path: 'analytics',
+        loadComponent: () =>
+          import('@dashboard/analytics/analytics.component').then(
+            (m) => m.AnalyticsComponent,
+          ),
+        title: 'Analytics',
+      },
       {
         path: 'edit-content',
         loadComponent: () =>

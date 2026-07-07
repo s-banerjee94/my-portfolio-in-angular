@@ -40,6 +40,29 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null;
     }
 
+    // Visit analytics: the public site logs one small doc per visit/click.
+    // Create-only and shape-checked; visits are immutable once written, and
+    // only the authenticated admin can read or prune them.
+    match /visits/{visit} {
+      allow create: if isValidVisit();
+      allow read, delete: if request.auth != null;
+    }
+
+    function isValidVisit() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['event', 'source', 'referrer', 'path', 'device', 'browser', 'language', 'timezone', 'timestamp', 'meta'])
+        && data.event is string && data.event.size() >= 1 && data.event.size() <= 40
+        && data.source is string && data.source.size() <= 80
+        && data.referrer is string && data.referrer.size() <= 200
+        && data.path is string && data.path.size() <= 100
+        && data.device is string && data.device.size() <= 20
+        && data.browser is string && data.browser.size() <= 30
+        && data.language is string && data.language.size() <= 20
+        && data.timezone is string && data.timezone.size() <= 60
+        && data.timestamp is number
+        && data.meta is string && data.meta.size() <= 120;
+    }
+
     // Shape check for public message creation — mirrors the contact form's
     // fields and caps sizes so bots can't dump arbitrary payloads.
     function isValidMessage() {

@@ -7,7 +7,7 @@
   <div class="blob blob-2" aria-hidden="true"></div>
 
   <div
-    class="relative z-10 container mx-auto grid grid-cols-1 items-center gap-12 px-4 pt-28 pb-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:pt-36 lg:pb-20"
+    class="relative z-10 container mx-auto grid grid-cols-1 items-center gap-12 px-4 pt-28 pb-16 sm:px-6 lg:min-h-dvh lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:pt-36 lg:pb-20"
   >
     @if (loading) {
       <div class="animate-pulse" aria-hidden="true">
@@ -91,6 +91,7 @@
               [href]="heroData.githubUrl"
               target="_blank"
               rel="noopener"
+              (click)="track('social_github')"
               >github</a
             >
           }
@@ -100,11 +101,17 @@
               [href]="heroData.linkedInUrl"
               target="_blank"
               rel="noopener"
+              (click)="track('social_linkedin')"
               >linkedin</a
             >
           }
           @if (heroData.email) {
-            <a class="social-link" [href]="'mailto:' + heroData.email">email</a>
+            <a
+              class="social-link"
+              [href]="'mailto:' + heroData.email"
+              (click)="track('social_email')"
+              >email</a
+            >
           }
         </div>
       </div>

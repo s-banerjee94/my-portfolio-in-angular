@@ -27,7 +27,9 @@
   font-size: 0.72rem;
   padding: 3px 9px;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 .replay:hover {
   color: var(--site-code-text);
@@ -66,7 +68,9 @@
   margin: 6px 0 10px;
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.4s, transform 0.4s;
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
 }
 .api-meta.show {
   opacity: 1;
@@ -75,6 +79,15 @@
 .api-meta b {
   color: var(--site-ok);
   font-weight: 600;
+}
+
+/* Both swap states live in the same grid cell, so the stage always has the
+   height of the taller one — the crossfade can never change page layout. */
+.swap {
+  display: grid;
+}
+.swap > * {
+  grid-area: 1 / 1;
 }
 
 .json {
@@ -86,9 +99,10 @@
   /* keep the horizontal escape hatch on narrow screens, but never show a
      native scrollbar inside the animation */
   scrollbar-width: none;
-  max-height: 300px;
-  transition: max-height 0.5s ease, opacity 0.45s ease, transform 0.45s ease,
-    margin 0.5s ease;
+  align-self: start;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
 }
 .json .jl {
   display: block;
@@ -96,16 +110,9 @@
   transform: translateY(5px);
 }
 .json.show .jl {
-  animation: line-in 0.32s ease forwards;
+  /* per-line stagger: each span carries its own --d in the template */
+  animation: line-in 0.32s ease var(--d, 0s) forwards;
 }
-.json.show .jl:nth-child(1) { animation-delay: 0.05s; }
-.json.show .jl:nth-child(2) { animation-delay: 0.15s; }
-.json.show .jl:nth-child(3) { animation-delay: 0.25s; }
-.json.show .jl:nth-child(4) { animation-delay: 0.35s; }
-.json.show .jl:nth-child(5) { animation-delay: 0.45s; }
-.json.show .jl:nth-child(6) { animation-delay: 0.55s; }
-.json.show .jl:nth-child(7) { animation-delay: 0.65s; }
-.json.show .jl:nth-child(8) { animation-delay: 0.75s; }
 @keyframes line-in {
   to {
     opacity: 1;
@@ -113,41 +120,77 @@
   }
 }
 .json.gone {
-  max-height: 0;
   opacity: 0;
   transform: translateY(-10px) scale(0.98);
-  margin: 0;
-  overflow: hidden;
+  pointer-events: none;
 }
 .json::-webkit-scrollbar {
   display: none;
 }
-.json .k { color: var(--site-code-key); }
-.json .s { color: var(--site-code-str); }
-.json .n { color: var(--site-code-num); }
-.json .p { color: var(--site-code-muted); }
+.json .k {
+  color: var(--site-code-key);
+}
+.json .s {
+  color: var(--site-code-str);
+}
+.json .n {
+  color: var(--site-code-num);
+}
+.json .p {
+  color: var(--site-code-muted);
+}
 
 .uicard {
-  max-height: 0;
   opacity: 0;
-  overflow: hidden;
+  align-self: start;
+  pointer-events: none;
   transform: translateY(14px) scale(0.97);
-  transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+  transition:
     opacity 0.5s ease 0.1s,
     transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
 }
 .uicard.show {
-  max-height: 420px;
   opacity: 1;
+  pointer-events: auto;
   transform: none;
 }
 
+/* Registered so the angle interpolates — this is what makes the border
+   gradient rotate instead of jumping. Browsers without @property simply
+   show the static gradient border. */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .uicard-in {
-  background: rgb(255 255 255 / 0.035);
-  border: 1px solid rgb(255 255 255 / 0.1);
+  /* Two-layer trick: opaque card fill clips to padding-box, the rotating
+     conic gradient shows only through the 1px transparent border ring.
+     The fill must be opaque or the gradient would bleed through it. */
+  --fill: color-mix(in srgb, var(--site-code-bg) 96%, white);
+  background:
+    linear-gradient(var(--fill), var(--fill)) padding-box,
+    conic-gradient(
+        from var(--border-angle),
+        rgb(255 255 255 / 0.1) 0deg 300deg,
+        /* the --site-grad stops, sweeping past as a highlight */ #e64980 325deg,
+        #ff6d4d 340deg,
+        #fbbf24 352deg,
+        rgb(255 255 255 / 0.1) 360deg
+      )
+      border-box;
+  border: 1px solid transparent;
   border-radius: 12px;
   padding: 18px 20px;
   margin-top: 4px;
+  animation: border-sweep 5s linear infinite;
+}
+
+@keyframes border-sweep {
+  to {
+    --border-angle: 360deg;
+  }
 }
 .u-top {
   display: flex;
@@ -213,7 +256,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .caret,
-  .u-dot {
+  .u-dot,
+  .uicard-in {
     animation: none;
   }
   .json .jl {

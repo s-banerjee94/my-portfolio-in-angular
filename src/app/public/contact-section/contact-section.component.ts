@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 import { ProfileService } from '@core/services/profile-service.service';
 import { ContactInfo } from '@dashboard/contact/contact.component';
 import { ContactMeService } from '@core/services/contact-me.service';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { SectionHeaderComponent } from '@shared/section-header.component';
 import { RevealDirective } from '@shared/reveal.directive';
 
@@ -54,6 +55,7 @@ export class ContactSectionComponent implements OnInit {
 
   private profileService: ProfileService = inject(ProfileService);
   private contactMeService: ContactMeService = inject(ContactMeService);
+  private analytics: AnalyticsService = inject(AnalyticsService);
 
   ngOnInit(): void {
     this.profileService.getSectionData('contact').subscribe({
@@ -92,6 +94,7 @@ export class ContactSectionComponent implements OnInit {
     this.contactMeService.saveMessage(message).subscribe({
       next: () => {
         this.sending = false;
+        this.analytics.trackEvent('contact_submit');
         this.messageService.add({
           severity: 'success',
           summary: 'Success',

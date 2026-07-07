@@ -9,8 +9,9 @@ import { HeaderComponent } from '../header/header.component';
 import { ButtonModule } from 'primeng/button';
 import { ScrollTop } from 'primeng/scrolltop';
 import { ActivatedRoute } from '@angular/router';
-import {ExperienceSectionComponent} from '../experience-section/experience-section.component';
-import {CertificationSectionComponent} from '../certification-section/certification-section.component';
+import { AnalyticsService } from '@core/services/analytics.service';
+import { ExperienceSectionComponent } from '../experience-section/experience-section.component';
+import { CertificationSectionComponent } from '../certification-section/certification-section.component';
 import { ServicesSectionComponent } from '../services-section/services-section.component';
 
 @Component({
@@ -33,7 +34,9 @@ import { ServicesSectionComponent } from '../services-section/services-section.c
 })
 export class HomeComponent implements OnInit {
   activeRoute: ActivatedRoute = inject(ActivatedRoute);
+  private analytics: AnalyticsService = inject(AnalyticsService);
   ngOnInit(): void {
+    this.analytics.recordVisit();
     this.activeRoute.fragment.subscribe((fragment) => {
       if (fragment) {
         const element = document.getElementById(fragment);

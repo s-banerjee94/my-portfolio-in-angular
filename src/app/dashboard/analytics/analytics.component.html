@@ -1,0 +1,231 @@
+<app-section-header
+  eyebrow="GET /analytics"
+  title="Traffic"
+  lede="Who's visiting, where they came from, and what they clicked — live."
+/>
+
+@if (!visits()) {
+  <!-- loading skeleton -->
+  <div class="animate-pulse space-y-6" aria-hidden="true">
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      @for (card of [1, 2, 3, 4]; track card) {
+        <div
+          class="h-28 rounded-xl bg-[color-mix(in_srgb,var(--p-text-muted-color)_12%,transparent)]"
+        ></div>
+      }
+    </div>
+    <div
+      class="h-72 rounded-xl bg-[color-mix(in_srgb,var(--p-text-muted-color)_10%,transparent)]"
+    ></div>
+    <div class="grid gap-4 lg:grid-cols-2">
+      <div
+        class="h-64 rounded-xl bg-[color-mix(in_srgb,var(--p-text-muted-color)_10%,transparent)]"
+      ></div>
+      <div
+        class="h-64 rounded-xl bg-[color-mix(in_srgb,var(--p-text-muted-color)_10%,transparent)]"
+      ></div>
+    </div>
+  </div>
+} @else {
+  <div
+    class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p class="text-muted-color m-0 font-mono text-xs">
+      // last {{ rangeDays() }} days · updates live
+    </p>
+    <p-selectbutton
+      [options]="rangeOptions"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="rangeDays()"
+      (ngModelChange)="rangeDays.set($event)"
+      [allowEmpty]="false"
+      size="small"
+    />
+  </div>
+
+  <!-- KPI cards -->
+  <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div
+      class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+    >
+      <p class="text-muted-color m-0 mb-2 font-mono text-xs">// visitors</p>
+      <p class="m-0 text-3xl font-semibold">{{ visitorCount() }}</p>
+      @if (visitorDelta() !== null) {
+        <p
+          class="m-0 mt-1 font-mono text-xs"
+          [class.text-green-500]="visitorDelta()! >= 0"
+          [class.text-red-400]="visitorDelta()! < 0"
+        >
+          {{ visitorDelta()! >= 0 ? "↑" : "↓" }}
+          {{ visitorDelta()! >= 0 ? visitorDelta() : -visitorDelta()! }}% vs
+          previous
+        </p>
+      } @else {
+        <p class="text-muted-color m-0 mt-1 font-mono text-xs">
+          — no earlier data
+        </p>
+      }
+    </div>
+
+    <div
+      class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+    >
+      <p class="text-muted-color m-0 mb-2 font-mono text-xs">
+        // resume downloads
+      </p>
+      <p class="m-0 text-3xl font-semibold">{{ resumeDownloads() }}</p>
+    </div>
+
+    <div
+      class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+    >
+      <p class="text-muted-color m-0 mb-2 font-mono text-xs">
+        // messages sent
+      </p>
+      <p class="m-0 text-3xl font-semibold">{{ messagesSent() }}</p>
+    </div>
+
+    <div
+      class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+    >
+      <p class="text-muted-color m-0 mb-2 font-mono text-xs">// top source</p>
+      <p class="m-0 truncate font-mono text-2xl font-semibold">
+        {{ topSource() }}
+      </p>
+    </div>
+  </div>
+
+  <!-- visitors per day -->
+  <div
+    class="mb-6 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+  >
+    <p class="text-muted-color m-0 mb-4 font-mono text-xs">
+      // visitors per day
+    </p>
+    <p-chart
+      type="line"
+      [data]="chartData()"
+      [options]="chartOptions()"
+      height="260px"
+    />
+  </div>
+
+  <div class="mb-6 grid gap-4 lg:grid-cols-2">
+    <!-- traffic sources -->
+    <div
+      class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+    >
+      <p class="text-muted-color m-0 mb-4 font-mono text-xs">
+        // traffic sources
+      </p>
+      <div class="flex flex-col gap-3">
+        @for (source of sources(); track source.name) {
+          <div>
+            <div
+              class="mb-1 flex items-baseline justify-between font-mono text-sm"
+            >
+              <span>{{ source.name }}</span>
+              <span class="text-muted-color">{{ source.count }}</span>
+            </div>
+            <div
+              class="h-1.5 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--p-text-muted-color)_14%,transparent)]"
+            >
+              <div
+                class="grad-bg h-full rounded-full"
+                [style.width.%]="source.pct"
+              ></div>
+            </div>
+          </div>
+        } @empty {
+          <p class="text-muted-color m-0 py-6 text-center font-mono text-sm">
+            // 204 — no visits in this range yet
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- devices + interactions -->
+    <div class="flex flex-col gap-4">
+      <div
+        class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+      >
+        <p class="text-muted-color m-0 mb-4 font-mono text-xs">// devices</p>
+        <div class="mb-1 flex justify-between font-mono text-sm">
+          <span>mobile {{ devices().mobile }}</span>
+          <span>desktop {{ devices().desktop }}</span>
+        </div>
+        <div
+          class="h-1.5 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--p-text-muted-color)_14%,transparent)]"
+        >
+          <div
+            class="grad-bg h-full rounded-full"
+            [style.width.%]="devices().mobilePct"
+          ></div>
+        </div>
+        <p class="text-muted-color m-0 mt-1 font-mono text-xs">
+          {{ devices().mobilePct }}% mobile
+        </p>
+      </div>
+
+      <div
+        class="flex-1 rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+      >
+        <p class="text-muted-color m-0 mb-4 font-mono text-xs">
+          // interactions
+        </p>
+        <div class="flex flex-col gap-2">
+          @for (item of eventCounts(); track item.name) {
+            <div class="flex justify-between font-mono text-sm">
+              <span>{{ item.name.replace("_", " ") }}</span>
+              <span class="text-primary font-semibold">{{ item.count }}</span>
+            </div>
+          } @empty {
+            <p class="text-muted-color m-0 py-4 text-center font-mono text-sm">
+              // 204 — no clicks in this range yet
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- access log -->
+  <div
+    class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
+  >
+    <p class="text-muted-color m-0 mb-4 font-mono text-xs">
+      // access log — latest {{ feed().length }}
+    </p>
+    <div class="overflow-x-auto">
+      <div class="flex min-w-[38rem] flex-col gap-1.5 font-mono text-sm">
+        @for (visit of feed(); track visit.id) {
+          <div
+            class="grid grid-cols-[8.5rem_9.5rem_1fr_5rem_6rem] items-baseline gap-3 border-b border-[color-mix(in_srgb,var(--p-content-border-color)_55%,transparent)] pb-1.5 last:border-0"
+          >
+            <span class="text-muted-color text-xs">{{
+              visit.timestamp | date: "dd MMM, HH:mm"
+            }}</span>
+            <span
+              [class.text-primary]="visit.event !== 'visit'"
+              [class.font-semibold]="visit.event !== 'visit'"
+              >{{ eventLabel(visit) }}</span
+            >
+            <span class="truncate">
+              {{ visit.source }}
+              @if (visit.meta) {
+                <span class="text-muted-color"> · {{ visit.meta }}</span>
+              }
+            </span>
+            <span class="text-muted-color text-xs">{{ visit.device }}</span>
+            <span class="text-muted-color text-xs">{{ visit.browser }}</span>
+          </div>
+        } @empty {
+          <p class="text-muted-color m-0 py-6 text-center text-sm">
+            // 204 — nothing recorded yet. Share the site and check back.
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+}

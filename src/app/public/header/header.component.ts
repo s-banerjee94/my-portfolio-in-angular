@@ -3,6 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { ProfileService } from '@core/services/profile-service.service';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { Resume } from '@dashboard/resume/resume.component';
 import { Button } from 'primeng/button';
 import { ThemeService } from '@core/theme/theme.service';
@@ -20,9 +21,21 @@ export class HeaderComponent implements OnInit {
   items: MenuItem[] | undefined;
   primaryResume: Resume | undefined;
 
+  // Center the nav list: give the brand (start) and controls (end) equal flex
+  // so the menu sits at the true midpoint. Scoped to the menubar's own 960px
+  // breakpoint — below it the list collapses to a hamburger and centering the
+  // start/end would push that button off to the middle.
+  protected readonly menubarPt = {
+    start: { class: 'min-[960px]:flex-1' },
+    end: {
+      class: 'min-[960px]:flex-1 min-[960px]:flex min-[960px]:justify-end',
+    },
+  };
+
   protected readonly scrollProgress = signal(0);
 
   private profileService: ProfileService = inject(ProfileService);
+  private analytics: AnalyticsService = inject(AnalyticsService);
   protected readonly themeService = inject(ThemeService);
 
   ngOnInit() {
@@ -78,15 +91,15 @@ export class HeaderComponent implements OnInit {
       next: (data) => {
         const resumes = data as Resume[];
         this.primaryResume = resumes[0];
-      }
-    })
+      },
+    });
   }
 
   downloadResume() {
     const link = document.createElement('a');
-    if (!this.primaryResume)
-      return;
+    if (!this.primaryResume) return;
 
+    this.analytics.trackEvent('resume_download');
     link.href = this.primaryResume.fileUrl;
     link.download = 'sandeepan_resume.pdf';
     document.body.appendChild(link);

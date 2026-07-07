@@ -7,6 +7,10 @@ import { TabsModule } from 'primeng/tabs';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { GithubReadmeService } from '@core/services/github-readme.service';
+import {
+  AnalyticsService,
+  AnalyticsEvent,
+} from '@core/services/analytics.service';
 import { Project } from '@dashboard/project/add-edit-project/add-edit-project.component';
 import { SectionHeaderComponent } from '@shared/section-header.component';
 import { RevealDirective } from '@shared/reveal.directive';
@@ -38,6 +42,7 @@ export class ProjectSectionComponent implements OnInit {
 
   private profileService = inject(ProfileService);
   private readmeService = inject(GithubReadmeService);
+  private analytics = inject(AnalyticsService);
 
   ngOnInit(): void {
     this.profileService.getAllProjects().subscribe({
@@ -62,7 +67,12 @@ export class ProjectSectionComponent implements OnInit {
     this.failedImgIds.add(project.id ?? project.title);
   }
 
+  track(event: AnalyticsEvent, project: Project): void {
+    this.analytics.trackEvent(event, project.title);
+  }
+
   openDetails(project: Project): void {
+    this.analytics.trackEvent('project_details', project.title);
     this.selected.set(project);
     this.readmeHtml.set('');
     this.readmeState.set('idle');

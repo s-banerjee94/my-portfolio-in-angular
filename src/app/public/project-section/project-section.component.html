@@ -115,6 +115,7 @@
                       [href]="project.liveDemoUrl"
                       target="_blank"
                       rel="noopener"
+                      (click)="track('project_live', project)"
                     >
                       <svg lucideExternalLink class="h-4 w-4"></svg>
                       Live
@@ -125,6 +126,7 @@
                     [href]="project.gitHubUrl"
                     target="_blank"
                     rel="noopener"
+                    (click)="track('project_source', project)"
                   >
                     <i class="pi pi-github"></i>
                     Source
@@ -158,6 +160,7 @@
                     rel="noopener"
                     class="text-muted-color hover:text-primary transition-colors"
                     [attr.aria-label]="'Open live demo of ' + project.title"
+                    (click)="track('project_live', project)"
                   >
                     <svg lucideExternalLink class="h-4 w-4"></svg>
                   </a>
@@ -168,6 +171,7 @@
                   rel="noopener"
                   class="text-muted-color hover:text-primary transition-colors"
                   [attr.aria-label]="'Open source of ' + project.title"
+                  (click)="track('project_source', project)"
                 >
                   <i class="pi pi-github"></i>
                 </a>

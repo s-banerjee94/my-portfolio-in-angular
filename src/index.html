@@ -8,9 +8,23 @@
 
     <!-- Content comes from Firestore; warming the connection early shaves
          ~400ms off the first data fetch. Image hosts get a cheap DNS warmup. -->
-    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://firestore.googleapis.com"
+      crossorigin
+    />
     <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
     <link rel="dns-prefetch" href="https://github.com" />
+
+    <!-- Mono is above the fold (nav eyebrow, hero terminal card); preload it so
+         the terminal identity paints immediately instead of swapping in late. -->
+    <link
+      rel="preload"
+      href="/fonts/jetbrains-mono-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <meta
       name="description"
@@ -19,12 +33,23 @@
     <meta name="author" content="Sandeepan Banerjee" />
     <link rel="canonical" href="https://connectwithsandeepan.in/" />
 
-    <meta name="theme-color" content="#fdf3ec" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#120812" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="theme-color"
+      content="#fdf3ec"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#120812"
+      media="(prefers-color-scheme: dark)"
+    />
 
     <!-- Open Graph (LinkedIn, WhatsApp, Slack…) -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Sandeepan Banerjee | Java Full Stack Developer" />
+    <meta
+      property="og:title"
+      content="Sandeepan Banerjee | Java Full Stack Developer"
+    />
     <meta
       property="og:description"
       content="Spring Boot microservices, Angular frontends, and AWS — 3 years shipping production systems. Open to full-time and freelance work."
@@ -35,7 +60,10 @@
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Sandeepan Banerjee | Java Full Stack Developer" />
+    <meta
+      name="twitter:title"
+      content="Sandeepan Banerjee | Java Full Stack Developer"
+    />
     <meta
       name="twitter:description"
       content="Spring Boot microservices, Angular frontends, and AWS — 3 years shipping production systems."

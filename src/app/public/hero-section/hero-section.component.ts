@@ -3,6 +3,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 
 import { ProfileService } from '@core/services/profile-service.service';
+import {
+  AnalyticsService,
+  AnalyticsEvent,
+} from '@core/services/analytics.service';
 import { Hero } from '@dashboard/hero/hero.component';
 
 import { Router } from '@angular/router';
@@ -27,6 +31,7 @@ export class HeroSectionComponent implements OnInit {
   };
   loading = true;
   private profileSevice: ProfileService = inject(ProfileService);
+  private analytics: AnalyticsService = inject(AnalyticsService);
 
   private router: Router = inject(Router);
 
@@ -50,5 +55,9 @@ export class HeroSectionComponent implements OnInit {
 
   navigateToContact() {
     this.router.navigateByUrl('/#contact');
+  }
+
+  track(event: AnalyticsEvent) {
+    this.analytics.trackEvent(event);
   }
 }
