@@ -1,6 +1,12 @@
 import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 import { EditorModule } from 'primeng/editor';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -16,7 +22,6 @@ export interface AboutData {
   text: string;
   experience: string;
   education: string;
-  certification: string;
   skills: string[];
 }
 
@@ -30,6 +35,8 @@ export interface AboutData {
     ChipModule,
     ButtonModule,
     Message,
+    CdkDrag,
+    CdkDropList,
   ],
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css'],
@@ -43,7 +50,6 @@ export class AboutComponent implements OnInit {
     text: '',
     experience: '',
     education: '',
-    certification: '',
     skills: [],
   };
 
@@ -62,7 +68,6 @@ export class AboutComponent implements OnInit {
             this.formData.text = data.text || '';
             this.formData.experience = data.experience || '';
             this.formData.education = data.education || '';
-            this.formData.certification = data.certification || '';
             this.formData.skills = data.skills || [];
             this.isEditorReady = true;
           }
@@ -90,6 +95,14 @@ export class AboutComponent implements OnInit {
     this.formData.skills = this.formData.skills.filter((s) => s !== skill);
   }
 
+  reorderSkills(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(
+      this.formData.skills,
+      event.previousIndex,
+      event.currentIndex,
+    );
+  }
+
   saveAboutDetails(): void {
     if (this.aboutForm.invalid) {
       return;
@@ -97,14 +110,15 @@ export class AboutComponent implements OnInit {
 
     // Text pasted from chat apps/docs often arrives with every space as a
     // no-break space (&nbsp;), which renders as one unwrappable line on the
-    // public site. Normalize them to plain spaces on every save.
+    // public site; stray blank lines become empty <p></p> that double the
+    // paragraph gaps. Clean both on every save so only tidy HTML is stored.
     const aboutData = {
       text: this.formData.text
         .replace(/&nbsp;/g, ' ')
-        .replace(/[\u00A0\u202F\u2007]/g, ' '),
+        .replace(/[\u00A0\u202F\u2007]/g, ' ')
+        .replace(/<p>(\s|<br\s*\/?>)*<\/p>/g, ''),
       experience: this.formData.experience,
       education: this.formData.education,
-      certification: this.formData.certification,
       skills: this.formData.skills,
     };
 

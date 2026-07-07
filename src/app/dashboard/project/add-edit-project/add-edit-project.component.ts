@@ -2,6 +2,12 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FormsModule, NgForm } from '@angular/forms';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
@@ -54,6 +60,8 @@ export interface Project {
     ToggleSwitch,
     SelectButton,
     EditorModule,
+    CdkDrag,
+    CdkDropList,
   ],
   templateUrl: './add-edit-project.component.html',
   styleUrl: './add-edit-project.component.css',
@@ -159,6 +167,10 @@ export class AddEditProjectComponent implements OnInit {
 
   removeTech(tech: string): void {
     this.techs = this.techs.filter((s) => s !== tech);
+  }
+
+  reorderTechs(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.techs, event.previousIndex, event.currentIndex);
   }
 
   onSubmit(form: NgForm): void {

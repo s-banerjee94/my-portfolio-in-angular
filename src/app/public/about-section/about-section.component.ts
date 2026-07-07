@@ -26,7 +26,7 @@ export class AboutSectionComponent implements OnInit {
       .subscribe({
         next: (data) => {
           if (data) {
-            this.aboutData = { ...data, text: cleanRichText(data.text) };
+            this.aboutData = data;
           }
         },
         error: (err) => {
@@ -47,19 +47,4 @@ export class AboutSectionComponent implements OnInit {
         },
       });
   }
-}
-
-/**
- * Defensive cleanup for CMS rich text, whatever editor or paste produced it:
- * no-break spaces (from chat/Word pastes) become normal spaces so lines wrap
- * at word boundaries, empty paragraphs (Quill's <p></p> / <p><br></p>) are
- * dropped so blank pasted lines don't double the paragraph gaps, and links
- * open in a new tab so readers never lose the portfolio.
- */
-function cleanRichText(html: string | undefined): string {
-  return (html ?? '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/[\u00A0\u202F\u2007]/g, ' ')
-    .replace(/<p>(\s|<br\s*\/?>)*<\/p>/g, '')
-    .replace(/<a /g, '<a target="_blank" rel="noopener" ');
 }

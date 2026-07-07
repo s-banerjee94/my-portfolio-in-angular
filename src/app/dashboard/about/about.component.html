@@ -59,7 +59,7 @@
       </p-editor>
     </div>
 
-    <div class="grid gap-5 md:grid-cols-3">
+    <div class="grid gap-5 md:grid-cols-2">
       <div>
         <p-floatlabel variant="on">
           <input
@@ -108,31 +108,24 @@
           >
         }
       </div>
-      <div>
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            id="certification_label"
-            name="certification"
-            [(ngModel)]="formData.certification"
-            #certificationInput="ngModel"
-            autocomplete="off"
-            fluid="true"
-          />
-          <label for="certification_label">Certification</label>
-        </p-floatlabel>
-      </div>
     </div>
 
     <div
       class="rounded-lg border border-dashed border-[var(--p-content-border-color)] p-4"
     >
       <p class="text-muted-color m-0 mb-3 font-mono text-xs">
-        // skills — {{ formData.skills.length }} added
+        // skills — {{ formData.skills.length }} added · drag to reorder
       </p>
-      <div class="flex flex-wrap gap-2">
+      <div
+        class="flex flex-wrap gap-2"
+        cdkDropList
+        cdkDropListOrientation="mixed"
+        (cdkDropListDropped)="reorderSkills($event)"
+      >
         @for (skill of formData.skills; track skill) {
           <p-chip
+            cdkDrag
+            class="cursor-grab"
             [label]="skill"
             [removable]="true"
             (onRemove)="removeSkill(skill)"

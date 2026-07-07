@@ -173,11 +173,18 @@
       class="rounded-lg border border-dashed border-[var(--p-content-border-color)] p-4"
     >
       <p class="text-muted-color m-0 mb-3 font-mono text-xs">
-        // technologies — {{ techs.length }} tagged
+        // technologies — {{ techs.length }} tagged · drag to reorder
       </p>
-      <div class="flex flex-wrap gap-2">
+      <div
+        class="flex flex-wrap gap-2"
+        cdkDropList
+        cdkDropListOrientation="mixed"
+        (cdkDropListDropped)="reorderTechs($event)"
+      >
         @for (tech of techs; track tech) {
           <p-chip
+            cdkDrag
+            class="cursor-grab"
             [label]="tech"
             [removable]="true"
             (onRemove)="removeTech(tech)"
