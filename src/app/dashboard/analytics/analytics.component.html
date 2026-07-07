@@ -195,7 +195,7 @@
     class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
   >
     <p class="text-muted-color m-0 mb-4 font-mono text-xs">
-      // access log — latest {{ feed().length }}
+      // access log — {{ feedTotal() }} entries
     </p>
     <div class="overflow-x-auto">
       <div class="flex min-w-[38rem] flex-col gap-1.5 font-mono text-sm">
@@ -227,5 +227,29 @@
         }
       </div>
     </div>
+
+    @if (feedPageCount() > 1) {
+      <div class="mt-4 flex items-center justify-between font-mono text-xs">
+        <button
+          type="button"
+          class="text-muted-color hover:text-primary cursor-pointer transition-colors disabled:cursor-default disabled:opacity-40"
+          [disabled]="feedCurrentPage() === 0"
+          (click)="newerFeedPage()"
+        >
+          ‹ newer
+        </button>
+        <span class="text-muted-color">
+          page {{ feedCurrentPage() + 1 }} / {{ feedPageCount() }}
+        </span>
+        <button
+          type="button"
+          class="text-muted-color hover:text-primary cursor-pointer transition-colors disabled:cursor-default disabled:opacity-40"
+          [disabled]="feedCurrentPage() >= feedPageCount() - 1"
+          (click)="olderFeedPage()"
+        >
+          older ›
+        </button>
+      </div>
+    }
   </div>
 }

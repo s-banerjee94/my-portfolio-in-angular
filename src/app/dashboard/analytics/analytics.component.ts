@@ -19,6 +19,8 @@ import { SectionHeaderComponent } from '@shared/section-header.component';
 const DAY = 24 * 60 * 60 * 1000;
 /** The widest range the page offers — everything is loaded once, filters are local. */
 const MAX_RANGE_DAYS = 90;
+/** Access-log rows per page. */
+const FEED_PAGE_SIZE = 10;
 
 interface SourceRow {
   name: string;
@@ -123,7 +125,34 @@ export class AnalyticsComponent {
       .sort((a, b) => b.count - a.count);
   });
 
-  protected readonly feed = computed(() => (this.visits() ?? []).slice(0, 25));
+  /** Access log pagination — newest first, FEED_PAGE_SIZE rows per page. */
+  protected readonly feedPage = signal(0);
+
+  protected readonly feedTotal = computed(() => (this.visits() ?? []).length);
+
+  protected readonly feedPageCount = computed(() =>
+    Math.max(1, Math.ceil(this.feedTotal() / FEED_PAGE_SIZE)),
+  );
+
+  /** feedPage clamped, so live updates that shrink the list can't strand us. */
+  protected readonly feedCurrentPage = computed(() =>
+    Math.min(this.feedPage(), this.feedPageCount() - 1),
+  );
+
+  protected readonly feed = computed(() => {
+    const start = this.feedCurrentPage() * FEED_PAGE_SIZE;
+    return (this.visits() ?? []).slice(start, start + FEED_PAGE_SIZE);
+  });
+
+  protected newerFeedPage(): void {
+    this.feedPage.set(Math.max(0, this.feedCurrentPage() - 1));
+  }
+
+  protected olderFeedPage(): void {
+    this.feedPage.set(
+      Math.min(this.feedPageCount() - 1, this.feedCurrentPage() + 1),
+    );
+  }
 
   protected readonly chartData = computed(() => {
     const days = this.rangeDays();
