@@ -1,4 +1,5 @@
-﻿import { Component, inject, OnInit } from '@angular/core';
+﻿import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { FloatLabel } from 'primeng/floatlabel';
@@ -6,8 +7,7 @@ import { InputText } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ProfileService } from '@core/services/profile-service.service';
 
@@ -16,8 +16,8 @@ export interface ContactInfo {
   github: string;
   linkedin: string;
   twitter: string;
-  facebook: string;
-  instagram: string;
+  leetcode: string;
+  hackerrank: string;
 }
 
 @Component({
@@ -29,40 +29,42 @@ export interface ContactInfo {
     InputGroupModule,
     InputGroupAddonModule,
     ButtonModule,
-    ToastModule,
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css',
-  providers: [MessageService],
 })
 export class ContactComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   private profileService: ProfileService = inject(ProfileService);
+  private destroyRef = inject(DestroyRef);
   contactDetails: ContactInfo = {
     email: '',
     github: '',
     linkedin: '',
     twitter: '',
-    facebook: '',
-    instagram: '',
+    leetcode: '',
+    hackerrank: '',
   };
 
   ngOnInit(): void {
-    this.profileService.getSectionData('contact').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          this.contactDetails = data.data() as ContactInfo;
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load contact details',
-        });
-      },
-    });
+    this.profileService
+      .getSectionData<ContactInfo>('contact')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.contactDetails = data;
+          }
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load contact details',
+          });
+        },
+      });
   }
 
   saveContactDetails() {

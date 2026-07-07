@@ -183,8 +183,8 @@ const contact = {
   github: GH,
   linkedin: "https://www.linkedin.com/in/connect2sandy/",
   twitter: "",
-  facebook: "",
-  instagram: "",
+  leetcode: "https://leetcode.com/u/s-banerjee94/",
+  hackerrank: "https://www.hackerrank.com/profile/s-banerjee94",
 };
 
 const projects = [

@@ -12,14 +12,13 @@ import { FormsModule } from '@angular/forms';
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ContactMeService, Message } from '@core/services/contact-me.service';
 import { SectionHeaderComponent } from '@shared/section-header.component';
@@ -33,7 +32,6 @@ type ReadFilter = 'all' | 'unread' | 'read';
     FormsModule,
     TableModule,
     ButtonModule,
-    ToastModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
@@ -44,10 +42,9 @@ type ReadFilter = 'all' | 'unread' | 'read';
   ],
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css',
-  providers: [MessageService],
 })
 export class MessagesComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
   private contactService = inject(ContactMeService);
   private destroyRef = inject(DestroyRef);
 

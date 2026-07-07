@@ -76,17 +76,33 @@
 
       <p-inputgroup>
         <p-inputgroup-addon>
-          <i class="pi pi-instagram"></i>
+          <i class="pi pi-code"></i>
         </p-inputgroup-addon>
         <p-floatlabel variant="on">
           <input
             pInputText
-            id="instagram_profile_URL_label"
+            id="leetcode_profile_URL_label"
             autocomplete="off"
             fluid="true"
-            [(ngModel)]="contactDetails.instagram"
+            [(ngModel)]="contactDetails.leetcode"
           />
-          <label for="instagram_profile_URL_label">Instagram Profile URL</label>
+          <label for="leetcode_profile_URL_label">LeetCode Profile URL</label>
+        </p-floatlabel>
+      </p-inputgroup>
+
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-hashtag"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="hackerrank_profile_URL_label"
+            autocomplete="off"
+            fluid="true"
+            [(ngModel)]="contactDetails.hackerrank"
+          />
+          <label for="hackerrank_profile_URL_label">HackerRank Profile URL</label>
         </p-floatlabel>
       </p-inputgroup>
     </div>
@@ -104,10 +120,3 @@
     </div>
   </div>
 </div>
-
-<p-toast
-  [showTransformOptions]="'translateY(100%)'"
-  [showTransitionOptions]="'1000ms'"
-  [hideTransitionOptions]="'1000ms'"
-  [showTransformOptions]="'translateX(100%)'"
-/>

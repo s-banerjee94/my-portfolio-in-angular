@@ -5,9 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
-import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 import { ProfileService } from '@core/services/profile-service.service';
 import { Observable, catchError, of, tap } from 'rxjs';
 import { Timestamp } from '@angular/fire/firestore';
@@ -32,16 +31,14 @@ export interface Resume {
     FileUploadModule,
     TableModule,
     CheckboxModule,
-    ToastModule,
     TooltipModule,
     FirebaseDatePipe,
   ],
-  providers: [MessageService],
   templateUrl: './resume.component.html',
   styleUrl: './resume.component.css',
 })
 export class ResumeComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   resumes: Resume[] = [];
   maxResumes = 3;

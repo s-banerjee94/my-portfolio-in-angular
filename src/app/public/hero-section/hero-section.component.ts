@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ButtonModule } from 'primeng/button';
 
@@ -32,21 +33,25 @@ export class HeroSectionComponent implements OnInit {
   loading = true;
   private profileSevice: ProfileService = inject(ProfileService);
   private analytics: AnalyticsService = inject(AnalyticsService);
+  private destroyRef = inject(DestroyRef);
 
   private router: Router = inject(Router);
 
   ngOnInit(): void {
-    this.profileSevice.getSectionData('hero').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          this.heroData = data.data() as Hero;
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      },
-    });
+    this.profileSevice
+      .getSectionData<Hero>('hero')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.heroData = data;
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   navigateToProjects() {

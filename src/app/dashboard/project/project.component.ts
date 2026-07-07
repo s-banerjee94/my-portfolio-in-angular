@@ -1,8 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { AddEditProjectComponent } from './add-edit-project/add-edit-project.component';
 import { ProfileService } from '@core/services/profile-service.service';
@@ -10,13 +9,12 @@ import { CommunicationService } from '@core/services/communication.service';
 
 @Component({
   selector: 'app-project',
-  imports: [ButtonModule, ToastModule, AddEditProjectComponent],
+  imports: [ButtonModule, AddEditProjectComponent],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css',
-  providers: [MessageService],
 })
 export class ProjectComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   private profileSevice: ProfileService = inject(ProfileService);
   private communicationService: CommunicationService =

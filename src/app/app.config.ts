@@ -19,6 +19,8 @@ import {
 } from '@angular/fire/storage';
 import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 
+import { MessageService } from 'primeng/api';
+
 import { environment } from '../env/environment';
 import {provideHttpClient, withFetch} from '@angular/common/http';
 
@@ -27,6 +29,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withFetch()),
+
+    // One MessageService for the whole app so every toast lands in the single
+    // <p-toast> rendered by AppComponent (see ToastService).
+    MessageService,
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
 

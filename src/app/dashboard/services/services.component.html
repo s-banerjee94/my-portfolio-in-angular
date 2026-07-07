@@ -86,15 +86,9 @@
       <p-button
         label="Save changes"
         styleClass="!border-0 !bg-[image:var(--site-grad)] !text-white hover:!brightness-110 disabled:!opacity-45 disabled:!saturate-50"
-        [disabled]="hasInvalidService"
+        [disabled]="!services.length || hasInvalidService"
         (onClick)="saveServices()"
       />
     </div>
   </div>
 </div>
-
-<p-toast
-  [showTransformOptions]="'translateY(100%)'"
-  [showTransitionOptions]="'500ms'"
-  [hideTransitionOptions]="'1000ms'"
-/>

@@ -1,13 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
-import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { SelectButton } from 'primeng/selectbutton';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { Message } from 'primeng/message';
@@ -30,17 +30,15 @@ export interface Hero {
     InputTextModule,
     FloatLabel,
     TextareaModule,
-    ToastModule,
     ButtonModule,
     SelectButton,
     Message,
   ],
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.css',
-  providers: [MessageService],
 })
 export class HeroComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   /** Fixed states for the hero badge — free text invited typos and
    *  off-brand copy; the public site just renders the chosen string. */
@@ -61,6 +59,7 @@ export class HeroComponent implements OnInit {
   };
 
   private profileService: ProfileService = inject(ProfileService);
+  private destroyRef = inject(DestroyRef);
   private isSubmitting: boolean = false;
 
   ngOnInit() {
@@ -68,29 +67,32 @@ export class HeroComponent implements OnInit {
   }
 
   private loadHeroData = () => {
-    this.profileService.getSectionData('hero').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          this.hero = data.data() as Hero;
-          // Older docs may hold free-text badges; snap to a valid option so
-          // the select button has a selection.
-          if (
-            !this.statusBadgeOptions.some(
-              (option) => option.value === this.hero.statusBadge,
-            )
-          ) {
-            this.hero.statusBadge = this.statusBadgeOptions[0].value;
+    this.profileService
+      .getSectionData<Hero>('hero')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hero = data;
+            // Older docs may hold free-text badges; snap to a valid option so
+            // the select button has a selection.
+            if (
+              !this.statusBadgeOptions.some(
+                (option) => option.value === this.hero.statusBadge,
+              )
+            ) {
+              this.hero.statusBadge = this.statusBadgeOptions[0].value;
+            }
           }
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load hero data',
-        });
-      },
-    });
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load hero data',
+          });
+        },
+      });
   };
 
   saveHeroDetails(heroForm: NgForm): void {

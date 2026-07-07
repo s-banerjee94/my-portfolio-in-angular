@@ -9,8 +9,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { SelectButton } from 'primeng/selectbutton';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { TooltipModule } from 'primeng/tooltip';
-import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 import { DatePipe } from '@angular/common';
 
 import { ProfileService } from '@core/services/profile-service.service';
@@ -39,14 +38,12 @@ export interface Certification {
     SelectButton,
     ToggleSwitch,
     TooltipModule,
-    Toast,
     DatePipe,
   ],
   templateUrl: './certification.component.html',
-  providers: [MessageService],
 })
 export class CertificationComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
   private profileService: ProfileService = inject(ProfileService);
 
   name = '';

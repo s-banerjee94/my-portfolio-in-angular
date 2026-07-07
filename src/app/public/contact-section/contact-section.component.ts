@@ -1,13 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { ToastModule } from 'primeng/toast';
 import { MessageModule } from 'primeng/message';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { ContactInfo } from '@dashboard/contact/contact.component';
@@ -24,25 +24,23 @@ import { RevealDirective } from '@shared/reveal.directive';
     FloatLabel,
     TextareaModule,
     ButtonModule,
-    ToastModule,
     MessageModule,
     SectionHeaderComponent,
     RevealDirective,
   ],
   templateUrl: './contact-section.component.html',
   styleUrl: './contact-section.component.css',
-  providers: [MessageService],
 })
 export class ContactSectionComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   contactInfo: ContactInfo = {
     email: '',
     github: '',
     linkedin: '',
     twitter: '',
-    facebook: '',
-    instagram: '',
+    leetcode: '',
+    hackerrank: '',
   };
 
   yourName: string = '';
@@ -56,22 +54,26 @@ export class ContactSectionComponent implements OnInit {
   private profileService: ProfileService = inject(ProfileService);
   private contactMeService: ContactMeService = inject(ContactMeService);
   private analytics: AnalyticsService = inject(AnalyticsService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.profileService.getSectionData('contact').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          this.contactInfo = data.data() as ContactInfo;
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load contact information',
-        });
-      },
-    });
+    this.profileService
+      .getSectionData<ContactInfo>('contact')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.contactInfo = data;
+          }
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load contact information',
+          });
+        },
+      });
   }
 
   onSubmit(form: NgForm) {

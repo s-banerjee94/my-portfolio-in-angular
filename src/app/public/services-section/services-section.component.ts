@@ -1,4 +1,5 @@
-﻿import { Component, inject, OnInit } from '@angular/core';
+﻿import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   LucideCloud,
@@ -34,19 +35,20 @@ export class ServicesSectionComponent implements OnInit {
   };
 
   private profileService = inject(ProfileService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.profileService.getSectionData('services').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          this.services =
-            (data.data() as { services?: Service[] }).services ?? [];
-        }
-      },
-      error: () => {
-        // Section simply stays hidden when the doc can't be loaded.
-      },
-    });
+    this.profileService
+      .getSectionData<{ services?: Service[] }>('services')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.services = data?.services ?? [];
+        },
+        error: () => {
+          // Section simply stays hidden when the doc can't be loaded.
+        },
+      });
   }
 
   iconFor(name: string): LucideIconInput {

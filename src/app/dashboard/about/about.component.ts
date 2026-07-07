@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
 
 import { EditorModule } from 'primeng/editor';
@@ -6,8 +7,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ChipModule } from 'primeng/chip';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { Message } from 'primeng/message';
@@ -29,15 +29,13 @@ export interface AboutData {
     InputTextModule,
     ChipModule,
     ButtonModule,
-    ToastModule,
     Message,
   ],
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css'],
-  providers: [MessageService],
 })
 export class AboutComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   @ViewChild('aboutForm') aboutForm!: NgForm;
 
@@ -52,28 +50,31 @@ export class AboutComponent implements OnInit {
   enteredSkill = '';
   isEditorReady = false;
   private profileService: ProfileService = inject(ProfileService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    this.profileService.getSectionData('about').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          const aboutData = data.data() as any;
-          this.formData.text = aboutData.text || '';
-          this.formData.experience = aboutData.experience || '';
-          this.formData.education = aboutData.education || '';
-          this.formData.certification = aboutData.certification || '';
-          this.formData.skills = aboutData.skills || [];
-          this.isEditorReady = true;
-        }
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load about data',
-        });
-      },
-    });
+    this.profileService
+      .getSectionData<AboutData>('about')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.formData.text = data.text || '';
+            this.formData.experience = data.experience || '';
+            this.formData.education = data.education || '';
+            this.formData.certification = data.certification || '';
+            this.formData.skills = data.skills || [];
+            this.isEditorReady = true;
+          }
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load about data',
+          });
+        },
+      });
   }
 
   addSkill(event: Event): void {

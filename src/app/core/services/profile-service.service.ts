@@ -4,8 +4,9 @@ import {
   collectionData,
   deleteDoc,
   doc,
+  docData,
+  DocumentData,
   Firestore,
-  getDocFromServer,
   orderBy,
   query,
   setDoc, where,
@@ -16,6 +17,7 @@ import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from 
 import {Experience} from '@dashboard/experience/experience.component';
 import {Resume} from '@dashboard/resume/resume.component';
 import {Certification} from '@dashboard/certification/certification.component';
+import {Project} from '@dashboard/project/add-edit-project/add-edit-project.component';
 
 @Injectable({
   providedIn: 'root',
@@ -28,14 +30,22 @@ export class ProfileService {
   constructor() {
   }
 
-  getSectionData(sectionName: string) {
+  // Live listener for a single profile section doc, typed at the call site.
+  // Emits the section data on every change (so public edits reflect without a
+  // reload) and `undefined` when the doc doesn't exist yet.
+  getSectionData<T = DocumentData>(
+    sectionName: string,
+  ): Observable<T | undefined> {
     const docRef = doc(this.firestore, `${this.initial}${sectionName}`);
-    return from(getDocFromServer(docRef));
+    return docData(docRef) as Observable<T | undefined>;
   }
 
-  saveSectionData(sectionName: string, data: any): Observable<void> {
+  saveSectionData<T extends object>(
+    sectionName: string,
+    data: T,
+  ): Observable<void> {
     const docRef = doc(this.firestore, `${this.initial}${sectionName}`);
-    return from(setDoc(docRef, data));
+    return from(setDoc(docRef, data as unknown as DocumentData));
   }
 
   getAllProjects() {
@@ -44,9 +54,9 @@ export class ProfileService {
     return collectionData(q, {idField: 'id'});
   }
 
-  saveProject(projectData: any): Observable<void> {
+  saveProject(projectData: Project): Observable<void> {
     const projectRef = collection(this.firestore, 'projects');
-    return from(addDoc(projectRef, projectData).then(() => {
+    return from(addDoc(projectRef, projectData as unknown as DocumentData).then(() => {
     }));
   }
 
@@ -55,9 +65,9 @@ export class ProfileService {
     return from(deleteDoc(projectRef));
   }
 
-  updateProject(projectId: string, projectData: any): Observable<void> {
+  updateProject(projectId: string, projectData: Partial<Project>): Observable<void> {
     const projectRef = doc(this.firestore, `projects/${projectId}`);
-    return from(setDoc(projectRef, projectData, {merge: true}));
+    return from(setDoc(projectRef, projectData as unknown as DocumentData, {merge: true}));
   }
 
   getAllExperiences() {

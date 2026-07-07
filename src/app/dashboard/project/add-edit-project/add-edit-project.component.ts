@@ -10,8 +10,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { ChipModule } from 'primeng/chip';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ProfileService } from '@core/services/profile-service.service';
 import { CommunicationService } from '@core/services/communication.service';
@@ -50,7 +49,6 @@ export interface Project {
     InputGroupAddonModule,
     ChipModule,
     ButtonModule,
-    ToastModule,
     Message,
     DatePicker,
     ToggleSwitch,
@@ -59,10 +57,9 @@ export interface Project {
   ],
   templateUrl: './add-edit-project.component.html',
   styleUrl: './add-edit-project.component.css',
-  providers: [MessageService],
 })
 export class AddEditProjectComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   techs: string[] = [];
   enteredTech: string = '';

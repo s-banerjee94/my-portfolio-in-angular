@@ -42,7 +42,7 @@
           }
           @if (contactInfo.linkedin) {
             <a
-              class="group flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              class="group flex items-center justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
               [href]="contactInfo.linkedin"
               target="_blank"
               rel="noopener"
@@ -50,6 +50,45 @@
               <span class="text-muted-color shrink-0">work</span>
               <span class="group-hover:text-primary truncate transition-colors"
                 >linkedin ↗</span
+              >
+            </a>
+          }
+          @if (contactInfo.twitter) {
+            <a
+              class="group flex items-center justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              [href]="contactInfo.twitter"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="text-muted-color shrink-0">post</span>
+              <span class="group-hover:text-primary truncate transition-colors"
+                >x ↗</span
+              >
+            </a>
+          }
+          @if (contactInfo.leetcode) {
+            <a
+              class="group flex items-center justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              [href]="contactInfo.leetcode"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="text-muted-color shrink-0">algo</span>
+              <span class="group-hover:text-primary truncate transition-colors"
+                >leetcode ↗</span
+              >
+            </a>
+          }
+          @if (contactInfo.hackerrank) {
+            <a
+              class="group flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+              [href]="contactInfo.hackerrank"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="text-muted-color shrink-0">rank</span>
+              <span class="group-hover:text-primary truncate transition-colors"
+                >hackerrank ↗</span
               >
             </a>
           }
@@ -191,10 +230,4 @@
       </form>
     </div>
   </div>
-  <p-toast
-    [showTransformOptions]="'translateY(100%)'"
-    [showTransitionOptions]="'1000ms'"
-    [hideTransitionOptions]="'1000ms'"
-    [showTransformOptions]="'translateX(100%)'"
-  />
 </section>

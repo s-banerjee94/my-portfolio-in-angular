@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -6,8 +7,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 import { ProfileService } from '@core/services/profile-service.service';
 
@@ -26,10 +26,8 @@ export interface Service {
     InputTextModule,
     SelectModule,
     TextareaModule,
-    ToastModule,
   ],
   templateUrl: './services.component.html',
-  providers: [MessageService],
 })
 export class ServicesComponent implements OnInit {
   static readonly MAX_SERVICES = 6;
@@ -47,25 +45,26 @@ export class ServicesComponent implements OnInit {
 
   services: Service[] = [];
 
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
   private profileService = inject(ProfileService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.profileService.getSectionData('services').subscribe({
-      next: (data) => {
-        if (data.exists()) {
-          this.services =
-            (data.data() as { services?: Service[] }).services ?? [];
-        }
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load services',
-        });
-      },
-    });
+    this.profileService
+      .getSectionData<{ services?: Service[] }>('services')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.services = data?.services ?? [];
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load services',
+          });
+        },
+      });
   }
 
   addService(): void {

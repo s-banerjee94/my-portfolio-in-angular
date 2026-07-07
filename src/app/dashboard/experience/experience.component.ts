@@ -9,8 +9,7 @@ import { Textarea } from 'primeng/textarea';
 import { ProfileService } from '@core/services/profile-service.service';
 import { DatePipe } from '@angular/common';
 import { TooltipModule } from 'primeng/tooltip';
-import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@core/services/toast.service';
 
 export interface Experience {
   id?: string;
@@ -33,14 +32,12 @@ export interface Experience {
     Textarea,
     DatePipe,
     TooltipModule,
-    Toast,
   ],
   templateUrl: './experience.component.html',
   styleUrl: './experience.component.css',
-  providers: [MessageService],
 })
 export class ExperienceComponent implements OnInit {
-  private messageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   startDate: Date | undefined;
   endDate: Date | undefined;

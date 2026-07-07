@@ -6,9 +6,8 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
 import { Message } from 'primeng/message';
+import { ToastService } from '@core/services/toast.service';
 
 import { AuthService } from '@core/services/auth-service.service';
 
@@ -21,12 +20,10 @@ import { AuthService } from '@core/services/auth-service.service';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    Toast,
     Message,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  providers: [MessageService],
 })
 export class LoginComponent {
   email: string = '';
@@ -36,7 +33,7 @@ export class LoginComponent {
 
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
-  private messageService: MessageService = inject(MessageService);
+  private messageService = inject(ToastService);
 
   login(form: NgForm) {
     if (form.invalid || this.loading()) {
