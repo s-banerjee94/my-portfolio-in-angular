@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
 import { AuthService } from '@core/services/auth-service.service';
+import { PushNotificationService } from '@core/services/push-notification.service';
 import { ThemeService } from '@core/theme/theme.service';
 
 @Component({
@@ -14,6 +15,8 @@ import { ThemeService } from '@core/theme/theme.service';
 })
 export class HeaderComponent {
   protected readonly themeService = inject(ThemeService);
+  protected readonly push = inject(PushNotificationService);
+  protected readonly pushSupported = PushNotificationService.supported();
 
   protected readonly navItems = [
     { label: 'analytics', link: '/admin/analytics' },
@@ -24,7 +27,8 @@ export class HeaderComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  logout() {
+  async logout() {
+    await this.push.disable(); // unregister first, while rules still allow it
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/login']);
     });

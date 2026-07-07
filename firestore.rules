@@ -32,6 +32,12 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // FCM device tokens for the admin's push notifications — admin-only in
+    // both directions; visitors never touch this collection.
+    match /fcmTokens/{token} {
+      allow read, write: if request.auth != null;
+    }
+
     // Contact-form inbox: anyone may CREATE a well-formed message, but only
     // the authenticated admin can read, mark as read, or delete. Public
     // update/delete stays forbidden so strangers can't tamper with the inbox.

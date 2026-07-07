@@ -22,6 +22,7 @@ import {
   connectStorageEmulator,
 } from '@angular/fire/storage';
 import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
 
 import { MessageService } from 'primeng/api';
 
@@ -64,6 +65,11 @@ export const appConfig: ApplicationConfig = {
       }
       return auth;
     }),
+
+    // FCM has no emulator — the dashboard's notification opt-in always talks
+    // to the real service. Only instantiated when PushNotificationService is
+    // first injected (dashboard header), never for public visitors.
+    provideMessaging(() => getMessaging()),
 
     provideAnimationsAsync(),
     providePrimeNG({

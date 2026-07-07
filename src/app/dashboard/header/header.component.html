@@ -41,6 +41,18 @@
       >
         view site ↗
       </a>
+      @if (pushSupported) {
+        <p-button
+          [icon]="
+            push.permission() === 'granted' ? 'pi pi-bell' : 'pi pi-bell-slash'
+          "
+          (onClick)="push.enable()"
+          text
+          rounded
+          severity="secondary"
+          ariaLabel="Notify this device about new messages"
+        />
+      }
       <p-button
         [icon]="themeService.darkMode() ? 'pi pi-sun' : 'pi pi-moon'"
         (onClick)="themeService.toggle()"

@@ -3,6 +3,9 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "public": "dist/my-portfolio-angular/browser",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
@@ -32,7 +35,7 @@
         ]
       },
       {
-        "source": "/@(ngsw-worker.js|safety-worker.js|worker-basic.min.js)",
+        "source": "/@(ngsw-worker.js|safety-worker.js|worker-basic.min.js|firebase-messaging-sw.js)",
         "headers": [
           {
             "key": "Cache-Control",

@@ -1,0 +1,13 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for the portfolio — push notifications for contact messages",
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.1.0"
+  },
+  "private": true
+}
