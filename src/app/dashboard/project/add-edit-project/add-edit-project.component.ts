@@ -42,6 +42,28 @@ export interface Project {
   detailsHtml?: string;
   /** Which detail tab opens first: the write-up or the repo README. */
   detailsSource?: 'custom' | 'readme';
+  /**
+   * Manual position within its group (featured and non-featured are ordered
+   * independently). Set by drag-to-reorder in the dashboard list.
+   */
+  sortOrder?: number;
+}
+
+/**
+ * Manual order first; projects never dragged yet (no sortOrder) sort after
+ * the ordered ones, newest first.
+ */
+export function compareProjects(a: Project, b: Project): number {
+  const aOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
+  const bOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
+  if (aOrder !== bOrder) {
+    return aOrder - bOrder;
+  }
+  return toMillis(b.projectDate) - toMillis(a.projectDate);
+}
+
+function toMillis(date: Timestamp | Date): number {
+  return date instanceof Date ? date.getTime() : (date?.toMillis() ?? 0);
 }
 
 @Component({
@@ -82,6 +104,8 @@ export class AddEditProjectComponent implements OnInit {
   detailsHtml: string = '';
   detailsSource: 'custom' | 'readme' = 'custom';
   mode: string = '';
+  /** Featured state as loaded — toggling it re-seats the project in the other group's order. */
+  private originalFeatured: boolean = false;
 
   readonly detailsSourceOptions = [
     { label: 'My write-up', value: 'custom' },
@@ -120,6 +144,7 @@ export class AddEditProjectComponent implements OnInit {
         this.featured = false;
         this.detailsHtml = '';
         this.detailsSource = 'custom';
+        this.originalFeatured = false;
         return;
       }
       this.mode = 'Edit Project';
@@ -134,6 +159,7 @@ export class AddEditProjectComponent implements OnInit {
       this.featured = project!.featured || false;
       this.detailsHtml = project!.detailsHtml || '';
       this.detailsSource = project!.detailsSource || 'custom';
+      this.originalFeatured = this.featured;
     });
   }
 
@@ -219,10 +245,30 @@ export class AddEditProjectComponent implements OnInit {
     };
 
     if (this.mode === 'Add Project') {
+      projectData.sortOrder = this.nextSortOrder(this.featured);
       this.saveProjectDetails(projectData, form);
     } else {
+      if (this.featured !== this.originalFeatured) {
+        // Moved between the featured and normal groups: join the end of the
+        // new group. Otherwise the field is omitted and merge keeps the
+        // stored position.
+        projectData.sortOrder = this.nextSortOrder(this.featured);
+      }
       this.updateProjectDetails(projectData);
     }
+  }
+
+  /** Next free position at the end of the featured or normal group. */
+  private nextSortOrder(featured: boolean): number {
+    return (
+      this.allProjects
+        .filter(
+          (project) =>
+            !!project.featured === featured && project.id !== this.projectId,
+        )
+        .reduce((max, project) => Math.max(max, project.sortOrder ?? -1), -1) +
+      1
+    );
   }
 
   private saveProjectDetails(projectData: Project, form: NgForm): void {
@@ -252,6 +298,7 @@ export class AddEditProjectComponent implements OnInit {
 
     this.profileService.updateProject(this.projectId, projectData).subscribe({
       next: (response) => {
+        this.originalFeatured = this.featured;
         this.messageService.add({
           severity: 'success',
           summary: 'Success',

@@ -11,7 +11,10 @@ import {
   AnalyticsService,
   AnalyticsEvent,
 } from '@core/services/analytics.service';
-import { Project } from '@dashboard/project/add-edit-project/add-edit-project.component';
+import {
+  compareProjects,
+  Project,
+} from '@dashboard/project/add-edit-project/add-edit-project.component';
 import { SectionHeaderComponent } from '@shared/section-header.component';
 import { RevealDirective } from '@shared/reveal.directive';
 
@@ -48,12 +51,18 @@ export class ProjectSectionComponent implements OnInit {
     this.profileService.getAllProjects().subscribe({
       next: (projects) => {
         const all = projects as Project[];
-        // Up to 3 featured projects lead the section (the dashboard enforces the
-        // cap); with none flagged, the newest project takes the spot — the list
-        // arrives ordered by projectDate desc.
-        const flagged = all.filter((project) => project.featured).slice(0, 3);
+        // Up to 3 featured projects lead the section (the dashboard enforces
+        // the cap); with none flagged, the newest project takes the spot.
+        // Each group follows its own manual order set by drag-to-reorder in
+        // the dashboard (projects never dragged fall back to date desc).
+        const flagged = all
+          .filter((project) => project.featured)
+          .sort(compareProjects)
+          .slice(0, 3);
         this.featured = flagged.length ? flagged : all.slice(0, 1);
-        this.others = all.filter((project) => !this.featured.includes(project));
+        this.others = all
+          .filter((project) => !this.featured.includes(project))
+          .sort(compareProjects);
         this.failedImgIds.clear();
         this.loading = false;
       },

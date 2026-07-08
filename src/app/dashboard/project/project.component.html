@@ -17,31 +17,80 @@
       />
     </div>
 
-    @for (project of projects; track project.id ?? project.title) {
-      <div
-        role="button"
-        tabindex="0"
-        (click)="selectProject(project)"
-        (keydown.enter)="selectProject(project)"
-        class="group flex cursor-pointer items-center justify-between gap-2 border-b border-dashed border-[var(--p-content-border-color)] px-4 py-3 font-mono text-sm transition-colors last:border-b-0 hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
-        [class.text-primary]="selectedProject === project"
+    @if (featuredProjects.length) {
+      <p
+        class="text-muted-color m-0 border-b border-[var(--p-content-border-color)] px-4 py-2 font-mono text-[11px]"
       >
-        <span class="truncate">
-          @if (project.featured) {
-            <span class="text-primary mr-1">★</span>
-          }{{ project.title }}
-        </span>
-        <p-button
-          icon="pi pi-trash"
-          size="small"
-          severity="danger"
-          [text]="true"
-          [rounded]="true"
-          styleClass="!h-7 !w-7 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
-          (onClick)="deleteProject(project, $event)"
-        />
+        // featured — drag to reorder
+      </p>
+      <div
+        cdkDropList
+        class="border-b border-[var(--p-content-border-color)]"
+        (cdkDropListDropped)="reorderProjects(featuredProjects, $event)"
+      >
+        @for (project of featuredProjects; track project.id ?? project.title) {
+          <div
+            cdkDrag
+            role="button"
+            tabindex="0"
+            (click)="selectProject(project)"
+            (keydown.enter)="selectProject(project)"
+            class="group flex cursor-pointer items-center justify-between gap-2 border-b border-dashed border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-4 py-3 font-mono text-sm transition-colors last:border-b-0 hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+            [class.text-primary]="selectedProject === project"
+          >
+            <span class="truncate">
+              <span class="text-primary mr-1">★</span>{{ project.title }}
+            </span>
+            <p-button
+              icon="pi pi-trash"
+              size="small"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              styleClass="!h-7 !w-7 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+              (onClick)="deleteProject(project, $event)"
+            />
+          </div>
+        }
       </div>
-    } @empty {
+    }
+
+    @if (otherProjects.length) {
+      <p
+        class="text-muted-color m-0 border-b border-[var(--p-content-border-color)] px-4 py-2 font-mono text-[11px]"
+      >
+        // projects — drag to reorder
+      </p>
+      <div
+        cdkDropList
+        (cdkDropListDropped)="reorderProjects(otherProjects, $event)"
+      >
+        @for (project of otherProjects; track project.id ?? project.title) {
+          <div
+            cdkDrag
+            role="button"
+            tabindex="0"
+            (click)="selectProject(project)"
+            (keydown.enter)="selectProject(project)"
+            class="group flex cursor-pointer items-center justify-between gap-2 border-b border-dashed border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-4 py-3 font-mono text-sm transition-colors last:border-b-0 hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
+            [class.text-primary]="selectedProject === project"
+          >
+            <span class="truncate">{{ project.title }}</span>
+            <p-button
+              icon="pi pi-trash"
+              size="small"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              styleClass="!h-7 !w-7 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+              (onClick)="deleteProject(project, $event)"
+            />
+          </div>
+        }
+      </div>
+    }
+
+    @if (!projects.length) {
       <p class="text-muted-color m-0 px-4 py-8 text-center font-mono text-xs">
         // 204 — no projects yet
       </p>

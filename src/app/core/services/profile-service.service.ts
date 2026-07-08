@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   addDoc,
   collectionData,
@@ -9,15 +9,23 @@ import {
   Firestore,
   orderBy,
   query,
-  setDoc, where,
+  setDoc,
+  where,
+  writeBatch,
 } from '@angular/fire/firestore';
-import {collection} from 'firebase/firestore';
-import {from, Observable} from 'rxjs';
-import {deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable,} from '@angular/fire/storage';
-import {Experience} from '@dashboard/experience/experience.component';
-import {Resume} from '@dashboard/resume/resume.component';
-import {Certification} from '@dashboard/certification/certification.component';
-import {Project} from '@dashboard/project/add-edit-project/add-edit-project.component';
+import { collection } from 'firebase/firestore';
+import { from, Observable } from 'rxjs';
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  Storage,
+  uploadBytesResumable,
+} from '@angular/fire/storage';
+import { Experience } from '@dashboard/experience/experience.component';
+import { Resume } from '@dashboard/resume/resume.component';
+import { Certification } from '@dashboard/certification/certification.component';
+import { Project } from '@dashboard/project/add-edit-project/add-edit-project.component';
 
 @Injectable({
   providedIn: 'root',
@@ -27,8 +35,7 @@ export class ProfileService {
   private storage = inject(Storage);
   readonly initial: string = 'profile/';
 
-  constructor() {
-  }
+  constructor() {}
 
   // Live listener for a single profile section doc, typed at the call site.
   // Emits the section data on every change (so public edits reflect without a
@@ -51,13 +58,14 @@ export class ProfileService {
   getAllProjects() {
     const projectsRef = collection(this.firestore, `projects`);
     const q = query(projectsRef, orderBy('projectDate', 'desc'));
-    return collectionData(q, {idField: 'id'});
+    return collectionData(q, { idField: 'id' });
   }
 
   saveProject(projectData: Project): Observable<void> {
     const projectRef = collection(this.firestore, 'projects');
-    return from(addDoc(projectRef, projectData as unknown as DocumentData).then(() => {
-    }));
+    return from(
+      addDoc(projectRef, projectData as unknown as DocumentData).then(() => {}),
+    );
   }
 
   deleteProject(projectId: string): Observable<void> {
@@ -65,21 +73,41 @@ export class ProfileService {
     return from(deleteDoc(projectRef));
   }
 
-  updateProject(projectId: string, projectData: Partial<Project>): Observable<void> {
+  updateProject(
+    projectId: string,
+    projectData: Partial<Project>,
+  ): Observable<void> {
     const projectRef = doc(this.firestore, `projects/${projectId}`);
-    return from(setDoc(projectRef, projectData as unknown as DocumentData, {merge: true}));
+    return from(
+      setDoc(projectRef, projectData as unknown as DocumentData, {
+        merge: true,
+      }),
+    );
+  }
+
+  // One drag-to-reorder in the dashboard rewrites the whole group's
+  // positions; a batch keeps the sequence consistent if a write fails.
+  updateProjectsOrder(
+    updates: { id: string; sortOrder: number }[],
+  ): Observable<void> {
+    const batch = writeBatch(this.firestore);
+    for (const update of updates) {
+      batch.update(doc(this.firestore, `projects/${update.id}`), {
+        sortOrder: update.sortOrder,
+      });
+    }
+    return from(batch.commit());
   }
 
   getAllExperiences() {
     const projectsRef = collection(this.firestore, `experience`);
     const q = query(projectsRef, orderBy('startDate', 'desc'));
-    return collectionData(q, {idField: 'id'});
+    return collectionData(q, { idField: 'id' });
   }
 
   saveExperience(experienceData: Experience): Observable<void> {
     const projectRef = collection(this.firestore, 'experience');
-    return from(addDoc(projectRef, experienceData).then(() => {
-    }));
+    return from(addDoc(projectRef, experienceData).then(() => {}));
   }
 
   deleteExperience(experienceId: string): Observable<void> {
@@ -87,30 +115,41 @@ export class ProfileService {
     return from(deleteDoc(projectRef));
   }
 
-  updateExperience(experienceId: string, experienceData: Experience): Observable<void> {
+  updateExperience(
+    experienceId: string,
+    experienceData: Experience,
+  ): Observable<void> {
     const projectRef = doc(this.firestore, `experience/${experienceId}`);
-    return from(setDoc(projectRef, experienceData, {merge: true}));
+    return from(setDoc(projectRef, experienceData, { merge: true }));
   }
 
   getAllCertifications() {
     const certificationsRef = collection(this.firestore, 'certifications');
     const q = query(certificationsRef, orderBy('issueDate', 'desc'));
-    return collectionData(q, {idField: 'id'});
+    return collectionData(q, { idField: 'id' });
   }
 
   saveCertification(certificationData: Certification): Observable<void> {
     const certificationRef = collection(this.firestore, 'certifications');
-    return from(addDoc(certificationRef, certificationData).then(() => {
-    }));
+    return from(addDoc(certificationRef, certificationData).then(() => {}));
   }
 
-  updateCertification(certificationId: string, certificationData: Certification): Observable<void> {
-    const certificationRef = doc(this.firestore, `certifications/${certificationId}`);
-    return from(setDoc(certificationRef, certificationData, {merge: true}));
+  updateCertification(
+    certificationId: string,
+    certificationData: Certification,
+  ): Observable<void> {
+    const certificationRef = doc(
+      this.firestore,
+      `certifications/${certificationId}`,
+    );
+    return from(setDoc(certificationRef, certificationData, { merge: true }));
   }
 
   deleteCertification(certificationId: string): Observable<void> {
-    const certificationRef = doc(this.firestore, `certifications/${certificationId}`);
+    const certificationRef = doc(
+      this.firestore,
+      `certifications/${certificationId}`,
+    );
     return from(deleteDoc(certificationRef));
   }
 
@@ -141,12 +180,12 @@ export class ProfileService {
   getAllResumes(): Observable<Resume[]> {
     const resumesRef = collection(this.firestore, 'resumes');
     const q = query(resumesRef, orderBy('uploadDate', 'desc'));
-    return collectionData(q, {idField: 'id'}) as Observable<Resume[]>;
+    return collectionData(q, { idField: 'id' }) as Observable<Resume[]>;
   }
   getPrimaryResume(): Observable<Resume[]> {
     const resumesRef = collection(this.firestore, 'resumes');
     const q = query(resumesRef, where('isPrimary', '==', true));
-    return collectionData(q, {idField: 'id'}) as Observable<Resume[]>;
+    return collectionData(q, { idField: 'id' }) as Observable<Resume[]>;
   }
 
   saveResume(resumeData: Resume): Observable<void> {
@@ -159,8 +198,11 @@ export class ProfileService {
     return from(deleteDoc(resumeRef));
   }
 
-  updateResume(resumeId: string, resumeData: Partial<Resume>): Observable<void> {
+  updateResume(
+    resumeId: string,
+    resumeData: Partial<Resume>,
+  ): Observable<void> {
     const resumeRef = doc(this.firestore, `resumes/${resumeId}`);
-    return from(setDoc(resumeRef, resumeData, {merge: true}));
+    return from(setDoc(resumeRef, resumeData, { merge: true }));
   }
 }
