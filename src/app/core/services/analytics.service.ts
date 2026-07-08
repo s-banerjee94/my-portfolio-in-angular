@@ -61,6 +61,10 @@ export interface Visit {
   duration?: number;
   /** session_end only: deepest scroll reached, 0–100% of the page. */
   scrollDepth?: number;
+  /** The visitor's local wall-clock time with offset — raw docs stay readable. */
+  time?: string;
+  /** One human sentence describing the event, for reading docs without the schema. */
+  summary?: string;
 }
 
 const SESSION_KEY = 'visit-logged';
@@ -252,6 +256,16 @@ export class AnalyticsService {
             returning: { booleanValue: visitor.returning },
             duration: { integerValue: String(seconds) },
             scrollDepth: { integerValue: String(maxScroll) },
+            time: { stringValue: isoLocal(new Date()) },
+            summary: {
+              stringValue: summarize(
+                'session_end',
+                exitSection(),
+                visitor.returning,
+                seconds,
+                maxScroll,
+              ),
+            },
           },
         });
         fetch(
@@ -302,6 +316,8 @@ export class AnalyticsService {
       meta: meta.slice(0, 120),
       visitorId: visitor.id,
       returning: visitor.returning,
+      time: isoLocal(new Date()),
+      summary: summarize(event, meta.slice(0, 120), visitor.returning),
     };
     const visitsRef = collection(this.firestore, this.collectionName);
     addDoc(visitsRef, visit).catch(() => {
@@ -333,6 +349,52 @@ function visitorInfo(): { id: string; returning: boolean } {
   } catch {
     // Storage can be blocked (private mode) — record the visit anonymously.
     return { id: '', returning: false };
+  }
+}
+
+/** The visitor's local time with UTC offset, e.g. 2026-07-08T18:23:41+05:30. */
+function isoLocal(date: Date): string {
+  const offsetMinutes = -date.getTimezoneOffset();
+  const sign = offsetMinutes >= 0 ? '+' : '-';
+  const pad = (n: number) => String(Math.abs(n)).padStart(2, '0');
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}` +
+    `${sign}${pad(Math.floor(Math.abs(offsetMinutes) / 60))}:${pad(Math.abs(offsetMinutes) % 60)}`
+  );
+}
+
+/** One plain-language sentence per doc, so raw JSON reads without the schema. */
+function summarize(
+  event: AnalyticsEvent,
+  meta: string,
+  returning: boolean,
+  duration?: number,
+  scrollDepth?: number,
+): string {
+  switch (event) {
+    case 'visit':
+      return returning ? 'returning visitor arrived' : 'new visitor arrived';
+    case 'section_view':
+      return `viewed the ${meta} section`;
+    case 'session_end':
+      return `left from ${meta || 'unknown section'} after ${duration ?? 0}s, scrolled ${scrollDepth ?? 0}% of the page`;
+    case 'resume_download':
+      return 'downloaded the resume';
+    case 'contact_submit':
+      return 'sent a message via the contact form';
+    case 'project_details':
+      return `opened project details: ${meta}`;
+    case 'project_live':
+      return `opened live demo of: ${meta}`;
+    case 'project_source':
+      return `opened source code of: ${meta}`;
+    case 'social_github':
+      return 'clicked the GitHub profile link';
+    case 'social_linkedin':
+      return 'clicked the LinkedIn profile link';
+    case 'social_email':
+      return 'clicked the email link';
   }
 }
 

@@ -56,7 +56,7 @@ service cloud.firestore {
 
     function isValidVisit() {
       let data = request.resource.data;
-      return data.keys().hasOnly(['event', 'source', 'referrer', 'path', 'device', 'browser', 'language', 'timezone', 'timestamp', 'meta', 'visitorId', 'returning', 'duration', 'scrollDepth'])
+      return data.keys().hasOnly(['event', 'source', 'referrer', 'path', 'device', 'browser', 'language', 'timezone', 'timestamp', 'meta', 'visitorId', 'returning', 'duration', 'scrollDepth', 'time', 'summary'])
         && data.event is string && data.event.size() >= 1 && data.event.size() <= 40
         && data.source is string && data.source.size() <= 80
         && data.referrer is string && data.referrer.size() <= 200
@@ -72,7 +72,10 @@ service cloud.firestore {
         && (!('returning' in data) || data.returning is bool)
         // session_end extras: seconds on site and max scroll percentage.
         && (!('duration' in data) || (data.duration is number && data.duration >= 0 && data.duration <= 86400))
-        && (!('scrollDepth' in data) || (data.scrollDepth is number && data.scrollDepth >= 0 && data.scrollDepth <= 100));
+        && (!('scrollDepth' in data) || (data.scrollDepth is number && data.scrollDepth >= 0 && data.scrollDepth <= 100))
+        // Readability extras: visitor-local ISO time and a one-line description.
+        && (!('time' in data) || (data.time is string && data.time.size() <= 40))
+        && (!('summary' in data) || (data.summary is string && data.summary.size() <= 160));
     }
 
     // Shape check for public message creation — mirrors the contact form's
