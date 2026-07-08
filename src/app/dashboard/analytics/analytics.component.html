@@ -315,71 +315,137 @@
     </div>
   </div>
 
-  <!-- access log -->
+  <!-- visitor sessions -->
   <div
     class="rounded-xl border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] p-5"
   >
     <p class="text-muted-color m-0 mb-4 font-mono text-xs">
-      // access log — {{ feedTotal() }} entries
+      // sessions — {{ sessions().length }} · one row per visit, expand for the
+      timeline
     </p>
-    <div class="overflow-x-auto">
-      <div class="flex min-w-[44rem] flex-col gap-1.5 font-mono text-sm">
-        @for (visit of feed(); track visit.id) {
-          <div
-            class="grid grid-cols-[8.5rem_9.5rem_minmax(12rem,1fr)_5rem_6rem] items-baseline gap-3 border-b border-[color-mix(in_srgb,var(--p-content-border-color)_55%,transparent)] pb-1.5 last:border-0"
+    <p-table
+      [value]="sessions()"
+      dataKey="key"
+      [paginator]="sessions().length > 8"
+      [rows]="8"
+      [tableStyle]="{ 'min-width': '46rem' }"
+    >
+      <ng-template #body let-s let-expanded="expanded">
+        <tr class="font-mono">
+          <td class="!w-12 !py-1">
+            <p-button
+              type="button"
+              [pRowToggler]="s"
+              [text]="true"
+              severity="secondary"
+              [rounded]="true"
+              size="small"
+              styleClass="!h-7 !w-7"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            />
+          </td>
+          <td
+            class="text-muted-color !py-1 font-mono text-xs whitespace-nowrap"
           >
-            <span class="text-muted-color text-xs">{{
-              visit.timestamp | date: "dd MMM, HH:mm"
-            }}</span>
-            <span
-              [class.text-primary]="visit.event !== 'visit'"
-              [class.font-semibold]="visit.event !== 'visit'"
-              >{{ eventLabel(visit) }}</span
-            >
-            <span class="truncate">
-              {{ visit.source }}
-              @if (visit.meta) {
-                <span class="text-muted-color"> · {{ visit.meta }}</span>
+            {{ s.start | date: "dd MMM, h:mm a" }}
+          </td>
+          <!-- Anonymous browser tag: same tag = same person across days. -->
+          <td
+            class="text-muted-color !py-1 font-mono text-xs whitespace-nowrap"
+          >
+            @if (s.tag) {
+              #{{ s.tag }}
+              @if (s.returning) {
+                <span class="text-primary" title="returning visitor">↩</span>
               }
-              @if (visit.event === "session_end") {
-                <span class="text-muted-color">
-                  · {{ visit.duration ?? 0 }}s · {{ visit.scrollDepth ?? 0 }}%
-                </span>
+            } @else {
+              —
+            }
+          </td>
+          @if (s.legacy) {
+            <td class="text-muted-color !py-1 font-mono text-xs">
+              older events, before visitor tracking
+            </td>
+            <td class="text-muted-color !py-1 font-mono text-xs">
+              {{ s.events.length }} entries
+            </td>
+          } @else {
+            <td class="!py-1 font-mono text-sm">
+              {{ s.source }}
+              <span class="text-muted-color text-xs">
+                · {{ s.device }} · {{ s.browser }}</span
+              >
+            </td>
+            <td class="!py-1 font-mono text-xs">
+              @for (chip of s.interactions; track $index) {
+                <span
+                  [class.text-primary]="chip.golden"
+                  [class.font-semibold]="chip.golden"
+                  >{{ chip.label }}</span
+                >
+                <span class="text-muted-color"> · </span>
               }
-            </span>
-            <span class="text-muted-color text-xs">{{ visit.device }}</span>
-            <span class="text-muted-color text-xs">{{ visit.browser }}</span>
-          </div>
-        } @empty {
-          <p class="text-muted-color m-0 py-6 text-center text-sm">
+              @if (s.hasEnd) {
+                {{ durationLabel(s.duration) }} · {{ s.scrollDepth ?? 0 }}%
+                @if (s.exit) {
+                  · left at {{ s.exit }}
+                }
+              } @else {
+                saw {{ s.sections }}
+                {{ s.sections === 1 ? "section" : "sections" }} · no exit
+                recorded
+              }
+            </td>
+          }
+        </tr>
+      </ng-template>
+      <ng-template #expandedrow let-s>
+        <tr>
+          <td colspan="5" class="!py-2">
+            <div class="flex flex-col gap-1 pl-12 font-mono">
+              @for (visit of s.events; track visit.id) {
+                <div class="grid grid-cols-[6.5rem_1fr] items-baseline gap-3">
+                  <span class="text-muted-color text-xs">{{
+                    visit.timestamp | date: "h:mm:ss a"
+                  }}</span>
+                  <span class="truncate text-xs">
+                    <span
+                      [class.text-primary]="visit.event !== 'visit'"
+                      [class.font-semibold]="visit.event !== 'visit'"
+                      >{{ eventLabel(visit) }}</span
+                    >
+                    @if (visit.meta) {
+                      <span class="text-muted-color"> · {{ visit.meta }}</span>
+                    }
+                    @if (visit.event === "session_end") {
+                      <span class="text-muted-color">
+                        · {{ visit.duration ?? 0 }}s ·
+                        {{ visit.scrollDepth ?? 0 }}%
+                      </span>
+                    }
+                    @if (s.legacy) {
+                      <span class="text-muted-color">
+                        · {{ visit.source }} · {{ visit.device }} ·
+                        {{ visit.browser }}</span
+                      >
+                    }
+                  </span>
+                </div>
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td
+            colspan="5"
+            class="text-muted-color py-6 text-center font-mono text-sm"
+          >
             // 204 — nothing recorded yet. Share the site and check back.
-          </p>
-        }
-      </div>
-    </div>
-
-    @if (feedPageCount() > 1) {
-      <div class="mt-4 flex items-center justify-between font-mono text-xs">
-        <button
-          type="button"
-          class="text-muted-color hover:text-primary cursor-pointer transition-colors disabled:cursor-default disabled:opacity-40"
-          [disabled]="feedCurrentPage() === 0"
-          (click)="newerFeedPage()"
-        >
-          ‹ newer
-        </button>
-        <span class="text-muted-color">
-          page {{ feedCurrentPage() + 1 }} / {{ feedPageCount() }}
-        </span>
-        <button
-          type="button"
-          class="text-muted-color hover:text-primary cursor-pointer transition-colors disabled:cursor-default disabled:opacity-40"
-          [disabled]="feedCurrentPage() >= feedPageCount() - 1"
-          (click)="olderFeedPage()"
-        >
-          older ›
-        </button>
-      </div>
-    }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
 }

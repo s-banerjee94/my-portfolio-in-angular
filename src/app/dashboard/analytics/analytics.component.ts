@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 
 import { ChartModule } from 'primeng/chart';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 import {
   AnalyticsService,
@@ -23,14 +25,37 @@ import { SectionHeaderComponent } from '@shared/section-header.component';
 const DAY = 24 * 60 * 60 * 1000;
 /** The widest range the page offers — everything is loaded once, filters are local. */
 const MAX_RANGE_DAYS = 90;
-/** Access-log rows per page. */
-const FEED_PAGE_SIZE = 10;
+/** Events of one visitor further apart than this belong to separate sessions. */
+const SESSION_GAP = 30 * 60 * 1000;
 
 interface SourceRow {
   name: string;
   count: number;
   /** Bar width relative to the biggest source, 0–100. */
   pct: number;
+}
+
+/** One visitor session: a browser's events grouped into a readable story. */
+interface SessionRow {
+  key: string;
+  start: number;
+  /** First chars of the visitor id — '' for pre-tracking events. */
+  tag: string;
+  returning: boolean;
+  source: string;
+  device: string;
+  browser: string;
+  /** Distinct sections seen during the session. */
+  sections: number;
+  /** From the session_end beacon; absent when the exit was never captured. */
+  duration?: number;
+  scrollDepth?: number;
+  exit: string;
+  hasEnd: boolean;
+  /** Clicks that matter — resume/message highlighted, project opens listed. */
+  interactions: { label: string; golden: boolean }[];
+  events: Visit[];
+  legacy: boolean;
 }
 
 @Component({
@@ -41,6 +66,8 @@ interface SourceRow {
     FormsModule,
     ChartModule,
     SelectButtonModule,
+    TableModule,
+    ButtonModule,
     SectionHeaderComponent,
   ],
   templateUrl: './analytics.component.html',
@@ -227,33 +254,56 @@ export class AnalyticsComponent {
     return rows;
   });
 
-  /** Access log pagination — newest first, FEED_PAGE_SIZE rows per page. */
-  protected readonly feedPage = signal(0);
-
-  protected readonly feedTotal = computed(() => (this.visits() ?? []).length);
-
-  protected readonly feedPageCount = computed(() =>
-    Math.max(1, Math.ceil(this.feedTotal() / FEED_PAGE_SIZE)),
-  );
-
-  /** feedPage clamped, so live updates that shrink the list can't strand us. */
-  protected readonly feedCurrentPage = computed(() =>
-    Math.min(this.feedPage(), this.feedPageCount() - 1),
-  );
-
-  protected readonly feed = computed(() => {
-    const start = this.feedCurrentPage() * FEED_PAGE_SIZE;
-    return (this.visits() ?? []).slice(start, start + FEED_PAGE_SIZE);
+  /**
+   * The visitor log: every event grouped into sessions so each visitor's
+   * flow reads as one story even when several people browse at once.
+   * Events are bucketed by visitor id, split at each `visit` event (and on
+   * 30-minute gaps as a safety net). Pre-tracking events can't be linked to
+   * a browser, so they're bundled into one legacy row that ages out.
+   */
+  protected readonly sessions = computed<SessionRow[]>(() => {
+    const all = [...(this.visits() ?? [])].sort(
+      (a, b) => a.timestamp - b.timestamp,
+    );
+    const byVisitor = new Map<string, Visit[]>();
+    const untracked: Visit[] = [];
+    for (const visit of all) {
+      if (!visit.visitorId) {
+        untracked.push(visit);
+        continue;
+      }
+      const list = byVisitor.get(visit.visitorId) ?? [];
+      list.push(visit);
+      byVisitor.set(visit.visitorId, list);
+    }
+    const rows: SessionRow[] = [];
+    for (const [id, events] of byVisitor) {
+      let current: Visit[] = [];
+      let prev = 0;
+      const flush = () => {
+        if (current.length) rows.push(buildSession(id, current));
+        current = [];
+      };
+      for (const event of events) {
+        if (
+          event.event === 'visit' ||
+          (prev && event.timestamp - prev > SESSION_GAP)
+        ) {
+          flush();
+        }
+        current.push(event);
+        prev = event.timestamp;
+      }
+      flush();
+    }
+    if (untracked.length) {
+      rows.push(buildLegacyRow(untracked));
+    }
+    return rows.sort((a, b) => b.start - a.start);
   });
 
-  protected newerFeedPage(): void {
-    this.feedPage.set(Math.max(0, this.feedCurrentPage() - 1));
-  }
-
-  protected olderFeedPage(): void {
-    this.feedPage.set(
-      Math.min(this.feedPageCount() - 1, this.feedCurrentPage() + 1),
-    );
+  protected durationLabel(seconds: number | undefined): string {
+    return formatSeconds(seconds ?? 0);
   }
 
   protected readonly chartData = computed(() => {
@@ -337,6 +387,63 @@ function countBy(
     counts[k] = (counts[k] ?? 0) + 1;
   }
   return counts;
+}
+
+function buildSession(id: string, events: Visit[]): SessionRow {
+  const visit = events.find((e) => e.event === 'visit');
+  const end = [...events].reverse().find((e) => e.event === 'session_end');
+  const sections = new Set(
+    events.filter((e) => e.event === 'section_view').map((e) => e.meta),
+  ).size;
+  const interactions = events
+    .filter((e) => !['visit', 'section_view', 'session_end'].includes(e.event))
+    .map((e) => ({
+      golden: e.event === 'resume_download' || e.event === 'contact_submit',
+      label:
+        e.event === 'resume_download'
+          ? '⬇ resume'
+          : e.event === 'contact_submit'
+            ? '✉ message'
+            : e.event.replace('_', ' ') + (e.meta ? ` · ${e.meta}` : ''),
+    }));
+  const first = events[0];
+  return {
+    key: `${id}-${first.timestamp}`,
+    start: first.timestamp,
+    tag: id.slice(0, 4),
+    returning: visit?.returning ?? first.returning ?? false,
+    source: visit?.source || first.source,
+    device: first.device,
+    browser: first.browser,
+    sections,
+    duration: end?.duration,
+    scrollDepth: end?.scrollDepth,
+    exit: end?.meta ?? '',
+    hasEnd: !!end,
+    interactions,
+    events,
+    legacy: false,
+  };
+}
+
+/** Events from before visitor ids existed — one bundle, ages out of the range. */
+function buildLegacyRow(events: Visit[]): SessionRow {
+  const last = events[events.length - 1];
+  return {
+    key: 'legacy',
+    start: last.timestamp,
+    tag: '',
+    returning: false,
+    source: '',
+    device: '',
+    browser: '',
+    sections: 0,
+    exit: '',
+    hasEnd: false,
+    interactions: [],
+    events: [...events].reverse(),
+    legacy: true,
+  };
 }
 
 function formatSeconds(seconds: number): string {
