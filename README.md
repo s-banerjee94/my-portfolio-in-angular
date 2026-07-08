@@ -27,7 +27,7 @@ The application has two halves served from a single SPA:
 - Drag-and-drop ordering for projects, skills, and technology chips
 - Rich-text editing (Quill) with HTML normalization on save
 - Resume upload/management with a designated primary resume (Firebase Storage)
-- Traffic analytics: visitors per day, sources, devices, and interaction events
+- Traffic analytics built from scratch: visitors per day, sources, devices, new vs returning visitors, section-reach funnel, time-on-site, scroll depth, and exit points
 - Messages inbox with browser push notifications for new messages
 
 ## Tech stack

@@ -31,11 +31,12 @@ Angular 21 personal-portfolio SPA backed entirely by Firebase (no custom backend
 The app has two halves, defined in `src/app/app.routes.ts`:
 
 1. **Public site** (`/` → `HomeComponent`): a single scrolling page composed of `*-section` components (`hero-section`, `about-section`, `project-section`, `experience-section`, `contact-section`) plus `header`/`footer`. Navigation uses URL fragments; `HomeComponent` scrolls to the matching element id.
-2. **Admin dashboard** (`/dashboard` → `DashboardComponent`): CMS for the site's content. Child routes: `edit-content` (PrimeNG tabs hosting one editor component per section in `src/app/dashboard/*`) and `messages` (contact-form inbox). Protected by `authGuard`; `/login` uses `noAuthGuard` to redirect authenticated users. Both guards wrap Firebase `onAuthStateChanged` in an Observable (`src/app/core/guards/auth.guard.ts`).
+2. **Admin dashboard** (`/admin` → `DashboardComponent`; `/dashboard` redirects there): CMS for the site's content. Child routes: `analytics` (visitor traffic, default landing), `edit-content` (PrimeNG tabs hosting one editor component per section in `src/app/dashboard/*`) and `messages` (contact-form inbox). Protected by `authGuard`; `/login` uses `noAuthGuard` to redirect authenticated users. Both guards wrap Firebase `onAuthStateChanged` in an Observable (`src/app/core/guards/auth.guard.ts`).
 
 ### Data layer
 
 Firestore structure (accessed through `@angular/fire`):
+
 - `profile/<sectionName>` docs — singleton content per section (hero, about, contact...), read/written generically via `ProfileService.getSectionData`/`saveSectionData`
 - `projects`, `experience`, `resumes` collections — CRUD in `ProfileService` (`src/app/core/services/profile-service.service.ts`), which also handles Firebase Storage uploads/deletes
 - `messages` collection — `ContaceMeService` (note the typo in the name/file), which also defines the `Message` interface
@@ -44,7 +45,9 @@ Services wrap Firebase promises in RxJS with `from(...)`; components subscribe. 
 
 `CommunicationService` is an EventEmitter bus used to pass the selected project between the dashboard project list and the add/edit form.
 
-Security rules (`firestore.rules`, `storage.rules`): everything is world-readable and auth-required for writes, **except** `messages`, which is inverted — anyone can write (public contact form), only authenticated users can read. Keep this in mind when adding collections.
+Security rules (`firestore.rules`, `storage.rules`): everything is world-readable and auth-required for writes, **except** `messages` and `visits`, which are inverted — anyone can create (public contact form / analytics beacons), only authenticated users can read. Both public-create rules **schema-check the document with `hasOnly(...)`**, so adding a field to `Message` or `Visit` silently breaks public writes until `firestore.rules` lists the new key — deploy rules before hosting when that happens.
+
+`AnalyticsService` (`visits` collection) records visits, clicks, per-section views, and a `session_end` beacon (duration/scroll/exit section) that goes out as a keepalive fetch to the Firestore REST endpoint, since SDK writes die on tab close. Nothing is recorded while the admin is logged in.
 
 ### UI stack
 
@@ -56,4 +59,4 @@ Security rules (`firestore.rules`, `storage.rules`): everything is world-readabl
 ### Other notes
 
 - TypeScript is fully strict (`strict: true` plus `strictTemplates`, `noImplicitReturns`, `noPropertyAccessFromIndexSignature`)
-- There are no bundled static assets: angular.json points assets at a `public/` directory that does not exist in the repo — all images and files (hero photo, resume PDFs) are served from Firebase Storage URLs stored in Firestore
+- Static assets live in `public/` (fonts, icons, favicon, robots.txt, sitemap.xml, PWA manifest, FCM service worker); content images and files (hero photo, project screenshots, resume PDFs) are served from Firebase Storage URLs stored in Firestore
