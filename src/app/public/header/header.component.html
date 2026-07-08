@@ -34,3 +34,36 @@
   [style.width.%]="scrollProgress()"
   aria-hidden="true"
 ></div>
+
+<!-- Mobile/tablet nav: the menubar hamburger is hidden below its 960px
+     breakpoint and this thumb-reachable speed dial takes over. -->
+<div class="fixed right-5 bottom-5 z-40 min-[960px]:hidden">
+  <p-speeddial
+    [model]="dialItems"
+    direction="up"
+    [mask]="true"
+    [transitionDelay]="40"
+    ariaLabel="Section navigation"
+    [buttonProps]="{ rounded: true, ariaLabel: 'Open section navigation' }"
+    buttonClassName="!h-12 !w-12 !border-0 !bg-[image:var(--site-grad)] !text-white !shadow-lg"
+    [pt]="dialPt"
+  >
+    <ng-template #item let-item let-toggleCallback="toggleCallback">
+      <button
+        type="button"
+        class="pointer-events-auto flex cursor-pointer items-center gap-3 border-0 bg-transparent p-0"
+        (click)="toggleCallback($event, item)"
+      >
+        <span
+          class="rounded-lg border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-3 py-1.5 font-mono text-xs shadow-md"
+          >{{ item.label }}</span
+        >
+        <span
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--p-content-border-color)] bg-[var(--p-content-background)] shadow-md"
+        >
+          <i [class]="item.icon + ' text-sm'"></i>
+        </span>
+      </button>
+    </ng-template>
+  </p-speeddial>
+</div>

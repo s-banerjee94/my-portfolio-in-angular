@@ -6,8 +6,6 @@ import { ProjectSectionComponent } from '../project-section/project-section.comp
 import { ContactSectionComponent } from '../contact-section/contact-section.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { ButtonModule } from 'primeng/button';
-import { ScrollTop } from 'primeng/scrolltop';
 import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService } from '@core/services/analytics.service';
 import { ExperienceSectionComponent } from '../experience-section/experience-section.component';
@@ -17,14 +15,12 @@ import { ServicesSectionComponent } from '../services-section/services-section.c
 @Component({
   selector: 'app-home-component',
   imports: [
-    ButtonModule,
     HeaderComponent,
     HeroSectionComponent,
     AboutSectionComponent,
     ProjectSectionComponent,
     ContactSectionComponent,
     FooterComponent,
-    ScrollTop,
     ExperienceSectionComponent,
     CertificationSectionComponent,
     ServicesSectionComponent,
