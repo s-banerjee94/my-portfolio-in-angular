@@ -12,7 +12,11 @@ import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { SelectButtonModule } from 'primeng/selectbutton';
 
-import { AnalyticsService, Visit } from '@core/services/analytics.service';
+import {
+  AnalyticsService,
+  PAGE_SECTIONS,
+  Visit,
+} from '@core/services/analytics.service';
 import { ThemeService } from '@core/theme/theme.service';
 import { SectionHeaderComponent } from '@shared/section-header.component';
 
@@ -79,6 +83,37 @@ export class AnalyticsComponent {
 
   protected readonly visitorCount = computed(() => this.pageVisits().length);
 
+  /**
+   * Distinct browsers behind the session count. Docs from before the
+   * visitor id existed can't be linked, so each counts as its own visitor —
+   * the number converges as old docs age out of the range.
+   */
+  protected readonly uniqueVisitors = computed(() => {
+    const ids = new Set<string>();
+    let unlinked = 0;
+    for (const v of this.pageVisits()) {
+      if (v.visitorId) {
+        ids.add(v.visitorId);
+      } else {
+        unlinked++;
+      }
+    }
+    return ids.size + unlinked;
+  });
+
+  /** New vs returning split — only sessions recorded since the visitor id shipped. */
+  protected readonly visitorSplit = computed(() => {
+    const tracked = this.pageVisits().filter((v) => v.visitorId);
+    const returning = tracked.filter((v) => v.returning).length;
+    const total = tracked.length;
+    return {
+      new: total - returning,
+      returning,
+      returningPct: total ? Math.round((returning / total) * 100) : 0,
+      total,
+    };
+  });
+
   protected readonly visitorDelta = computed(() => {
     const prev = this.prevPageVisits().length;
     if (prev === 0) return null;
@@ -117,12 +152,79 @@ export class AnalyticsComponent {
 
   protected readonly eventCounts = computed(() => {
     const counts = countBy(
-      this.inRange().filter((v) => v.event !== 'visit'),
+      // section_view and session_end feed their own panels; here they would
+      // drown the actual clicks.
+      this.inRange().filter(
+        (v) =>
+          v.event !== 'visit' &&
+          v.event !== 'section_view' &&
+          v.event !== 'session_end',
+      ),
       (v) => v.event,
     );
     return Object.entries(counts)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
+  });
+
+  /**
+   * Scroll funnel: % of visitors whose session recorded a section_view for
+   * each section, in page order. Both event types are deduped per session,
+   * so the ratio is honest; capped at 100 for ranges where they drift.
+   */
+  protected readonly sectionReach = computed(() => {
+    const visitors = this.visitorCount();
+    const counts = countBy(
+      this.inRange().filter((v) => v.event === 'section_view'),
+      (v) => v.meta,
+    );
+    return PAGE_SECTIONS.map((name) => ({
+      name,
+      count: counts[name] ?? 0,
+      pct: visitors
+        ? Math.min(100, Math.round(((counts[name] ?? 0) / visitors) * 100))
+        : 0,
+    }));
+  });
+
+  protected readonly hasSectionViews = computed(() =>
+    this.inRange().some((v) => v.event === 'section_view'),
+  );
+
+  private readonly sessionEnds = computed(() =>
+    this.inRange().filter((v) => v.event === 'session_end'),
+  );
+
+  /** Time-on-site, scroll depth, and where sessions end — from session_end beacons. */
+  protected readonly engagement = computed(() => {
+    const ends = this.sessionEnds();
+    const durations = ends
+      .map((v) => v.duration ?? 0)
+      .filter((seconds) => seconds > 0);
+    const scrolls = ends.map((v) => v.scrollDepth ?? 0);
+    const avg = (nums: number[]) =>
+      nums.length
+        ? Math.round(nums.reduce((sum, n) => sum + n, 0) / nums.length)
+        : 0;
+    return {
+      sessions: ends.length,
+      avgDuration: formatSeconds(avg(durations)),
+      avgScroll: avg(scrolls),
+    };
+  });
+
+  /** Last section on screen before leaving, ranked — the page's drop-off map. */
+  protected readonly exitPoints = computed<SourceRow[]>(() => {
+    const counts = countBy(
+      this.sessionEnds().filter((v) => v.meta),
+      (v) => v.meta,
+    );
+    const rows = Object.entries(counts)
+      .map(([name, count]) => ({ name, count, pct: 0 }))
+      .sort((a, b) => b.count - a.count);
+    const max = rows[0]?.count ?? 1;
+    for (const row of rows) row.pct = Math.round((row.count / max) * 100);
+    return rows;
   });
 
   /** Access log pagination — newest first, FEED_PAGE_SIZE rows per page. */
@@ -235,6 +337,15 @@ function countBy(
     counts[k] = (counts[k] ?? 0) + 1;
   }
   return counts;
+}
+
+function formatSeconds(seconds: number): string {
+  if (!seconds) return '—';
+  if (seconds >= 3600) {
+    return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
+  }
+  const minutes = Math.floor(seconds / 60);
+  return minutes ? `${minutes}m ${seconds % 60}s` : `${seconds}s`;
 }
 
 function startOfDay(timestamp: number): number {

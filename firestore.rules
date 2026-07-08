@@ -56,7 +56,7 @@ service cloud.firestore {
 
     function isValidVisit() {
       let data = request.resource.data;
-      return data.keys().hasOnly(['event', 'source', 'referrer', 'path', 'device', 'browser', 'language', 'timezone', 'timestamp', 'meta'])
+      return data.keys().hasOnly(['event', 'source', 'referrer', 'path', 'device', 'browser', 'language', 'timezone', 'timestamp', 'meta', 'visitorId', 'returning', 'duration', 'scrollDepth'])
         && data.event is string && data.event.size() >= 1 && data.event.size() <= 40
         && data.source is string && data.source.size() <= 80
         && data.referrer is string && data.referrer.size() <= 200
@@ -66,7 +66,13 @@ service cloud.firestore {
         && data.language is string && data.language.size() <= 20
         && data.timezone is string && data.timezone.size() <= 60
         && data.timestamp is number
-        && data.meta is string && data.meta.size() <= 120;
+        && data.meta is string && data.meta.size() <= 120
+        // Optional since 2026-07: cached pre-visitor-id bundles still write valid docs.
+        && (!('visitorId' in data) || (data.visitorId is string && data.visitorId.size() <= 40))
+        && (!('returning' in data) || data.returning is bool)
+        // session_end extras: seconds on site and max scroll percentage.
+        && (!('duration' in data) || (data.duration is number && data.duration >= 0 && data.duration <= 86400))
+        && (!('scrollDepth' in data) || (data.scrollDepth is number && data.scrollDepth >= 0 && data.scrollDepth <= 100));
     }
 
     // Shape check for public message creation — mirrors the contact form's

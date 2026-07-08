@@ -37,6 +37,8 @@ export class HomeComponent implements OnInit {
   private analytics: AnalyticsService = inject(AnalyticsService);
   ngOnInit(): void {
     this.analytics.recordVisit();
+    this.analytics.observeSections();
+    this.analytics.trackSessionEnd();
     this.activeRoute.fragment.subscribe((fragment) => {
       if (fragment) {
         const element = document.getElementById(fragment);

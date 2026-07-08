@@ -1,4 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
+
+import { environment } from '../../../env/environment';
 import { Auth } from '@angular/fire/auth';
 import {
   addDoc,
@@ -21,7 +23,20 @@ export type AnalyticsEvent =
   | 'social_email'
   | 'project_source'
   | 'project_live'
-  | 'project_details';
+  | 'project_details'
+  | 'section_view'
+  | 'session_end';
+
+/** Public page sections in scroll order — the dashboard funnel follows this. */
+export const PAGE_SECTIONS = [
+  'home',
+  'about',
+  'services',
+  'experience',
+  'projects',
+  'certifications',
+  'contact',
+] as const;
 
 export interface Visit {
   id?: string;
@@ -38,16 +53,35 @@ export interface Visit {
   timestamp: number;
   /** Event context, e.g. the project title behind a project_* event. */
   meta: string;
+  /** Random id from localStorage — ties one browser's visits together. Absent on pre-2026-07 docs. */
+  visitorId?: string;
+  /** True when the visitor id predates this session — a returning browser. */
+  returning?: boolean;
+  /** session_end only: seconds between the visit and leaving the tab. */
+  duration?: number;
+  /** session_end only: deepest scroll reached, 0–100% of the page. */
+  scrollDepth?: number;
 }
 
 const SESSION_KEY = 'visit-logged';
+const SECTIONS_KEY = 'sections-viewed';
+const VISITOR_KEY = 'visitor-id';
+/** Remembers within a session whether VISITOR_KEY was freshly minted. */
+const VISITOR_NEW_KEY = 'visitor-new';
+/** Set once the visit event was actually dispatched (not just scheduled). */
+const VISIT_SENT_KEY = 'visit-sent';
+/** Set once this session's session_end beacon has gone out. */
+const SESSION_END_KEY = 'session-ended';
 
 /**
  * Privacy-light visit tracking: no cookies, no IPs, no fingerprinting —
  * only the referrer the browser already sends plus coarse device info,
- * written once per browser session. Writes are fire-and-forget so a
- * Firestore hiccup can never break the public site, and nothing is
- * recorded while the admin is logged in (so your own edits don't count).
+ * written once per browser session. The one piece of persistent state is
+ * a random id in localStorage that tells returning browsers apart; it
+ * links visits to each other, never to a person. Writes are
+ * fire-and-forget so a Firestore hiccup can never break the public site,
+ * and nothing is recorded while the admin is logged in (so your own
+ * edits don't count).
  */
 @Injectable({
   providedIn: 'root',
@@ -55,6 +89,7 @@ const SESSION_KEY = 'visit-logged';
 export class AnalyticsService {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
+  private zone = inject(NgZone);
   readonly collectionName: string = 'visits';
 
   /** Called once from the public home page. Deduped per browser session. */
@@ -65,12 +100,175 @@ export class AnalyticsService {
     sessionStorage.setItem(SESSION_KEY, String(Date.now()));
     // Small delay: lets Firebase restore an admin login first (so it can be
     // skipped) and skips bots/bounces that leave within the first seconds.
-    setTimeout(() => this.write('visit', ''), 2500);
+    setTimeout(() => {
+      sessionStorage.setItem(VISIT_SENT_KEY, '1');
+      this.write('visit', '');
+    }, 2500);
   }
 
   /** Records an interaction (resume download, social click, ...). */
   trackEvent(event: AnalyticsEvent, meta = ''): void {
     this.write(event, meta);
+  }
+
+  /**
+   * Records one `section_view` per section per session, the first time it
+   * stays meaningfully visible for a second. Starts after the same 2.5s
+   * bot/bounce delay as recordVisit so "% of visitors" stays an honest ratio.
+   */
+  observeSections(): void {
+    if (typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    const seen = readSeenSections();
+    const pending = new Set<string>(
+      PAGE_SECTIONS.filter((id) => !seen.has(id)),
+    );
+    if (!pending.size) {
+      return;
+    }
+    // Outside the zone: scroll-driven callbacks shouldn't run change detection.
+    this.zone.runOutsideAngular(() => {
+      const dwellTimers = new Map<string, number>();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const id = (entry.target as HTMLElement).id;
+            // Tall sections can never reach a 50% ratio, so "fills 40% of
+            // the viewport" also counts as seen.
+            const visible =
+              entry.intersectionRatio >= 0.5 ||
+              entry.intersectionRect.height >= window.innerHeight * 0.4;
+            const timer = dwellTimers.get(id);
+            if (visible && timer === undefined) {
+              dwellTimers.set(
+                id,
+                window.setTimeout(() => {
+                  observer.unobserve(entry.target);
+                  seen.add(id);
+                  sessionStorage.setItem(
+                    SECTIONS_KEY,
+                    JSON.stringify([...seen]),
+                  );
+                  this.write('section_view', id);
+                }, 1000),
+              );
+            } else if (!visible && timer !== undefined) {
+              clearTimeout(timer);
+              dwellTimers.delete(id);
+            }
+          }
+        },
+        // Steps every 10%, so the viewport-fill check above gets evaluated
+        // while a tall section scrolls through.
+        { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5] },
+      );
+      // Some sections render only after their Firestore data lands (@if
+      // wrappers) — retry a few times instead of silently dropping them.
+      let attempts = 0;
+      const attach = () => {
+        for (const id of [...pending]) {
+          const element = document.getElementById(id);
+          if (element) {
+            observer.observe(element);
+            pending.delete(id);
+          }
+        }
+        if (pending.size && ++attempts < 4) {
+          setTimeout(attach, 2000);
+        }
+      };
+      setTimeout(attach, 2500);
+    });
+  }
+
+  /**
+   * Records one `session_end` per session when the tab is hidden or closed:
+   * seconds on site, deepest scroll %, and the section on screen at exit.
+   * The Firestore SDK can't write during unload, so this goes out as a
+   * keepalive fetch straight to the Firestore REST endpoint — same doc
+   * shape, same security rules.
+   */
+  trackSessionEnd(): void {
+    this.zone.runOutsideAngular(() => {
+      let maxScroll = 0;
+      const measure = () => {
+        const height = document.documentElement.scrollHeight || 1;
+        const seen = Math.min(
+          100,
+          Math.round(((window.scrollY + window.innerHeight) / height) * 100),
+        );
+        maxScroll = Math.max(maxScroll, seen);
+      };
+      window.addEventListener('scroll', measure, { passive: true });
+
+      const finish = () => {
+        if (document.visibilityState !== 'hidden') {
+          return;
+        }
+        // Once per session — the first hide wins; and only for sessions
+        // whose visit event went out, so dashboard ratios stay honest.
+        if (
+          sessionStorage.getItem(SESSION_END_KEY) ||
+          !sessionStorage.getItem(VISIT_SENT_KEY) ||
+          this.auth.currentUser
+        ) {
+          return;
+        }
+        const started = Number(sessionStorage.getItem(SESSION_KEY));
+        if (!started) {
+          return;
+        }
+        sessionStorage.setItem(SESSION_END_KEY, '1');
+        measure();
+        const visitor = visitorInfo();
+        const seconds = Math.min(
+          86400,
+          Math.max(0, Math.round((Date.now() - started) / 1000)),
+        );
+        const host = environment.useEmulators
+          ? 'http://localhost:8081'
+          : 'https://firestore.googleapis.com';
+        const projectId = environment.firebase.projectId;
+        const body = JSON.stringify({
+          fields: {
+            event: { stringValue: 'session_end' },
+            source: { stringValue: parseSource(document.referrer) },
+            referrer: { stringValue: document.referrer.slice(0, 200) },
+            path: { stringValue: location.pathname.slice(0, 100) },
+            device: {
+              stringValue: /Android|iPhone|iPad|iPod|Mobile/i.test(
+                navigator.userAgent,
+              )
+                ? 'mobile'
+                : 'desktop',
+            },
+            browser: { stringValue: parseBrowser(navigator.userAgent) },
+            language: { stringValue: (navigator.language || '').slice(0, 20) },
+            timezone: { stringValue: safeTimezone() },
+            timestamp: { integerValue: String(Date.now()) },
+            meta: { stringValue: exitSection() },
+            visitorId: { stringValue: visitor.id },
+            returning: { booleanValue: visitor.returning },
+            duration: { integerValue: String(seconds) },
+            scrollDepth: { integerValue: String(maxScroll) },
+          },
+        });
+        fetch(
+          `${host}/v1/projects/${projectId}/databases/(default)/documents/${this.collectionName}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            keepalive: true,
+          },
+        ).catch(() => {
+          // Analytics must never surface an error to a visitor.
+        });
+      };
+      document.addEventListener('visibilitychange', finish);
+      window.addEventListener('pagehide', finish);
+    });
   }
 
   /** Admin dashboard: live stream of visits newer than `since` (ms epoch). */
@@ -88,6 +286,7 @@ export class AnalyticsService {
     if (this.auth.currentUser) {
       return; // the admin browsing their own site is not traffic
     }
+    const visitor = visitorInfo();
     const visit: Visit = {
       event,
       source: parseSource(document.referrer),
@@ -101,11 +300,60 @@ export class AnalyticsService {
       timezone: safeTimezone(),
       timestamp: Date.now(),
       meta: meta.slice(0, 120),
+      visitorId: visitor.id,
+      returning: visitor.returning,
     };
     const visitsRef = collection(this.firestore, this.collectionName);
     addDoc(visitsRef, visit).catch(() => {
       // Analytics must never surface an error to a visitor.
     });
+  }
+}
+
+/**
+ * The visitor id and whether it predates this session. "New" is decided the
+ * moment the id is minted and pinned in sessionStorage, so every event of
+ * that first session agrees, and every later session counts as returning.
+ */
+function visitorInfo(): { id: string; returning: boolean } {
+  try {
+    let id = localStorage.getItem(VISITOR_KEY);
+    if (!id) {
+      id =
+        crypto.randomUUID?.() ??
+        `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem(VISITOR_KEY, id);
+      sessionStorage.setItem(VISITOR_NEW_KEY, 'yes');
+      return { id, returning: false };
+    }
+    if (!sessionStorage.getItem(VISITOR_NEW_KEY)) {
+      sessionStorage.setItem(VISITOR_NEW_KEY, 'no');
+    }
+    return { id, returning: sessionStorage.getItem(VISITOR_NEW_KEY) === 'no' };
+  } catch {
+    // Storage can be blocked (private mode) — record the visit anonymously.
+    return { id: '', returning: false };
+  }
+}
+
+/** The section under the viewport's midline — where the visitor was when they left. */
+function exitSection(): string {
+  const midline = window.innerHeight / 2;
+  for (const id of PAGE_SECTIONS) {
+    const rect = document.getElementById(id)?.getBoundingClientRect();
+    if (rect && rect.top <= midline && rect.bottom >= midline) {
+      return id;
+    }
+  }
+  return '';
+}
+
+function readSeenSections(): Set<string> {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(SECTIONS_KEY) ?? '[]');
+    return new Set(Array.isArray(stored) ? stored : []);
+  } catch {
+    return new Set();
   }
 }
 
