@@ -8,7 +8,10 @@ import {
 } from '@lucide/angular';
 
 import { ProfileService } from '@core/services/profile-service.service';
-import { Certification } from '@dashboard/certification/certification.component';
+import {
+  Certification,
+  compareCertifications,
+} from '@dashboard/certification/certification.component';
 import { SectionHeaderComponent } from '@shared/section-header.component';
 import { RevealDirective } from '@shared/reveal.directive';
 import { FirebaseDatePipe } from '@shared/pipes/firebase-date.pipe';
@@ -37,13 +40,15 @@ export class CertificationSectionComponent implements OnInit {
     this.profileService.getAllCertifications().subscribe((data) => {
       const all = data as Certification[];
       this.hasAny = all.length > 0;
-      // The dashboard enforces the max-3 rule; slice defends against old data.
+      // The dashboard enforces the max-3 rule; slice defends against old
+      // data. Both groups follow the manual drag order set in the dashboard.
       this.featured = all
         .filter((certification) => certification.featured)
+        .sort(compareCertifications)
         .slice(0, 3);
-      this.others = all.filter(
-        (certification) => !this.featured.includes(certification),
-      );
+      this.others = all
+        .filter((certification) => !this.featured.includes(certification))
+        .sort(compareCertifications);
     });
   }
 }

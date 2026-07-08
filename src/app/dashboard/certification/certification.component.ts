@@ -1,6 +1,13 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Timestamp } from '@angular/fire/firestore';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -25,6 +32,29 @@ export interface Certification {
   verifyUrl?: string;
   /** Shown as the large card at the top of the certifications section. */
   featured?: boolean;
+  /** Manual position set by drag-to-reorder in the dashboard list. */
+  sortOrder?: number;
+}
+
+/**
+ * Manual order first; certifications never dragged yet (no sortOrder) sort
+ * after the ordered ones, newest issue date first.
+ */
+export function compareCertifications(
+  a: Certification,
+  b: Certification,
+): number {
+  const aOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
+  const bOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
+  if (aOrder !== bOrder) {
+    return aOrder - bOrder;
+  }
+  return toMillis(b.issueDate) - toMillis(a.issueDate);
+}
+
+function toMillis(date: Date | Timestamp | undefined): number {
+  if (!date) return 0;
+  return date instanceof Date ? date.getTime() : (date.toMillis?.() ?? 0);
 }
 
 @Component({
@@ -39,6 +69,9 @@ export interface Certification {
     ToggleSwitch,
     TooltipModule,
     DatePipe,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
   ],
   templateUrl: './certification.component.html',
 })
@@ -70,7 +103,9 @@ export class CertificationComponent implements OnInit {
   ngOnInit(): void {
     this.profileService.getAllCertifications().subscribe({
       next: (certifications) => {
-        this.certifications = (certifications as Certification[]) || [];
+        this.certifications = ((certifications as Certification[]) || []).sort(
+          compareCertifications,
+        );
       },
       error: () => {
         this.messageService.add({
@@ -113,6 +148,16 @@ export class CertificationComponent implements OnInit {
       featured: this.featured,
     };
 
+    if (!this.isEditMode) {
+      // New entries join the end of the manual order; edits keep their spot
+      // (merge write leaves the stored sortOrder untouched).
+      certificationData.sortOrder =
+        this.certifications.reduce(
+          (max, certification) => Math.max(max, certification.sortOrder ?? -1),
+          -1,
+        ) + 1;
+    }
+
     if (this.isEditMode && this.currentCertificationId) {
       this.profileService
         .updateCertification(this.currentCertificationId, certificationData)
@@ -152,6 +197,38 @@ export class CertificationComponent implements OnInit {
         },
       });
     }
+  }
+
+  reorderCertifications(event: CdkDragDrop<Certification[]>): void {
+    moveItemInArray(
+      this.certifications,
+      event.previousIndex,
+      event.currentIndex,
+    );
+    const updates = this.certifications
+      .map((certification, index) => ({
+        id: certification.id!,
+        sortOrder: index,
+      }))
+      .filter(
+        (update, index) =>
+          this.certifications[index].sortOrder !== update.sortOrder,
+      );
+    this.certifications.forEach(
+      (certification, index) => (certification.sortOrder = index),
+    );
+    if (!updates.length) {
+      return;
+    }
+    this.profileService.updateCertificationsOrder(updates).subscribe({
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save the new order',
+        });
+      },
+    });
   }
 
   editCertification(certification: Certification): void {

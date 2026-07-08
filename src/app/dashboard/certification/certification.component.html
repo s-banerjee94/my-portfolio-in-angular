@@ -81,6 +81,7 @@
           fluid="true"
           required
           dateFormat="dd/mm/yy"
+          appendTo="body"
         />
         <label for="cert_issue_date">Issue Date</label>
       </p-floatlabel>
@@ -93,6 +94,7 @@
           iconDisplay="input"
           fluid="true"
           dateFormat="dd/mm/yy"
+          appendTo="body"
         />
         <label for="cert_expiry_date">Expiry Date (optional)</label>
       </p-floatlabel>
@@ -153,52 +155,60 @@
     </p>
   </div>
 
-  @for (certification of certifications; track certification.id) {
-    <div
-      class="flex items-start justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] px-5 py-4 last:border-b-0"
-    >
-      <div class="min-w-0">
-        <h4 class="m-0 flex items-center gap-2 text-sm font-semibold">
-          <span class="truncate">{{ certification.name }}</span>
-          @if (certification.featured) {
-            <span class="text-primary shrink-0 text-xs">★ featured</span>
-          }
-        </h4>
-        <p class="text-muted-color m-0 mt-0.5 font-mono text-xs">
-          {{ certification.issuer }} · {{ certification.type }} ·
-          {{ convertToDate(certification.issueDate) | date: "MMM yyyy" }}
-        </p>
-        @if (certification.credentialId) {
-          <p class="text-muted-color m-0 mt-0.5 font-mono text-xs opacity-70">
-            ID: {{ certification.credentialId }}
+  <div cdkDropList (cdkDropListDropped)="reorderCertifications($event)">
+    @for (certification of certifications; track certification.id) {
+      <div
+        cdkDrag
+        class="flex items-start justify-between gap-4 border-b border-dashed border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-5 py-4 last:border-b-0"
+      >
+        <i
+          cdkDragHandle
+          class="pi pi-bars text-muted-color mt-1 shrink-0 cursor-grab touch-none text-xs"
+          aria-label="Drag to reorder"
+        ></i>
+        <div class="min-w-0 grow">
+          <h4 class="m-0 flex items-center gap-2 text-sm font-semibold">
+            <span class="truncate">{{ certification.name }}</span>
+            @if (certification.featured) {
+              <span class="text-primary shrink-0 text-xs">★ featured</span>
+            }
+          </h4>
+          <p class="text-muted-color m-0 mt-0.5 font-mono text-xs">
+            {{ certification.issuer }} · {{ certification.type }} ·
+            {{ convertToDate(certification.issueDate) | date: "MMM yyyy" }}
           </p>
-        }
+          @if (certification.credentialId) {
+            <p class="text-muted-color m-0 mt-0.5 font-mono text-xs opacity-70">
+              ID: {{ certification.credentialId }}
+            </p>
+          }
+        </div>
+        <div class="flex shrink-0 gap-1">
+          <p-button
+            icon="pi pi-pencil"
+            size="small"
+            [text]="true"
+            [rounded]="true"
+            pTooltip="Edit"
+            tooltipPosition="top"
+            (onClick)="editCertification(certification)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            size="small"
+            severity="danger"
+            [text]="true"
+            [rounded]="true"
+            pTooltip="Delete"
+            tooltipPosition="top"
+            (onClick)="deleteCertification(certification.id)"
+          />
+        </div>
       </div>
-      <div class="flex shrink-0 gap-1">
-        <p-button
-          icon="pi pi-pencil"
-          size="small"
-          [text]="true"
-          [rounded]="true"
-          pTooltip="Edit"
-          tooltipPosition="top"
-          (onClick)="editCertification(certification)"
-        />
-        <p-button
-          icon="pi pi-trash"
-          size="small"
-          severity="danger"
-          [text]="true"
-          [rounded]="true"
-          pTooltip="Delete"
-          tooltipPosition="top"
-          (onClick)="deleteCertification(certification.id)"
-        />
-      </div>
-    </div>
-  } @empty {
-    <p class="text-muted-color m-0 px-5 py-8 text-center font-mono text-xs">
-      // 204 — no certifications yet, add your first one above
-    </p>
-  }
+    } @empty {
+      <p class="text-muted-color m-0 px-5 py-8 text-center font-mono text-xs">
+        // 204 — no certifications yet, add your first one above
+      </p>
+    }
+  </div>
 </div>

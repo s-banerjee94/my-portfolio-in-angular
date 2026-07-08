@@ -145,6 +145,19 @@ export class ProfileService {
     return from(setDoc(certificationRef, certificationData, { merge: true }));
   }
 
+  // One drag-to-reorder rewrites all positions; a batch keeps them consistent.
+  updateCertificationsOrder(
+    updates: { id: string; sortOrder: number }[],
+  ): Observable<void> {
+    const batch = writeBatch(this.firestore);
+    for (const update of updates) {
+      batch.update(doc(this.firestore, `certifications/${update.id}`), {
+        sortOrder: update.sortOrder,
+      });
+    }
+    return from(batch.commit());
+  }
+
   deleteCertification(certificationId: string): Observable<void> {
     const certificationRef = doc(
       this.firestore,
