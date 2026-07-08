@@ -38,7 +38,13 @@
             class="group flex cursor-pointer items-center justify-between gap-2 border-b border-dashed border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-4 py-3 font-mono text-sm transition-colors last:border-b-0 hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
             [class.text-primary]="selectedProject === project"
           >
-            <span class="truncate">
+            <i
+              cdkDragHandle
+              class="pi pi-bars text-muted-color shrink-0 cursor-grab touch-none text-xs"
+              aria-label="Drag to reorder"
+              (click)="$event.stopPropagation()"
+            ></i>
+            <span class="grow truncate">
               <span class="text-primary mr-1">★</span>{{ project.title }}
             </span>
             <p-button
@@ -75,7 +81,13 @@
             class="group flex cursor-pointer items-center justify-between gap-2 border-b border-dashed border-[var(--p-content-border-color)] bg-[var(--p-content-background)] px-4 py-3 font-mono text-sm transition-colors last:border-b-0 hover:bg-[color-mix(in_srgb,var(--p-primary-color)_6%,transparent)]"
             [class.text-primary]="selectedProject === project"
           >
-            <span class="truncate">{{ project.title }}</span>
+            <i
+              cdkDragHandle
+              class="pi pi-bars text-muted-color shrink-0 cursor-grab touch-none text-xs"
+              aria-label="Drag to reorder"
+              (click)="$event.stopPropagation()"
+            ></i>
+            <span class="grow truncate">{{ project.title }}</span>
             <p-button
               icon="pi pi-trash"
               size="small"

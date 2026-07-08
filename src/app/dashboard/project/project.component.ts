@@ -3,6 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import {
   CdkDrag,
   CdkDragDrop,
+  CdkDragHandle,
   CdkDropList,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
@@ -20,7 +21,13 @@ import { CommunicationService } from '@core/services/communication.service';
 
 @Component({
   selector: 'app-project',
-  imports: [ButtonModule, AddEditProjectComponent, CdkDrag, CdkDropList],
+  imports: [
+    ButtonModule,
+    AddEditProjectComponent,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
+  ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css',
 })
